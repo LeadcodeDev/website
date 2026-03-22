@@ -56,7 +56,7 @@ function loadBlogPosts(locale: string): BlogPost[] {
         description: data.description ?? '',
         date: new Date(data.date),
         tags: Array.isArray(data.tags) ? data.tags : [],
-        slug: file.replace(/\.mdx?$/, ''),
+        slug: file.replace(/\.mdx?$/, '').replace(/ /g, '-'),
         cover: data.cover,
       })
     }
