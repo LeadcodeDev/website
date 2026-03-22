@@ -82,17 +82,50 @@ hr {
   font-weight: 500;
 }
 
-html:not(.dark)  .astro-code,
-html:not(.dark)  .astro-code span:not(.highlighted, .highlighted-word, .diff) * {
+html:not(.dark) .astro-code,
+html:not(.dark) .astro-code span:not(.highlighted, .highlighted-word, .diff) * {
   background-color: oklch(0.985 0 0) !important;
 }
 
-html.dark  .astro-code,
-html.dark  .astro-code * {
+html.dark .astro-code,
+html.dark .astro-code * {
   color: var(--shiki-dark) !important;
 }
 
-html.dark  .astro-code,
-html.dark  > .astro-code {
+html.dark .astro-code,
+html.dark > .astro-code {
   background-color: oklch(0.274 0.006 286.033) !important;
+}
+
+.astro-code .diff {
+  position: relative;
+  margin: 0 calc(-1 * var(--padding-code, 1rem));
+  padding-left: var(--padding-code, 1rem);
+  padding-right: var(--padding-code, 1rem);
+  display: inline-block;
+  min-width: calc(100% + 2 * var(--padding-code, 1rem));
+}
+
+.astro-code .diff.add {
+  background-color: rgba(16, 185, 129, 0.14);
+}
+
+.astro-code .diff.remove {
+  background-color: rgba(244, 63, 94, 0.14);
+}
+
+.astro-code .diff::before {
+  position: absolute;
+  left: 0.25rem;
+}
+
+.astro-code .diff.add::before {
+  content: '+';
+  color: rgb(16, 185, 129);
+}
+
+.astro-code .diff.remove::before {
+  content: '-';
+  color: rgb(244, 63, 94);
+  opacity: 0.7;
 }

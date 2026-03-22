@@ -1,0 +1,388 @@
+---
+title: Gérez les actions de vos utilisateurs efficacement grâce à un système robuste et scalable
+description: Dans cet article, nous allons explorer différentes manières de gérer les accès et les actions des utilisateurs au sein d'une plateforme hypothétique conçue pour offrir la gestion de clients/prospects ainsi que le suivi de devis/factures.
+thumbnail:
+  title: Gérez les actions de vos utilisateurs
+  description: Explorons différentes manières de gérer les accès et actions des utilisateurs au sein d'une plateforme hypothétique.
+  theme: default  # default | gradient | minimal
+date: 2026-03-13
+tags: [Security, Rust]
+status: published
+author: leadcode_dev
+---
+
+## Introduction
+
+Lorsque l'on parle de sécurité dans le contexte d'une application, on pense immédiatement à trois aspects :
+
+- Les vulnérabilités (XSS…)
+- L'authentification
+- Les rôles/permissions
+
+Dans cet article, nous allons explorer différentes manières de gérer les accès et les actions des utilisateurs au sein d'une plateforme hypothétique conçue pour offrir la gestion de clients/prospects ainsi que le suivi de devis/factures.
+
+Notre application permet aux PME (petites et moyennes entreprises) d'enregistrer les informations de facturation de leurs prospects ou clients afin de les réutiliser facilement pour de futurs devis et factures.
+
+Sachant que dans une PME, plusieurs utilisateurs peuvent avoir besoin d'accéder à la plateforme, nous voulons que ces utilisateurs aient des permissions différentes. Nous pouvons identifier les niveaux d'accès suivants :
+
+- Administrateur complet : pour le propriétaire de l'entreprise
+- Accès semi-restreint : pour les RH
+
+Notre propriétaire d'entreprise doit avoir un accès complet à tous les services offerts par la plateforme.
+
+Nos comptes RH doivent avoir un accès complet aux clients ainsi qu'aux devis et factures.
+
+À ce stade, nous identifions deux besoins métier nécessitant des traitements différents et introduisant la notion de restrictions d'accès.
+
+## Différentes approches
+
+Les contraintes précédemment décrites illustrent un niveau de complexité qui peut croître au fil du temps et selon les besoins futurs de l'entreprise.
+
+Pour implémenter un système de gestion de permissions robuste et scalable, explorons d'abord plusieurs manières de construire une solution solide.
+Hardcode
+
+Cette méthode consiste à écrire les règles d'autorisation directement dans la logique métier.
+
+Imaginons une structure simple pour modéliser notre cas.
+
+```rs [entities.rs]
+pub struct User {
+  pub firstname: String,
+  pub lastname: String,
+  pub is_admin: bool,
+  pub is_rh: bool
+}
+```
+
+```rs
+fn can_create_document(user: &User) -> bool {
+  user.is_admin || user.is_rh
+}
+```
+
+Cette approche peut convenir pour des prototypes visant à tester la faisabilité d'une fonctionnalité, mais elle présente de nombreux problèmes et devrait très rarement être utilisée en production :
+
+- Aucune flexibilité (un changement nécessite un redéploiement)
+- Duplique souvent les règles
+- Difficile à tester ou tracer
+
+---
+
+## RBAC (Role-Based Access Control)
+
+Dans le modèle RBAC, les utilisateurs se voient attribuer un ou plusieurs rôles (par exemple, Admin, RH, Commercial). Chaque rôle est associé à un ensemble prédéfini de permissions.
+
+```rs [entities.rs]
+pub struct Role {
+  pub id: String,
+  pub name: String
+}
+
+pub struct User {
+  pub firstname: String,
+  pub lastname: String,
+  pub roles: Vec<Role>
+}
+```
+
+```rs
+fn can_create_document(user: &User) -> bool {
+  user.roles.iter().any(|role| {
+    role.name == "Admin" || role.name == "RH"
+  })
+}
+```
+
+Dans notre cas, notez que la propriété name peut changer, il est donc préférable de se baser sur l'id du rôle.
+
+Cette pratique est intéressante car elle permet de stocker un ensemble de rôles dans un système de stockage persistant, que nous pouvons modifier.
+
+L'ajout d'un nouveau rôle nécessite des modifications de code pour le prendre en compte dans notre gestion des permissions. Aussi, faites très attention à ne pas supprimer un rôle s'il est référencé par id, car cela casserait les permissions de manière irréversible.
+
+Cependant, cette pratique a l'avantage d'avoir un modèle simple à conceptualiser et gérer si les rôles sont bien définis.
+
+### Inconvénients
+
+Comme mentionné, l'essence du modèle RBAC devient inefficace dans certains cas :
+
+- À mesure que le métier évolue, le nombre de rôles et de règles métier augmente
+- Un accès temporaire pour une personne nécessite souvent de créer un rôle "temporaire", ce qui implique des modifications de code
+
+---
+
+## ABAC (Attribute-Based Access Control)
+
+L'ABAC est une approche plus granulaire, basée sur l'évaluation de N attributs dynamiques selon vos besoins et votre contexte métier. Cependant, on retrouve généralement deux attributs :
+
+- La ressource
+- L'action
+
+Considérons un ensemble d'actions utilisateur pour notre plateforme :
+
+- create : permet de créer un nouveau document
+- update : permet de modifier un document
+- delete : permet de supprimer un document
+
+Ces actions s'appliquent à une ressource donnée — ici, document — et nous définissons nos actions sous la forme `<ressource>:<action>`.
+
+Voici un exemple en Rust :
+
+:::codegroup
+```rs [entities.rs]
+pub enum Permission {
+  CreateDocument,
+  UpdateDocument,
+  DeleteDocument,
+}
+
+impl Permission {
+  pub fn serialize(permission: &str) -> Option<Self> {
+    match permission {
+      "document:create" => Some(Permission::CreateDocument),
+      "document:update" => Some(Permission::UpdateDocument),
+      "document:delete" => Some(Permission::DeleteDocument),
+      _ => None,
+    }
+  }
+}
+```
+
+```rs [usage]
+fn can_create_document(user: &User) -> bool {
+  user.permissions.iter().find_map(|element| {
+    if let Some(permission) = Permission::serialize(element) {
+      permission == Permission::CreateDocument
+    } else {
+      false
+    }
+  })
+}
+```
+:::
+
+Avec cette approche basée sur les actions, nous obtenons un contrôle beaucoup plus fin sur les actions des utilisateurs, mais la mise en place est plus longue en raison du nombre de permissions que nous devons déclarer et gérer.
+
+Nous pouvons simplifier le code ci-dessus comme ceci :
+
+```rs
+pub enum Permission { ... }
+
+impl Permission {
+  pub fn serialize(permission: &str) -> Option<Permission> { ... }
+
+  pub fn has(permissions: &Vec<String>, target: Permission) -> bool {
+    permissions.iter().find_map(|element| {
+      match Permission::serialize(element) {
+        Some(permission) if permission == target => Some(true),
+        _ => None,
+      }
+    }).unwrap_or(false)
+  }
+}
+
+fn my_policy_handler(user: &User) -> bool {
+  Permission::has(&user.permissions, Permission::CreateDocument)
+}
+```
+
+Cette méthode nécessite d'associer aux utilisateurs un grand nombre de permissions, ce qui offre un contrôle optimal mais demande plus de configuration.
+
+> Qu'en est-il des rôles ?
+
+Nous avons précédemment mentionné vouloir deux rôles `Admin` et `RH` pour déléguer les permissions aux utilisateurs.
+
+Nous pouvons maintenant envisager une approche hybride combinant ABAC et RBAC pour tirer parti de leurs forces respectives : contrôle atomique et facilité d'utilisation.
+
+---
+
+## L'approche hybride
+
+Dans cette section, nous utiliserons les structures de données suivantes :
+
+```rs [entities.rs]
+pub struct Role {
+  pub name: String,
+  pub permissions: Vec<String>
+}
+
+pub struct User {
+  pub username: String,
+  pub lastname: String,
+  pub roles: Vec<Role>
+}
+```
+
+Cette approche "empaquette" nos actions atomiques dans des rôles de sorte que l'attribution d'un rôle accorde automatiquement un ensemble de permissions.
+
+Nous pouvons ensuite créer une fonction pour vérifier une permission dans les rôles de l'utilisateur :
+
+```rs
+pub enum Permission { ... }
+pub struct User { ... }
+
+impl User {
+  pub fn has_permission(&self, permission: Permission) -> bool {
+    self.roles.iter().any(|role| {
+      Permission::has(&role.permissions, permission).is_some()
+    });
+  }
+}
+
+fn my_policy_handler(user: &User) -> bool {
+  user.has_permission(Permission::CreateDocument)
+}
+```
+
+> Ça a l'air bien, mais je ne peux toujours pas donner une permission à un utilisateur spécifique sans la donner à tous ceux qui ont ce rôle !
+
+C'est vrai — et ce n'est pas une erreur. C'est la prochaine amélioration 👀
+
+Nous allons maintenant permettre les exceptions en ajoutant une propriété permissions au modèle User :
+
+```rs
+pub struct User {
+  pub username: String,
+  pub lastname: String,
+  pub roles: Vec<Role>,
+  pub permissions: Vec<String> // [!code ++]
+}
+```
+
+Mettons maintenant à jour `User::has_permission(...)` :
+
+```rs [entities.rs]
+pub enum Permission { ... }
+pub struct User { ... }
+
+impl User {
+  pub fn has_permission(&self, permission: Permission) -> bool {
+    if Permission::has(&self.permissions, permission).is_some() {
+      return true;
+    }
+
+    self.roles.iter().any(|role| {
+      Permission::has(&role.permissions, permission).is_some()
+    });
+  }
+}
+```
+
+L'ordre de vérification est important. Nous vérifions d'abord les permissions individuelles de l'utilisateur pour éviter des vérifications de rôles inutiles si la permission est déjà accordée.
+
+> Félicitations, vous avez construit un système robuste et scalable pour gérer correctement les actions des utilisateurs !
+
+---
+
+## Hybride amélioré par le bitwise
+
+Nous avons maintenant exploré plusieurs approches, de la plus simple à la plus robuste, capable de s'adapter à l'évolution métier de votre entreprise.
+
+Voici une amélioration que je trouve particulièrement intéressante pour simplifier davantage.
+
+Nous pouvons définir deux aspects notables :
+
+- Statique : les permissions sont connues à l'avance et utilisées directement dans le code
+- Dynamique : les permissions sont attribuées à l'exécution via des rôles ou directement sur l'utilisateur
+
+> Si nous utilisons une base de données, avons-nous vraiment besoin de stocker nos permissions si elles sont statiques ?
+
+Réponse simple :
+- Oui pour afficher les permissions dans une interface
+- Non pour tout le reste
+
+Stocker des données a un coût (écriture, modification, lecture, sérialisation).
+
+Dans un contexte de BDD, la structure pourrait être :
+> `User <-HasMany-> Role <-HasMany-> Permission`
+
+La vérification des permissions nécessite :
+- Itérer sur chaque rôle de l'utilisateur : `O(R)`
+- Pour chaque rôle, itérer ses permissions : `O(P)`
+
+Complexité totale :
+```math
+O(R×P)O(R×P)
+```
+
+Sachant cela, nous pouvons partager les permissions statiquement dans le code au lieu de les stocker en BDD — supprimant une table et simplifiant les requêtes.
+
+La complexité du nouveau système devient :
+```math
+O(R)
+```
+
+> Mais où sont passées les permissions des rôles ?
+
+Excellente question 👀 laissez-moi vous présenter : le Bitwise
+
+---
+
+### Bitwise
+
+Avant de continuer, définissons ce que signifie bitwise :
+
+> En programmation informatique, une opération bit à bit opère sur une chaîne de bits, un tableau de bits ou un nombre binaire (considéré comme une chaîne de bits) au niveau de ses bits individuels...
+
+### Réduire la complexité avec le bitwise
+
+Réintroduisons la persistance des permissions. En utilisant l'encodage bitwise, nous pouvons stocker jusqu'à 32 permissions dans un seul entier non signé de 32 bits !
+
+    Vous dépassez 32 permissions ? Utilisez u64 (64 permissions). Au-delà, utilisez le type BIT VARYING de PostgreSQL.
+
+Adaptons maintenant notre code.
+
+D'abord, mettons à jour l'enum pour supporter le format bitwise :
+
+```rs
+pub enum Permission {
+  CreateDocument = 1 << 0, // 0001
+  UpdateDocument = 1 << 1, // 0010
+  DeleteDocument = 1 << 2, // 0100
+}
+
+impl Permission {
+  // Ajouter une permission (activer le bit)
+  pub fn add(value: &mut u64, permission: Permission) {
+    *value |= permission as u64;
+  }
+
+  // Supprimer une permission (désactiver le bit)
+  pub fn remove(value: &mut u64, permission: Permission) {
+    *value &= !(permission as u64);
+  }
+
+  // Vérifier si un utilisateur a une permission spécifique
+  pub fn has(value: u64, permission: Permission) -> bool {
+    (value & (permission as u64)) != 0
+  }
+}
+```
+
+Mettons maintenant à jour les entités `User` et `Role` :
+```rs
+pub struct Role {
+  ...
+  pub permissions: Vec<String>, // [!code --]
+  pub permissions: u64  // [!code ++]
+}
+
+pub struct User {
+  ...
+  pub permissions: Vec<String>, // [!code --]
+  pub permissions: u64  // [!code ++]
+}
+```
+
+> Félicitations, vous avez implémenté la gestion des permissions par bitwise ! 🚀
+
+Mais chaque décision a ses compromis. Avec le bitwise :
+- Vous êtes limité par la taille de votre type entier (`u32`, `u64`, …)
+- Vous ne devez **jamais changer l'ordre de l'enum**, sous peine d'attribuer des permissions incorrectes
+
+---
+
+## Conclusion
+
+Il existe une multitude de manières de gérer efficacement les actions de vos utilisateurs, mais n'oubliez pas que chacune d'entre elles a ses propres contraintes et limitations.
+
+Les approches abordées dans cet article concernent certaines des méthodes les plus connues, comme les modèles RBAC et ABAC, mais il en existe d'autres que vous pouvez utiliser et qui, dans certains cas, peuvent être plus adaptées à votre projet.

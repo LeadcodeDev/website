@@ -4,6 +4,8 @@ import { resolve, dirname } from 'node:path'
 import satori from 'satori'
 import { resolveColor } from './colors'
 
+export type ThumbnailTheme = 'default' | 'gradient' | 'minimal'
+
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const interRegular = readFileSync(resolve(__dirname, 'assets/Inter-Regular.woff'))
@@ -15,13 +17,65 @@ export interface ThumbnailOptions {
   title: string
   description?: string
   primaryColor?: string
+  theme?: ThumbnailTheme
 }
 
-export async function generateThumbnail(options: ThumbnailOptions): Promise<string> {
-  const { headline, title, description } = options
-  const primaryColor = resolveColor(options.primaryColor)
+const fonts = [
+  { name: 'Inter', data: interRegular, weight: 400 as const },
+  { name: 'Inter', data: interSemiBold, weight: 600 as const },
+  { name: 'Inter', data: interBold, weight: 700 as const },
+]
 
-  return satori(
+function TextContent({
+  headline,
+  title,
+  description,
+  primaryColor,
+}: {
+  headline?: string
+  title: string
+  description?: string
+  primaryColor: string
+}) {
+  return (
+    <div tw="flex flex-col w-[800px] pl-[100px]">
+      {headline && (
+        <p tw="uppercase text-[24px] mb-4" style={{ color: primaryColor, fontWeight: 600 }}>
+          {headline}
+        </p>
+      )}
+      <h1
+        tw="w-[800px] m-0 text-[75px] font-bold mb-4"
+        style={{
+          display: 'block',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          color: 'white',
+          fontWeight: 700,
+        }}
+      >
+        {title}
+      </h1>
+      {description && (
+        <p
+          tw="text-[32px] text-[#E4E4E7] leading-tight"
+          style={{
+            display: 'block',
+            WebkitLineClamp: 3,
+            textOverflow: 'ellipsis',
+            opacity: 0.5,
+          }}
+        >
+          {description}
+        </p>
+      )}
+    </div>
+  )
+}
+
+function DefaultTheme({ headline, title, description, primaryColor }: Required<Pick<ThumbnailOptions, 'primaryColor'>> & Omit<ThumbnailOptions, 'primaryColor' | 'theme'>) {
+  return (
     <div tw="w-full h-full flex flex-col justify-center bg-[#020420]">
       <svg
         tw="absolute right-0 top-0"
@@ -54,60 +108,56 @@ export async function generateThumbnail(options: ThumbnailOptions): Promise<stri
         </defs>
       </svg>
 
-      <div tw="flex flex-col w-[800px] pl-[100px]">
-        {headline && (
-          <p tw="uppercase text-[24px] mb-4" style={{ color: primaryColor, fontWeight: 600 }}>
-            {headline}
-          </p>
-        )}
-        <h1
-          tw="w-[800px] m-0 text-[75px] font-bold mb-4"
-          style={{
-            display: 'block',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            color: 'white',
-            fontWeight: 700,
-          }}
-        >
-          {title}
-        </h1>
-        {description && (
-          <p
-            tw="text-[32px] text-[#E4E4E7] leading-tight"
-            style={{
-              display: 'block',
-              WebkitLineClamp: 3,
-              textOverflow: 'ellipsis',
-              opacity: 0.5,
-            }}
-          >
-            {description}
-          </p>
-        )}
-      </div>
-    </div>,
-    {
-      width: 960,
-      height: 540,
-      fonts: [
-        {
-          name: 'Inter',
-          data: interRegular,
-          weight: 400,
-        },
-        {
-          name: 'Inter',
-          data: interSemiBold,
-          weight: 600,
-        },
-        {
-          name: 'Inter',
-          data: interBold,
-          weight: 700,
-        },
-      ],
-    },
+      <TextContent headline={headline} title={title} description={description} primaryColor={primaryColor} />
+    </div>
   )
+}
+
+function GradientTheme({ headline, title, description, primaryColor }: Required<Pick<ThumbnailOptions, 'primaryColor'>> & Omit<ThumbnailOptions, 'primaryColor' | 'theme'>) {
+  return (
+    <div
+      tw="w-full h-full flex flex-col justify-center"
+      style={{
+        background: `linear-gradient(135deg, #020420 0%, ${primaryColor}33 50%, #020420 100%)`,
+      }}
+    >
+      <div
+        tw="absolute inset-0"
+        style={{
+          background: `radial-gradient(ellipse at 70% 30%, ${primaryColor}44 0%, transparent 60%)`,
+        }}
+      />
+      <TextContent headline={headline} title={title} description={description} primaryColor={primaryColor} />
+    </div>
+  )
+}
+
+function MinimalTheme({ headline, title, description, primaryColor }: Required<Pick<ThumbnailOptions, 'primaryColor'>> & Omit<ThumbnailOptions, 'primaryColor' | 'theme'>) {
+  return (
+    <div tw="w-full h-full flex flex-col justify-center bg-[#020420]">
+      <div
+        tw="absolute left-0 top-0 bottom-0 w-[6px]"
+        style={{ backgroundColor: primaryColor }}
+      />
+      <TextContent headline={headline} title={title} description={description} primaryColor={primaryColor} />
+    </div>
+  )
+}
+
+export async function generateThumbnail(options: ThumbnailOptions): Promise<string> {
+  const { headline, title, description, theme = 'default' } = options
+  const primaryColor = resolveColor(options.primaryColor)
+
+  const props = { headline, title, description, primaryColor }
+
+  const themeElement =
+    theme === 'gradient' ? <GradientTheme {...props} /> :
+    theme === 'minimal' ? <MinimalTheme {...props} /> :
+    <DefaultTheme {...props} />
+
+  return satori(themeElement, {
+    width: 960,
+    height: 540,
+    fonts,
+  })
 }

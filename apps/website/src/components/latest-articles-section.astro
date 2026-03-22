@@ -53,7 +53,7 @@ function loadBlogPosts(locale: string): BlogPost[] {
 
       posts.push({
         title: data.title ?? '',
-        description: data.short_description ?? data.description ?? '',
+        description: data.description ?? '',
         date: new Date(data.date),
         tags: Array.isArray(data.tags) ? data.tags : [],
         slug: file.replace(/\.mdx?$/, ''),

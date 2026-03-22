@@ -16,11 +16,16 @@ export interface ThumbnailConfig {
       }
 }
 
+import type { ThumbnailTheme } from './generator'
+
 interface ContentEntry {
   filePath: string
   title: string
   description?: string
-  shortDescription?: string
+  thumbnailTitle?: string
+  thumbnailDescription?: string
+  color?: string
+  theme?: ThumbnailTheme
   /** URL pathname this entry maps to (without leading slash) */
   urlPath: string
 }
@@ -49,16 +54,29 @@ async function buildContentIndex(
         .replace(/\.(mdx|md)$/, '')
         .replace(/\/index$/, '')
 
+      const thumbnail = data.thumbnail as
+        | { title?: string; description?: string; color?: string; theme?: ThumbnailTheme }
+        | undefined
+
       const entry: ContentEntry = {
         filePath,
         title: data.title ?? urlPath.split('/').pop() ?? '',
         description: data.description,
-        shortDescription: data.short_description,
+        thumbnailTitle: thumbnail?.title,
+        thumbnailDescription: thumbnail?.description,
+        color: thumbnail?.color,
+        theme: thumbnail?.theme,
         urlPath,
       }
 
       // Store by the raw file-based path
       entries.set(urlPath, entry)
+
+      // Also store by normalized path (spaces → dashes) to match Astro's slug normalization
+      const normalizedPath = urlPath.replace(/ /g, '-')
+      if (normalizedPath !== urlPath) {
+        entries.set(normalizedPath, entry)
+      }
 
       // If this has a permalink, also index by that
       if (data.permalink) {
@@ -89,8 +107,6 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
     name: '@explainer/thumbnail',
     hooks: {
       'astro:config:setup': ({ updateConfig, logger }) => {
-        const cache = new Map<string, Buffer>()
-
         updateConfig({
           vite: {
             plugins: [
@@ -102,16 +118,11 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
                       return next()
                     }
 
-                    const cached = cache.get(req.url)
-                    if (cached) {
-                      res.setHeader('Content-Type', 'image/png')
-                      res.setHeader('Cache-Control', 'no-cache')
-                      res.end(cached)
-                      return
-                    }
+                    // Always rebuild content index in dev for live frontmatter changes
+                    contentIndex = null
 
                     try {
-                      const { headline, title, description } = resolvePageMeta(
+                      const { headline, title, description, color, theme } = resolvePageMeta(
                         config,
                         req.url,
                         await getContentIndex(),
@@ -121,12 +132,11 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
                         headline,
                         title,
                         description,
-                        primaryColor: config.primaryColor,
+                        primaryColor: color ?? config.primaryColor,
+                        theme,
                       })
 
                       const png = await renderThumbnail(svg)
-
-                      cache.set(req.url, png)
                       logger.info(`Dev thumbnail generated for ${req.url}`)
 
                       res.setHeader('Content-Type', 'image/png')
@@ -169,11 +179,11 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
 
         // Collection mode
         const tasks = pages.map((page) => async () => {
-          const pathname = page.pathname.replace(/\/$/, '')
+          const pathname = decodeURIComponent(page.pathname.replace(/\/$/, ''))
           if (!pathname) return
 
           try {
-            const { headline, title, description } = resolveFromIndex(
+            const { headline, title, description, color, theme } = resolveFromIndex(
               pathname,
               index,
               config.appName,
@@ -183,7 +193,8 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
               headline,
               title,
               description,
-              primaryColor: config.primaryColor,
+              primaryColor: color ?? config.primaryColor,
+              theme,
             })
 
             const outputPath = join(outputDir, pathname, 'thumbnail.png')
@@ -204,6 +215,8 @@ interface PageMeta {
   headline?: string
   title: string
   description?: string
+  color?: string
+  theme?: ThumbnailTheme
 }
 
 function resolvePageMeta(
@@ -220,7 +233,7 @@ function resolvePageMeta(
     }
   }
 
-  const pathname = url.replace(/\/thumbnail\.png$/, '').replace(/^\//, '')
+  const pathname = decodeURIComponent(url.replace(/\/thumbnail\.png$/, '').replace(/^\//, ''))
   return resolveFromIndex(pathname, index, config.appName)
 }
 
@@ -234,15 +247,17 @@ function resolveFromIndex(
   index: Map<string, ContentEntry>,
   appName: string,
 ): PageMeta {
+  const entryToMeta = (entry: ContentEntry): PageMeta => ({
+    headline: appName,
+    title: entry.thumbnailTitle ?? entry.title,
+    description: entry.thumbnailDescription ?? entry.description,
+    color: entry.color,
+    theme: entry.theme,
+  })
+
   // Direct match (works for blog where URL path = file path)
   const direct = index.get(pathname)
-  if (direct) {
-    return {
-      headline: appName,
-      title: direct.title,
-      description: direct.shortDescription ?? direct.description,
-    }
-  }
+  if (direct) return entryToMeta(direct)
 
   // Fuzzy match: find entry whose urlPath segments are a subset/reordering of the pathname segments
   // This handles docs where URL is en/my-lib/api/reference but file is my-lib/default/en/api/reference
@@ -258,13 +273,7 @@ function resolveFromIndex(
       const entryTail = entrySegments.slice(-2).join('/')
       const pathTail = pathSegments.slice(-2).join('/')
 
-      if (entryTail === pathTail) {
-        return {
-          headline: appName,
-          title: entry.title,
-          description: entry.shortDescription ?? entry.description,
-        }
-      }
+      if (entryTail === pathTail) return entryToMeta(entry)
     }
   }
 
@@ -272,13 +281,7 @@ function resolveFromIndex(
   const lastSegment = pathSegments[pathSegments.length - 1]
   for (const [, entry] of index) {
     const entryLast = entry.urlPath.split('/').pop()
-    if (entryLast === lastSegment) {
-      return {
-        headline: appName,
-        title: entry.title,
-        description: entry.shortDescription ?? entry.description,
-      }
-    }
+    if (entryLast === lastSegment) return entryToMeta(entry)
   }
 
   return {

@@ -6,12 +6,19 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    short_description: z.string().optional(),
     date: z.coerce.date(),
     tags: z.array(z.string()).default([]),
     cover: z.string().optional(),
     status: z.enum(['draft', 'published']).default('draft'),
     author: z.string().optional(),
+    thumbnail: z
+      .object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        color: z.string().optional(),
+        theme: z.enum(['default', 'gradient', 'minimal']).optional(),
+      })
+      .optional(),
   }),
 })
 

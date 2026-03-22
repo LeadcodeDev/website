@@ -1,0 +1,388 @@
+---
+title: Manage your users' actions efficiently thanks to a robust, scalable system
+description: In this article, we will explore different ways to manage user access and actions within a hypothetical platform designed to offer client/prospect management as well as quote/invoice tracking.
+thumbnail:
+  title: Make users actions as a robust scalable in your system
+  description: We will explore different ways to manage user access and actions within a hypothetical platform.
+  theme: default  # default | gradient | minimal
+date: 2026-03-13
+tags: [Security, Rust]
+status: published
+author: leadcode_dev
+---
+
+## Introduction
+
+When we talk about security in the context of an application, we immediately think of three aspects:
+
+- Vulnerabilities (XSS…)
+- Authentication
+- Roles/permissions
+
+In this article, we will explore different ways to manage user access and actions within a hypothetical platform designed to offer client/prospect management as well as quote/invoice tracking.
+
+Our application allows SMEs (small and medium enterprises) to record billing information of their prospects or clients to easily reuse it for future quotes and invoices.
+
+Considering that in an SME there may be several users needing access to the platform, we want these users to have different permissions. We can identify the following access levels:
+
+- Full admin: for the company owner
+- Semi-restricted access: for HRs
+
+Our business owner should have full access to all the services offered by the platform.
+
+Our HR accounts should have full access to customers as well as quotes and invoices.
+
+At this stage, we identify two business needs requiring different treatments and introducing the notion of access restrictions.
+
+## Different approaches
+
+The previously described constraints illustrate a level of complexity that can grow over time and according to the company’s future needs.
+
+To implement a robust and scalable permission management system, let’s first explore several ways to build a solid solution.
+Hardcode
+
+This method involves writing the authorization rules directly into the business logic.
+
+Let's imagine a simple structure to model our case.
+
+```rs [entities.rs]
+pub struct User {
+  pub firstname: String,
+  pub lastname: String,
+  pub is_admin: bool,
+  pub is_rh: bool
+}
+```
+
+```rs
+fn can_create_document(user: &User) -> bool {
+  user.is_admin || user.is_rh
+}
+```
+
+This approach may be suited for prototypes aimed at testing a feature’s feasibility but has many issues and should very rarely be used in production:
+
+- No flexibility (a change requires a redeployment)
+- Often duplicates rules
+- Hard to test or trace
+
+---
+
+## RBAC (Role-Based Access Control)
+
+In the RBAC model, users are assigned one or more roles (e.g., Admin, HR, Sales). Each role is associated with a predefined set of permissions.
+
+```rs [entities.rs]
+pub struct Role {
+  pub id: String,
+  pub name: String
+}
+
+pub struct User {
+  pub firstname: String,
+  pub lastname: String,
+  pub roles: Vec<Role>
+}
+```
+
+```rs
+fn can_create_document(user: &User) -> bool {
+  user.roles.iter().any(|role| {
+    role.name == "Admin" || role.name == "RH"
+  })
+}
+```
+
+In our case, note that the name property may change, so it is better to rely on the role's id.
+
+This practice is interesting because it allows storing a set of roles in a persistent storage system, which we can modify.
+
+Adding a new role requires code changes to account for it in our permission management. Also, be very careful not to delete a role if it's referenced by id, as this would break permissions irreversibly.
+
+However, this practice has the advantage of having a simple model to conceptualize and manage if roles are well-defined.
+
+### Drawbacks
+
+As mentioned, the essence of the RBAC model becomes inefficient in some cases:
+
+- As the business evolves, the number of roles and business rules increases
+- Temporary access for one person often requires creating a “temporary” role, which involves code changes
+
+--- 
+
+## ABAC (Attribute-Based Access Control)
+
+ABAC is a more granular approach, based on evaluating N dynamic attributes depending on your needs and business context. However, we generally see two attributes:
+
+- The resource
+- The action
+
+Let's consider a set of user actions for our platform:
+
+- create: allows creating a new document
+- update: allows editing a document
+- delete: allows deleting a document
+
+These actions apply to a given resource—here, document—and we scope our actions as `<resource>:<action>`.
+
+Here is a Rust example:
+
+:::codegroup
+```rs [entities.rs]
+pub enum Permission {
+  CreateDocument,
+  UpdateDocument,
+  DeleteDocument,
+}
+
+impl Permission {
+  pub fn serialize(permission: &str) -> Option<Self> {
+    match permission {
+      "document:create" => Some(Permission::CreateDocument),
+      "document:update" => Some(Permission::UpdateDocument),
+      "document:delete" => Some(Permission::DeleteDocument),
+      _ => None,
+    }
+  }
+}
+```
+
+```rs [usage]
+fn can_create_document(user: &User) -> bool {
+  user.permissions.iter().find_map(|element| {
+    if let Some(permission) = Permission::serialize(element) {
+      permission == Permission::CreateDocument
+    } else {
+      false
+    }
+  })
+}
+```
+:::
+
+With this action-based approach, we get much finer control over user actions, but it takes longer to implement due to the number of permissions we must declare and manage.
+
+We can simplify the above code like this:
+
+```rs
+pub enum Permission { ... }
+
+impl Permission {
+  pub fn serialize(permission: &str) -> Option<Permission> { ... }
+
+  pub fn has(permissions: &Vec<String>, target: Permission) -> bool {
+    permissions.iter().find_map(|element| {
+      match Permission::serialize(element) {
+        Some(permission) if permission == target => Some(true),
+        _ => None,
+      }
+    }).unwrap_or(false)
+  }
+}
+
+fn my_policy_handler(user: &User) -> bool {
+  Permission::has(&user.permissions, Permission::CreateDocument)
+}
+```
+
+This method requires associating users with a large number of permissions, which gives optimal control but requires more setup.
+
+> What about roles?
+
+We previously mentioned wanting two roles `Admin` and `RH` to delegate permissions to users.
+
+We can now consider a hybrid approach combining ABAC and RBAC to leverage their respective strengths: atomic control and ease of use.
+
+--- 
+
+## The hybrid approach
+
+In this section, we’ll use the following data structures:
+
+```rs [entities.rs]
+pub struct Role {
+  pub name: String,
+  pub permissions: Vec<String>
+}
+
+pub struct User {
+  pub username: String,
+  pub lastname: String,
+  pub roles: Vec<Role>
+}
+```
+
+This approach “packages” our atomic actions into roles so that assigning a role automatically grants a set of permissions.
+
+We can then create a function to check for a permission in the user’s roles:
+
+```rs
+pub enum Permission { ... }
+pub struct User { ... }
+
+impl User {
+  pub fn has_permission(&self, permission: Permission) -> bool {
+    self.roles.iter().any(|role| {
+      Permission::has(&role.permissions, permission).is_some()
+    });
+  }
+}
+
+fn my_policy_handler(user: &User) -> bool {
+  user.has_permission(Permission::CreateDocument)
+}
+```
+
+> Looks good, but I still can’t give a permission to one specific user without giving it to everyone with that role !
+
+True—and that’s not a mistake. It’s the next improvement 👀
+
+We’ll now allow exceptions by adding a permissions property to the User model:
+
+```rs
+pub struct User {
+  pub username: String,
+  pub lastname: String,
+  pub roles: Vec<Role>,
+  pub permissions: Vec<String> // [!code ++]
+}
+```
+
+Now let’s update `User::has_permission(...)` :
+
+```rs [entities.rs]
+pub enum Permission { ... }
+pub struct User { ... }
+
+impl User {
+  pub fn has_permission(&self, permission: Permission) -> bool {
+    if Permission::has(&self.permissions, permission).is_some() {
+      return true;
+    }
+
+    self.roles.iter().any(|role| {
+      Permission::has(&role.permissions, permission).is_some()
+    });
+  }
+}
+```
+
+The check order matters. We check the user’s individual permissions first to avoid unnecessary role checks if already granted.
+
+> Congrats, you’ve built a robust, scalable system to manage user actions properly!
+
+---
+
+## Hybrid improved by bitwise
+
+We’ve now explored several approaches, from the simplest to the most robust, capable of scaling with your company’s business evolution.
+
+Here’s an improvement I find particularly interesting for further simplification.
+
+We can define two notable aspects:
+
+- Static: permissions are known in advance and used directly in code
+- Dynamic: permissions are assigned at runtime through roles or directly on the user
+
+> If we use a database, do we really need to store our permissions if they’re static?
+
+Simple answer:
+- Yes to display the permissions in a UI
+- No for everything else
+
+Storing data has a cost (write, edit, read, serialize).
+
+In a DB context, the structure might be:
+> `User <-HasMany-> Role <-HasMany-> Permission`
+
+Permission checking requires:
+- Iterating over each user role: `O(R)`
+- For each role, iterating its permissions: `O(P)`
+
+Total complexity: 
+```math
+O(R×P)O(R×P)
+```
+
+Knowing this, we can share permissions statically in code instead of storing them in DB—removing a table and simplifying queries.
+
+The new system’s complexity becomes: 
+```math
+O(R)
+```
+
+> But where did the role permissions go ?
+
+Great question 👀 let me introduce: Bitwise
+
+---
+
+### Bitwise
+
+Before continuing, let’s define what bitwise means:
+
+> In computer programming, a bitwise operation operates on a bit string, a bit array or a binary numeral (considered as a bit string) at the level of its individual bits...
+
+### Reducing complexity with bitwise
+
+Let’s reintroduce permission persistence. Using bitwise encoding, we can store up to 32 permissions in a single 32-bit unsigned integer!
+
+    Exceeding 32 permissions? Use u64 (64 permissions). Beyond that, use PostgreSQL's BIT VARYING.
+
+Let’s now adapt our code.
+
+First, update the enum to support bitwise format:
+
+```rs
+pub enum Permission {
+  CreateDocument = 1 << 0, // 0001
+  UpdateDocument = 1 << 1, // 0010
+  DeleteDocument = 1 << 2, // 0100
+}
+
+impl Permission {
+  // Add a permission (set the bit)
+  pub fn add(value: &mut u64, permission: Permission) {
+    *value |= permission as u64;
+  }
+
+  // Remove a permission (clear the bit)
+  pub fn remove(value: &mut u64, permission: Permission) {
+    *value &= !(permission as u64);
+  }
+
+  // Check if a user has a specific permission
+  pub fn has(value: u64, permission: Permission) -> bool {
+    (value & (permission as u64)) != 0
+  }
+}
+```
+
+Now update `User` and `Role` entities:
+```rs
+pub struct Role { 
+  ...
+  pub permissions: Vec<String>, // [!code --]
+  pub permissions: u64  // [!code ++]
+}
+
+pub struct User { 
+  ...
+  pub permissions: Vec<String>, // [!code --]
+  pub permissions: u64  // [!code ++]
+}
+```
+
+> Congratulations, you’ve implemented bitwise permission management! 🚀
+
+But every decision has trade-offs. With bitwise:
+- You’re limited by your integer type size (`u32`, `u64`, …)
+- You **must never change the enum order**, or you risk assigning incorrect permissions
+
+---
+
+## Conclusion
+
+There are a multitude of ways of effectively managing your users' actions, but don't forget that each of them has its own constraints and limitations.
+
+The approaches discussed in this article relate to some of the best-known methods, such as the RBAC and ABAC models, but there are others that you can use and which in some cases may be more appropriate to your project.
