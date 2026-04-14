@@ -1,3 +1,22 @@
 @import '@explainer/ui/styles/globals.css';
 
 @source "../../../../packages/ui/src";
+
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(calc(var(--angle) * 1deg)) translateX(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg));
+  }
+  100% {
+    transform: rotate(calc(360deg + var(--angle) * 1deg)) translateX(calc(var(--radius) * 1px)) rotate(calc(-360deg + var(--angle) * -1deg));
+  }
+}
+
+.animate-orbit {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  animation: orbit calc(var(--duration) * 1s) linear infinite;
+}

@@ -1,0 +1,220 @@
+---
+import { Icon } from "@iconify/react";
+
+const projects = [
+  {
+    titleKey: "projects.ferriskey.title",
+    descKey: "projects.ferriskey.description",
+    title: "FerrisKey",
+    logoUrl: "https://ferriskey.rs/logo.svg",
+    description: "A fast and secure API key management service built with Rust and Axum. Role-based access control and usage analytics.",
+    techIcons: [
+      { icon: "devicon:rust", label: "Rust" },
+      { icon: "material-icon-theme:react", label: "React" },
+      { icon: "devicon:tailwindcss", label: "Tailwind" },
+      { icon: "material-icon-theme:kubernetes", label: "Kubernetes" },
+    ],
+    color: "oklch(70.5% .213 47.604)",
+    href: "https://github.com/ferriskey",
+    span: 4,
+  },
+  {
+    titleKey: "projects.rustmotion.title",
+    descKey: "projects.rustmotion.description",
+    title: "Rustmotion",
+    logoIcon: "mdi:motion-play-outline",
+    description: "A CLI tool that renders motion design videos from JSON scenarios. No browser, no Node.js — just a single Rust binary.",
+    techIcons: [
+      { icon: "devicon:rust", label: "Rust" },
+    ],
+    color: "oklch(65% .15 30)",
+    href: "https://github.com/LeadcodeDev/rustmotion",
+    span: 2,
+  },
+  {
+    titleKey: "projects.seameet.title",
+    descKey: "projects.seameet.description",
+    title: "Seameet",
+    logoIcon: "mdi:video-outline",
+    description: "A Rust-powered core engine for building video communication systems like Meet or Discord.",
+    techIcons: [
+      { icon: "devicon:rust", label: "Rust" },
+    ],
+    color: "oklch(65% .17 160)",
+    href: "https://github.com/LeadcodeDev",
+    span: 2,
+  },
+  {
+    titleKey: "projects.mineral.title",
+    descKey: "projects.mineral.description",
+    title: "Mineral",
+    logoUrl: "https://mineral-dart.dev/logo.svg",
+    description: "A powerful and elegant framework for building Discord bots with Dart. Modular architecture and intuitive API.",
+    techIcons: [
+      { icon: "devicon:dart", label: "Dart" },
+    ],
+    color: "oklch(60% .18 250)",
+    href: "https://github.com/music-music/music",
+    span: 4,
+  },
+];
+---
+
+<div id="projects" class="relative w-full py-16 sm:py-24 lg:py-32">
+  <!-- Decorative circles -->
+  <div
+    class="absolute inset-0 -z-10 pointer-events-none"
+    style="clip-path: inset(0 -100vw -100vh -100vw);"
+    aria-hidden="true"
+  >
+    <div
+      class="absolute top-[22%] left-[12%] w-80 h-80 rounded-full border-2 border-primary/10"
+    >
+      <div
+        class="absolute inset-0 m-auto w-56 h-56 rounded-full border border-primary/[0.07]"
+      >
+      </div>
+    </div>
+
+    <div
+      class="absolute -bottom-16 -right-24 w-80 h-80 rounded-full border-2 border-primary/9"
+    >
+    </div>
+
+    <div class="absolute top-8 right-1/3 size-2.5 rounded-full bg-primary/10">
+    </div>
+    <div
+      class="absolute bottom-1/4 left-[20%] size-2 rounded-full bg-primary/8"
+    >
+    </div>
+    <div
+      class="absolute top-[60%] right-[8%] size-1.5 rounded-full bg-primary/9"
+    >
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="relative w-full max-w-6xl mx-auto px-5">
+    <div class="text-center mb-16">
+      <p
+        class="text-sm font-semibold text-primary uppercase tracking-wide mb-3"
+        data-t="projects.label"
+      >
+        Projects
+      </p>
+      <h2 class="text-3xl font-semibold text-foreground sm:text-4xl" data-t="projects.title">
+        Featured Projects
+      </h2>
+      <p
+        class="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto text-balance"
+        data-t="projects.description"
+      >
+        Open-source tools and applications I have built.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-6 gap-5">
+      {
+        projects.map((project) => (
+          <div
+            class:list={[
+              "project-card group relative overflow-hidden border rounded-2xl bg-background transition-colors duration-300",
+              project.span === 4 ? "sm:col-span-4" : "sm:col-span-2",
+            ]}
+            style={`--project-color: ${project.color};`}
+          >
+            <a
+              href={project.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="relative bg-card p-8 flex flex-col gap-6 h-full rounded-2xl transition-all duration-300 hover:shadow-lg"
+            >
+              <!-- Background logo -->
+              <div class="absolute -bottom-8 -right-8 pointer-events-none opacity-[0.04] transition-opacity duration-500 group-hover:opacity-[0.08]" aria-hidden="true">
+                {project.logoUrl ? (
+                  <img src={project.logoUrl} alt="" class="size-72 object-contain" />
+                ) : (
+                  <Icon
+                    icon={project.logoIcon}
+                    className="size-72 text-muted-foreground"
+                    client:load
+                  />
+                )}
+              </div>
+
+              <!-- Header: logo + title + arrow -->
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex items-center gap-3">
+                  <div class="project-logo flex items-center justify-center size-11 rounded-lg bg-muted/80 transition-all duration-300 overflow-hidden">
+                    {project.logoUrl ? (
+                      <img src={project.logoUrl} alt={project.title} class="size-8 object-contain" />
+                    ) : (
+                      <Icon icon={project.logoIcon} className="size-6 text-muted-foreground transition-colors duration-300" client:load />
+                    )}
+                  </div>
+                  <h3 class="project-title text-xl font-semibold text-foreground transition-colors duration-300" data-t={project.titleKey}>
+                    {project.title}
+                  </h3>
+                </div>
+                <div class="project-arrow flex items-center justify-center size-9 rounded-lg border border-border bg-muted/50 shrink-0 transition-all duration-300">
+                  <Icon icon="mdi:arrow-top-right" className="size-4 text-muted-foreground transition-colors duration-300" client:load />
+                </div>
+              </div>
+
+              <!-- Description -->
+              <p class="text-sm text-muted-foreground leading-relaxed flex-1" data-t={project.descKey}>
+                {project.description}
+              </p>
+
+              <!-- Tech icons as mini square cards -->
+              <div class="flex items-center gap-2">
+                {project.techIcons.map((tech) => (
+                  <div
+                    class="tech-badge flex items-center justify-center size-12 rounded-xl border border-border bg-muted/50 transition-all duration-300"
+                    title={tech.label}
+                  >
+                    <Icon
+                      icon={tech.icon}
+                      className="size-7 grayscale opacity-40 transition-all duration-300"
+                      client:load
+                    />
+                  </div>
+                ))}
+              </div>
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .project-card:hover {
+    border-color: color-mix(in oklch, var(--project-color) 30%, transparent);
+  }
+  .project-card:hover .project-logo {
+    background: color-mix(in oklch, var(--project-color) 15%, transparent);
+  }
+  .project-card:hover .project-logo :global(svg) {
+    color: var(--project-color);
+  }
+  .project-card:hover .project-title {
+    color: var(--project-color);
+  }
+  .project-card:hover .project-arrow {
+    border-color: var(--project-color);
+    background: color-mix(in oklch, var(--project-color) 10%, transparent);
+  }
+  .project-card:hover .project-arrow :global(svg) {
+    color: var(--project-color);
+  }
+  .project-card:hover .tech-badge {
+    border-color: color-mix(in oklch, var(--project-color) 20%, transparent);
+    background: color-mix(in oklch, var(--project-color) 5%, transparent);
+  }
+  .project-card:hover .tech-badge :global(svg) {
+    filter: grayscale(0);
+    opacity: 1;
+  }
+</style>

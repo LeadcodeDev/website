@@ -1,0 +1,38 @@
+---
+import SkillsOrbit from "./skills-orbit";
+---
+
+<div class="relative w-full py-16 sm:py-24 lg:py-32 overflow-hidden">
+  <div
+    class="absolute inset-0 -z-10 pointer-events-none overflow-hidden"
+    aria-hidden="true"
+  >
+    <div class="absolute -top-16 -right-24 w-72 h-72 rounded-full border-2 border-primary/8">
+      <div class="absolute inset-0 m-auto w-52 h-52 rounded-full border border-primary/6"></div>
+    </div>
+    <div class="absolute bottom-16 left-[18%] size-2.5 rounded-full bg-primary/10"></div>
+    <div class="absolute top-20 right-[22%] size-2 rounded-full bg-primary/8"></div>
+  </div>
+
+  <div class="relative w-full max-w-6xl mx-auto px-5">
+    <div class="text-center mb-8">
+      <p
+        class="text-sm font-semibold text-primary uppercase tracking-wide mb-3"
+        data-t="skills.label"
+      >
+        Skills
+      </p>
+      <h2 class="text-3xl font-semibold text-foreground sm:text-4xl" data-t="skills.title">
+        Tech Stack
+      </h2>
+      <p
+        class="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto text-balance"
+        data-t="skills.description"
+      >
+        Technologies I work with daily.
+      </p>
+    </div>
+
+    <SkillsOrbit client:load />
+  </div>
+</div>

@@ -8,7 +8,7 @@ export const i18n: Record<string, I18nMessages> = {
     'footer.columns.resources': 'Resources',
     'footer.columns.community': 'Community',
     'footer.copyright': '© {year} Explainer. All rights reserved.',
-    'footer.builtWith': 'Built with {icon} using Astro',
+    'footer.builtWith': 'Built with {icon} using Explainer',
     'footer.links.gettingStarted': 'Getting Started',
     'footer.links.mdxComponents': 'MDX Components',
     'footer.links.customization': 'Customization',

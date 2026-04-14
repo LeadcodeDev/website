@@ -4,84 +4,64 @@ export const ui = {
   en: {
     // Page
     'page.title': 'Baptiste Parmantier',
-    'page.description': 'Documentation boilerplate for developers.',
+    'page.description': 'Software Engineer with 10+ years of experience. Building open-source tools and crafting modern web applications.',
     'footer.text': 'Built with Explainer v2',
 
     // Navbar
-    'nav.features': 'Features',
-    'nav.getStarted': 'Get Started',
+    'nav.projects': 'Projects',
+    'nav.articles': 'Articles',
+    'nav.contact': 'Contact',
 
     // Hero
-    'hero.badge': 'Explainer',
-    'hero.title': 'Explain your ideas',
-    'hero.description':
-      'Quickly design your documentation and optimise it for search engine optimisation to showcase your products.',
-    'hero.primaryAction': 'Getting Started',
-    'hero.secondaryAction': 'View on GitHub',
-    'hero.openSource': 'Open source',
-    'hero.license': 'MIT License',
-    'hero.downloads': '1k+ downloads',
+    'hero.badge': 'Software Engineer',
+    'hero.title': 'Baptiste Parmantier',
+    'hero.description': 'Software Engineer passionate about building developer tools, open-source projects, and modern web applications.',
+    'hero.primaryAction': 'View Projects',
+    'hero.secondaryAction': 'GitHub Profile',
+    'hero.location': 'Vendée, France',
+    'hero.experience': '10+ years experience',
+    'hero.openSource': 'Open source contributor',
 
-    // Features
-    'features.label': 'Features',
-    'features.title': 'Everything you need, out of the box',
-    'features.description':
-      'Explainer gives you the tools to focus on your content, not your tooling.',
-    'features.markdown.title': 'Markdown & MDX',
-    'features.markdown.description':
-      'Write content in Markdown or MDX with custom components, directives, and JSX support.',
-    'features.fast.title': 'Lightning fast',
-    'features.fast.description':
-      'Static site generation for instant page loads. Zero JavaScript shipped by default.',
-    'features.code.title': 'Rich code blocks',
-    'features.code.description':
-      'Dual-theme syntax highlighting, line diffs, focus mode, and 60+ language icons.',
-    'features.search.title': 'Built-in search',
-    'features.search.description':
-      'Command palette search so your readers find any page instantly.',
-    'features.seo.title': 'SEO ready',
-    'features.seo.description': 'Auto-generated OG thumbnails, sitemap, robots.txt, and RSS feed.',
-    'features.darkMode.title': 'Dark mode',
-    'features.darkMode.description':
-      'Full light and dark theme support with system preference detection.',
+    // About
+    'about.label': 'About',
+    'about.title': 'Who I am',
+    'about.description': 'A passionate engineer who loves building things.',
+    'about.bio1': "I'm a Software Engineer with over 10 years of experience building web applications and developer tools. I'm passionate about clean code, great developer experience, and open-source software.",
+    'about.bio2': 'I work across the full stack, from crafting intuitive user interfaces with React and Vue to designing robust backend systems with AdonisJS and Axum. I love exploring new technologies and sharing what I learn.',
+    'about.bio3': 'When I\'m not coding, I contribute to the open-source community and write articles to help other developers grow.',
+    'about.stat1.value': '10+',
+    'about.stat1.label': 'Years of experience',
+    'about.stat2.value': '50+',
+    'about.stat2.label': 'Projects shipped',
+    'about.stat3.value': '30+',
+    'about.stat3.label': 'Open-source repos',
+    'about.stat4.value': '10+',
+    'about.stat4.label': 'Articles written',
 
-    // Highlights
-    'highlights.label': 'Highlights',
-    'highlights.title': 'Why Explainer?',
-    'highlights.description': "Built for developers who care about their users' experience.",
-    'highlights.ship.title': 'Ship docs in minutes, not days',
-    'highlights.ship.description':
-      'Clone the repo, write your Markdown, deploy. No complex setup, no build pipeline to configure. Your documentation is live before your coffee gets cold.',
-    'highlights.brand.title': 'Your brand, your way',
-    'highlights.brand.description':
-      'Tailwind CSS design tokens let you match your documentation to your product identity with a few CSS variable changes.',
-    'highlights.extensible.title': 'Extensible by design',
-    'highlights.extensible.description':
-      'Drop in React, Vue, or Svelte components directly in your Markdown. Build interactive examples, live demos, and API playgrounds.',
-    'highlights.growth.title': 'Built for growth',
-    'highlights.growth.description':
-      'From a single getting-started guide to hundreds of pages — the architecture scales with your project. Multi-collection docs, versioning-ready structure, and automatic navigation.',
+    // Projects
+    'projects.label': 'Projects',
+    'projects.title': 'Featured Projects',
+    'projects.description': 'Open-source tools and applications I have built.',
+    'projects.viewAll': 'View all on GitHub',
+    'projects.ferriskey.title': 'FerrisKey',
+    'projects.ferriskey.description': 'A fast and secure API key management service built with Rust and Axum. Role-based access control and usage analytics.',
+    'projects.mineral.title': 'Mineral',
+    'projects.mineral.description': 'A powerful and elegant framework for building Discord bots with Dart. Modular architecture and intuitive API.',
+    'projects.rustmotion.title': 'Rustmotion',
+    'projects.rustmotion.description': 'A CLI tool that renders motion design videos from JSON scenarios. No browser, no Node.js — just a single Rust binary.',
+    'projects.seameet.title': 'Seameet',
+    'projects.seameet.description': 'A Rust-powered core engine for building video communication systems like Meet or Discord.',
+    'projects.more.title': 'And many more...',
+    'projects.more.description': 'Discover all my open-source projects on GitHub.',
 
-    // Testimonials
-    'testimonials.label': 'Testimonials',
-    'testimonials.title': 'Loved by developers',
-    'testimonials.description': 'See what developers are saying about their experience.',
-    'testimonials.1.body':
-      "The best documentation framework I've used. Setup took 5 minutes and the output looks incredible.",
-    'testimonials.2.body':
-      "Finally, a docs tool that doesn't fight you. Markdown in, beautiful site out. Exactly what we needed.",
-    'testimonials.3.body':
-      'The built-in search and SEO features saved us weeks of work. Our docs rank on page one now.',
-    'testimonials.4.body':
-      'Dark mode, code highlighting, view transitions — it has everything out of the box. No plugins needed.',
-    'testimonials.5.body':
-      'We migrated from Docusaurus in a weekend. The MDX component system is so much more flexible.',
-    'testimonials.6.body':
-      'The developer experience is top notch. Hot reload is instant and the API reference integration is perfect.',
-    'testimonials.7.body':
-      'Our team loves writing docs now. The components make it easy to create rich, interactive content.',
-    'testimonials.8.body':
-      'Seriously impressed by the OG thumbnail generation. Every page gets a beautiful social card automatically.',
+    // Skills
+    'skills.label': 'Skills',
+    'skills.title': 'Tech Stack',
+    'skills.description': 'Technologies I work with daily.',
+    'skills.languages.title': 'Languages',
+    'skills.backend.title': 'Backend',
+    'skills.frontend.title': 'Frontend',
+    'skills.tools.title': 'Tools',
 
     // Articles
     'articles.label': 'Blog',
@@ -89,94 +69,73 @@ export const ui = {
     'articles.description': 'Stay up to date with the latest news and updates.',
     'articles.viewAll': 'View all articles',
 
-    // CTA
-    'cta.title': 'Ready to get started?',
-    'cta.description':
-      'Start building your documentation in minutes. Free, open source, and yours to customize.',
-    'cta.action': 'Read the docs',
+    // Contact
+    'contact.title': "Let's work together",
+    'contact.description': 'Have a project in mind or just want to chat? Feel free to reach out.',
+    'contact.email': 'Send an email',
+    'contact.linkedin': 'LinkedIn',
   },
   fr: {
     // Page
     'page.title': 'Baptiste Parmantier',
-    'page.description': 'Boilerplate de documentation pour les développeurs.',
+    'page.description': 'Ingénieur logiciel avec plus de 10 ans d\'expérience. Création d\'outils open-source et d\'applications web modernes.',
     'footer.text': 'Construit avec Explainer v2',
 
     // Navbar
-    'nav.features': 'Fonctionnalités',
-    'nav.getStarted': 'Commencer',
+    'nav.projects': 'Projets',
+    'nav.articles': 'Articles',
+    'nav.contact': 'Contact',
 
     // Hero
-    'hero.badge': 'Explainer',
-    'hero.title': 'Expliquez vos idées',
-    'hero.description':
-      'Concevez rapidement votre documentation et optimisez-la pour le référencement afin de mettre en valeur vos produits.',
-    'hero.primaryAction': 'Commencer',
-    'hero.secondaryAction': 'Voir sur GitHub',
-    'hero.openSource': 'Open source',
-    'hero.license': 'Licence MIT',
-    'hero.downloads': '1k+ téléchargements',
+    'hero.badge': 'Software Engineer',
+    'hero.title': 'Baptiste Parmantier',
+    'hero.description': 'Ingénieur logiciel passionné par la création d\'outils pour développeurs, de projets open-source et d\'applications web modernes.',
+    'hero.primaryAction': 'Voir les projets',
+    'hero.secondaryAction': 'Profil GitHub',
+    'hero.location': 'Vendée, France',
+    'hero.experience': '10+ ans d\'expérience',
+    'hero.openSource': 'Contributeur open source',
 
-    // Features
-    'features.label': 'Fonctionnalités',
-    'features.title': "Tout ce dont vous avez besoin, prêt à l'emploi",
-    'features.description':
-      'Explainer vous donne les outils pour vous concentrer sur votre contenu, pas sur vos outils.',
-    'features.markdown.title': 'Markdown & MDX',
-    'features.markdown.description':
-      'Rédigez du contenu en Markdown ou MDX avec des composants personnalisés, des directives et le support JSX.',
-    'features.fast.title': 'Ultra rapide',
-    'features.fast.description':
-      'Génération de site statique pour des chargements instantanés. Zéro JavaScript envoyé par défaut.',
-    'features.code.title': 'Blocs de code riches',
-    'features.code.description':
-      'Coloration syntaxique double thème, diffs de lignes, mode focus et plus de 60 icônes de langages.',
-    'features.search.title': 'Recherche intégrée',
-    'features.search.description':
-      "Recherche par palette de commandes pour que vos lecteurs trouvent n'importe quelle page instantanément.",
-    'features.seo.title': 'Prêt pour le SEO',
-    'features.seo.description': 'Miniatures OG auto-générées, sitemap, robots.txt et flux RSS.',
-    'features.darkMode.title': 'Mode sombre',
-    'features.darkMode.description':
-      'Support complet des thèmes clair et sombre avec détection des préférences système.',
+    // About
+    'about.label': 'À propos',
+    'about.title': 'Qui suis-je',
+    'about.description': 'Un ingénieur passionné qui aime construire.',
+    'about.bio1': 'Je suis ingénieur logiciel avec plus de 10 ans d\'expérience dans la création d\'applications web et d\'outils pour développeurs. Je suis passionné par le code propre, l\'expérience développeur et le logiciel open-source.',
+    'about.bio2': 'Je travaille sur l\'ensemble de la stack, de la création d\'interfaces utilisateur intuitives avec React et Vue à la conception de systèmes backend robustes avec AdonisJS et Axum. J\'aime explorer de nouvelles technologies et partager ce que j\'apprends.',
+    'about.bio3': 'Quand je ne code pas, je contribue à la communauté open-source et j\'écris des articles pour aider d\'autres développeurs à progresser.',
+    'about.stat1.value': '10+',
+    'about.stat1.label': 'Années d\'expérience',
+    'about.stat2.value': '50+',
+    'about.stat2.label': 'Projets livrés',
+    'about.stat3.value': '30+',
+    'about.stat3.label': 'Repos open-source',
+    'about.stat4.value': '10+',
+    'about.stat4.label': 'Articles écrits',
 
-    // Highlights
-    'highlights.label': 'Points forts',
-    'highlights.title': 'Pourquoi Explainer ?',
-    'highlights.description':
-      "Conçu pour les développeurs qui se soucient de l'expérience de leurs utilisateurs.",
-    'highlights.ship.title': 'Publiez en minutes, pas en jours',
-    'highlights.ship.description':
-      'Clonez le repo, écrivez votre Markdown, déployez. Pas de configuration complexe, pas de pipeline de build à configurer. Votre documentation est en ligne avant que votre café ne refroidisse.',
-    'highlights.brand.title': 'Votre marque, à votre façon',
-    'highlights.brand.description':
-      "Les design tokens Tailwind CSS vous permettent d'adapter votre documentation à l'identité de votre produit en quelques changements de variables CSS.",
-    'highlights.extensible.title': 'Extensible par conception',
-    'highlights.extensible.description':
-      'Intégrez des composants React, Vue ou Svelte directement dans votre Markdown. Créez des exemples interactifs, des démos live et des playgrounds API.',
-    'highlights.growth.title': 'Conçu pour grandir',
-    'highlights.growth.description':
-      "D'un simple guide de démarrage à des centaines de pages — l'architecture évolue avec votre projet. Documentation multi-collection, structure prête pour le versioning et navigation automatique.",
+    // Projects
+    'projects.label': 'Projets',
+    'projects.title': 'Projets phares',
+    'projects.description': 'Outils et applications open-source que j\'ai construits.',
+    'projects.viewAll': 'Voir tout sur GitHub',
+    'projects.ferriskey.title': 'FerrisKey',
+    'projects.ferriskey.description': 'Un service de gestion de clés API rapide et sécurisé construit avec Rust et Axum. Contrôle d\'accès basé sur les rôles et analytiques d\'utilisation.',
+    'projects.mineral.title': 'Mineral',
+    'projects.mineral.description': 'Un framework puissant et élégant pour créer des bots Discord avec Dart. Architecture modulaire et API intuitive.',
+    'projects.rustmotion.title': 'Rustmotion',
+    'projects.rustmotion.description': 'Un outil CLI qui génère des vidéos de motion design à partir de scénarios JSON. Pas de navigateur, pas de Node.js — juste un binaire Rust.',
+    'projects.seameet.title': 'Seameet',
+    'projects.seameet.description': 'Un moteur Rust pour construire des systèmes de visioconférence comme Meet ou Discord.',
+    'projects.more.title': 'Et bien d\'autres...',
+    'projects.more.description': 'Découvrez tous mes projets open-source sur GitHub.',
 
-    // Testimonials
-    'testimonials.label': 'Témoignages',
-    'testimonials.title': 'Apprécié par les développeurs',
-    'testimonials.description': 'Découvrez ce que les développeurs disent de leur expérience.',
-    'testimonials.1.body':
-      "Le meilleur framework de documentation que j'ai utilisé. L'installation a pris 5 minutes et le rendu est incroyable.",
-    'testimonials.2.body':
-      "Enfin, un outil de docs qui ne vous combat pas. Du Markdown en entrée, un beau site en sortie. Exactement ce qu'il nous fallait.",
-    'testimonials.3.body':
-      'La recherche intégrée et les fonctionnalités SEO nous ont fait gagner des semaines de travail. Nos docs sont en première page maintenant.',
-    'testimonials.4.body':
-      'Mode sombre, coloration de code, transitions de vue — tout est inclus. Pas besoin de plugins.',
-    'testimonials.5.body':
-      'Nous avons migré depuis Docusaurus en un week-end. Le système de composants MDX est bien plus flexible.',
-    'testimonials.6.body':
-      "L'expérience développeur est au top. Le hot reload est instantané et l'intégration de référence API est parfaite.",
-    'testimonials.7.body':
-      'Notre équipe adore écrire de la documentation maintenant. Les composants rendent facile la création de contenu riche et interactif.',
-    'testimonials.8.body':
-      'Vraiment impressionné par la génération de miniatures OG. Chaque page obtient automatiquement une belle carte sociale.',
+    // Skills
+    'skills.label': 'Compétences',
+    'skills.title': 'Stack technique',
+    'skills.description': 'Les technologies avec lesquelles je travaille au quotidien.',
+    'skills.languages.title': 'Langages',
+    'skills.backend.title': 'Backend',
+    'skills.frontend.title': 'Frontend',
+    'skills.tools.title': 'Outils',
 
     // Articles
     'articles.label': 'Blog',
@@ -184,11 +143,11 @@ export const ui = {
     'articles.description': 'Restez informé des dernières actualités et mises à jour.',
     'articles.viewAll': 'Voir tous les articles',
 
-    // CTA
-    'cta.title': 'Prêt à commencer ?',
-    'cta.description':
-      'Commencez à construire votre documentation en quelques minutes. Gratuit, open source et personnalisable.',
-    'cta.action': 'Lire la documentation',
+    // Contact
+    'contact.title': 'Travaillons ensemble',
+    'contact.description': 'Vous avez un projet en tête ou simplement envie de discuter ? N\'hésitez pas à me contacter.',
+    'contact.email': 'Envoyer un email',
+    'contact.linkedin': 'LinkedIn',
   },
 } as const
 

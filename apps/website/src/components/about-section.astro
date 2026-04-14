@@ -1,0 +1,97 @@
+---
+import { Icon } from "@iconify/react";
+
+const stats = [
+  { icon: "mdi:briefcase-outline", valueKey: "about.stat1.value", labelKey: "about.stat1.label", value: "10+", label: "Years of experience" },
+  { icon: "mdi:rocket-launch-outline", valueKey: "about.stat2.value", labelKey: "about.stat2.label", value: "50+", label: "Projects shipped" },
+  { icon: "mdi:source-branch", valueKey: "about.stat3.value", labelKey: "about.stat3.label", value: "30+", label: "Open-source repos" },
+  { icon: "mdi:pencil-outline", valueKey: "about.stat4.value", labelKey: "about.stat4.label", value: "10+", label: "Articles written" },
+];
+---
+
+<div class="relative w-full py-16 sm:py-24 lg:py-32">
+  <!-- Decorative circles -->
+  <div
+    class="absolute inset-0 -z-10 pointer-events-none overflow-hidden"
+    aria-hidden="true"
+  >
+    <div
+      class="absolute top-1/2 -left-24 w-72 h-72 rounded-full border-2 border-primary/8 -translate-y-1/2"
+    >
+      <div
+        class="absolute inset-0 m-auto w-52 h-52 rounded-full border border-primary/6"
+      >
+      </div>
+    </div>
+
+    <div class="absolute top-16 left-[22%] size-2.5 rounded-full bg-primary/10">
+    </div>
+    <div
+      class="absolute bottom-20 right-[18%] size-2 rounded-full bg-primary/8"
+    >
+    </div>
+    <div
+      class="absolute top-1/3 right-[10%] size-1.5 rounded-full bg-primary/9"
+    >
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="relative w-full max-w-6xl mx-auto px-5">
+    <div class="text-center mb-16">
+      <p
+        class="text-sm font-semibold text-primary uppercase tracking-wide mb-3"
+        data-t="about.label"
+      >
+        About
+      </p>
+      <h2 class="text-3xl font-semibold text-foreground sm:text-4xl" data-t="about.title">
+        Who I am
+      </h2>
+      <p
+        class="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto text-balance"
+        data-t="about.description"
+      >
+        A passionate engineer who loves building things.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <!-- Bio -->
+      <div class="space-y-4">
+        <p class="text-muted-foreground leading-relaxed" data-t="about.bio1">
+          I'm a Software Engineer with over 10 years of experience building web applications and developer tools. I'm passionate about clean code, great developer experience, and open-source software.
+        </p>
+        <p class="text-muted-foreground leading-relaxed" data-t="about.bio2">
+          I work across the full stack, from crafting intuitive user interfaces with React and Vue to designing robust backend systems with AdonisJS and Axum. I love exploring new technologies and sharing what I learn.
+        </p>
+        <p class="text-muted-foreground leading-relaxed" data-t="about.bio3">
+          When I'm not coding, I contribute to the open-source community and write articles to help other developers grow.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-2 gap-5">
+        {
+          stats.map((stat) => (
+            <div class="border rounded-xl p-6 bg-muted/50 dark:bg-card">
+              <div class="flex items-center justify-center size-11 rounded-lg bg-primary/10 mb-4">
+                <Icon
+                  icon={stat.icon}
+                  className="size-5 text-primary"
+                  client:load
+                />
+              </div>
+              <p class="text-3xl font-semibold text-foreground" data-t={stat.valueKey}>
+                {stat.value}
+              </p>
+              <p class="text-sm text-muted-foreground mt-1" data-t={stat.labelKey}>
+                {stat.label}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>

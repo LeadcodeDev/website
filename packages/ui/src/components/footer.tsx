@@ -107,7 +107,7 @@ export function Footer({ config = defaultConfig, locale: localeProp, appUrlOverr
       <div className="border-t mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-muted-foreground">
         <p>{copyrightText}</p>
         <p className="flex items-center gap-1">
-          {builtWithParts[0]}<Icon icon="lucide:heart" className="size-3 text-red-500 fill-red-500" />{builtWithParts[1]}
+          {builtWithParts[0]} ❤️ {builtWithParts[1]}
         </p>
       </div>
     </footer>
