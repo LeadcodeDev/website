@@ -1,28 +1,70 @@
 ---
-import SkillsOrbit from "./skills-orbit";
+import { Icon } from "@iconify/react";
+
+const categories = [
+  {
+    titleKey: "skills.languages.title",
+    title: "Languages",
+    icon: "lucide:code-2",
+    items: [
+      { icon: "devicon:typescript", name: "TypeScript" },
+      { icon: "devicon:rust", name: "Rust" },
+      { icon: "devicon:dart", name: "Dart" },
+      { icon: "devicon:javascript", name: "JavaScript" },
+    ],
+  },
+  {
+    titleKey: "skills.frontend.title",
+    title: "Frontend",
+    icon: "lucide:layout",
+    items: [
+      { icon: "devicon:react", name: "React" },
+      { icon: "devicon:vuejs", name: "Vue.js" },
+      { icon: "devicon:tailwindcss", name: "Tailwind" },
+      { icon: "devicon:vitejs", name: "Vite" },
+    ],
+  },
+  {
+    titleKey: "skills.backend.title",
+    title: "Backend",
+    icon: "lucide:server",
+    items: [
+      { icon: "devicon:nodejs", name: "Node.js" },
+      { icon: "devicon:adonisjs", name: "AdonisJS" },
+      { icon: "simple-icons:axum", name: "Axum" },
+      { icon: "devicon:postgresql", name: "PostgreSQL" },
+      { icon: "devicon:redis", name: "Redis" },
+    ],
+  },
+  {
+    titleKey: "skills.tools.title",
+    title: "Tools & DevOps",
+    icon: "lucide:wrench",
+    items: [
+      { icon: "devicon:docker", name: "Docker" },
+      { icon: "devicon:kubernetes", name: "Kubernetes" },
+      { icon: "devicon:git", name: "Git" },
+      { icon: "devicon:github", name: "GitHub" },
+      { icon: "devicon:linux", name: "Linux" },
+    ],
+  },
+];
 ---
 
-<div class="relative w-full py-16 sm:py-24 lg:py-32 overflow-hidden">
-  <div
-    class="absolute inset-0 -z-10 pointer-events-none overflow-hidden"
-    aria-hidden="true"
-  >
-    <div class="absolute -top-16 -right-24 w-72 h-72 rounded-full border-2 border-primary/8">
-      <div class="absolute inset-0 m-auto w-52 h-52 rounded-full border border-primary/6"></div>
-    </div>
-    <div class="absolute bottom-16 left-[18%] size-2.5 rounded-full bg-primary/10"></div>
-    <div class="absolute top-20 right-[22%] size-2 rounded-full bg-primary/8"></div>
-  </div>
+<section class="relative py-24 sm:py-32">
+  <!-- Subtle dot grid -->
+  <div class="absolute inset-0 dot-grid-bg opacity-50 -z-10" aria-hidden="true"></div>
 
-  <div class="relative w-full max-w-6xl mx-auto px-5">
-    <div class="text-center mb-8">
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Section header -->
+    <div class="text-center mb-16" data-reveal="fade-up">
       <p
-        class="text-sm font-semibold text-primary uppercase tracking-wide mb-3"
+        class="text-sm font-semibold text-primary uppercase tracking-widest mb-3"
         data-t="skills.label"
       >
         Skills
       </p>
-      <h2 class="text-3xl font-semibold text-foreground sm:text-4xl" data-t="skills.title">
+      <h2 class="text-3xl font-bold text-foreground sm:text-4xl" data-t="skills.title">
         Tech Stack
       </h2>
       <p
@@ -33,6 +75,41 @@ import SkillsOrbit from "./skills-orbit";
       </p>
     </div>
 
-    <SkillsOrbit client:load />
+    <!-- Categories grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {categories.map((category, ci) => (
+        <div
+          class="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300"
+          data-reveal="fade-up"
+          data-reveal-delay={String(ci * 100)}
+        >
+          <!-- Category header -->
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex items-center justify-center size-9 rounded-lg bg-primary/10">
+              <Icon icon={category.icon} className="size-4 text-primary" client:load />
+            </div>
+            <h3 class="text-sm font-semibold text-foreground uppercase tracking-wider" data-t={category.titleKey}>
+              {category.title}
+            </h3>
+          </div>
+
+          <!-- Tech items -->
+          <div class="grid grid-cols-2 gap-3">
+            {category.items.map((item) => (
+              <div class="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-primary/5 transition-colors group/item">
+                <Icon
+                  icon={item.icon}
+                  className="size-8 transition-transform duration-300 group-hover/item:scale-110"
+                  client:load
+                />
+                <span class="text-xs text-muted-foreground group-hover/item:text-primary transition-colors">
+                  {item.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
   </div>
-</div>
+</section>

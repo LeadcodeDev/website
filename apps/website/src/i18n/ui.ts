@@ -9,6 +9,7 @@ export const ui = {
 
     // Navbar
     'nav.projects': 'Projects',
+    'nav.experience': 'Experience',
     'nav.articles': 'Articles',
     'nav.contact': 'Contact',
 
@@ -18,7 +19,7 @@ export const ui = {
     'hero.description': 'Software Engineer passionate about building developer tools, open-source projects, and modern web applications.',
     'hero.primaryAction': 'View Projects',
     'hero.secondaryAction': 'GitHub Profile',
-    'hero.location': 'Vendée, France',
+    'hero.location': 'Vendee, France',
     'hero.experience': '10+ years experience',
     'hero.openSource': 'Open source contributor',
 
@@ -54,6 +55,23 @@ export const ui = {
     'projects.more.title': 'And many more...',
     'projects.more.description': 'Discover all my open-source projects on GitHub.',
 
+    // Experience
+    'experience.label': 'Experience',
+    'experience.title': 'Professional Journey',
+    'experience.description': 'Key milestones in my career.',
+    'experience.entry1.date': '2022 - Present',
+    'experience.entry1.role': 'Lead Software Engineer',
+    'experience.entry1.company': 'Freelance & Open Source',
+    'experience.entry1.description': 'Building open-source tools in Rust and TypeScript. Leading full-stack projects from architecture to deployment.',
+    'experience.entry2.date': '2019 - 2022',
+    'experience.entry2.role': 'Full Stack Developer',
+    'experience.entry2.company': 'Company Name',
+    'experience.entry2.description': 'Developed web applications with Vue.js and AdonisJS. Implemented CI/CD pipelines and mentored junior developers.',
+    'experience.entry3.date': '2016 - 2019',
+    'experience.entry3.role': 'Software Developer',
+    'experience.entry3.company': 'Company Name',
+    'experience.entry3.description': 'Started career building web applications and discovering the open-source ecosystem.',
+
     // Skills
     'skills.label': 'Skills',
     'skills.title': 'Tech Stack',
@@ -61,7 +79,7 @@ export const ui = {
     'skills.languages.title': 'Languages',
     'skills.backend.title': 'Backend',
     'skills.frontend.title': 'Frontend',
-    'skills.tools.title': 'Tools',
+    'skills.tools.title': 'Tools & DevOps',
 
     // Articles
     'articles.label': 'Blog',
@@ -83,6 +101,7 @@ export const ui = {
 
     // Navbar
     'nav.projects': 'Projets',
+    'nav.experience': 'Parcours',
     'nav.articles': 'Articles',
     'nav.contact': 'Contact',
 
@@ -92,8 +111,8 @@ export const ui = {
     'hero.description': 'Ingénieur logiciel passionné par la création d\'outils pour développeurs, de projets open-source et d\'applications web modernes.',
     'hero.primaryAction': 'Voir les projets',
     'hero.secondaryAction': 'Profil GitHub',
-    'hero.location': 'Vendée, France',
-    'hero.experience': '10+ ans d\'expérience',
+    'hero.location': 'Vendee, France',
+    'hero.experience': '10+ ans d\'experience',
     'hero.openSource': 'Contributeur open source',
 
     // About
@@ -128,6 +147,23 @@ export const ui = {
     'projects.more.title': 'Et bien d\'autres...',
     'projects.more.description': 'Découvrez tous mes projets open-source sur GitHub.',
 
+    // Experience
+    'experience.label': 'Parcours',
+    'experience.title': 'Parcours professionnel',
+    'experience.description': 'Les étapes clés de ma carrière.',
+    'experience.entry1.date': '2022 - Présent',
+    'experience.entry1.role': 'Ingénieur logiciel principal',
+    'experience.entry1.company': 'Freelance & Open Source',
+    'experience.entry1.description': 'Création d\'outils open-source en Rust et TypeScript. Direction de projets full-stack de l\'architecture au déploiement.',
+    'experience.entry2.date': '2019 - 2022',
+    'experience.entry2.role': 'Développeur Full Stack',
+    'experience.entry2.company': 'Nom de l\'entreprise',
+    'experience.entry2.description': 'Développement d\'applications web avec Vue.js et AdonisJS. Mise en place de pipelines CI/CD et mentorat de développeurs juniors.',
+    'experience.entry3.date': '2016 - 2019',
+    'experience.entry3.role': 'Développeur logiciel',
+    'experience.entry3.company': 'Nom de l\'entreprise',
+    'experience.entry3.description': 'Début de carrière dans le développement d\'applications web et découverte de l\'écosystème open-source.',
+
     // Skills
     'skills.label': 'Compétences',
     'skills.title': 'Stack technique',
@@ -135,7 +171,7 @@ export const ui = {
     'skills.languages.title': 'Langages',
     'skills.backend.title': 'Backend',
     'skills.frontend.title': 'Frontend',
-    'skills.tools.title': 'Outils',
+    'skills.tools.title': 'Outils & DevOps',
 
     // Articles
     'articles.label': 'Blog',

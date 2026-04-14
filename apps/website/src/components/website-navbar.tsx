@@ -26,6 +26,7 @@ export function WebsiteNavbar({ appUrlOverrides }: WebsiteNavbarProps) {
   }, [])
 
   const websiteLinks: NavbarLink[] = [
+    { label: t('nav.experience'), href: '#experience' },
     { label: t('nav.projects'), href: '#projects' },
     { label: t('nav.articles'), href: '#articles' },
     { label: t('nav.contact'), href: '#contact' },

@@ -14,9 +14,14 @@ const projects = [
       { icon: "devicon:tailwindcss", label: "Tailwind" },
       { icon: "material-icon-theme:kubernetes", label: "Kubernetes" },
     ],
+    highlights: [
+      { icon: "lucide:shield-check", text: "Role-based access control" },
+      { icon: "lucide:bar-chart-3", text: "Usage analytics & monitoring" },
+      { icon: "lucide:zap", text: "High-performance Rust backend" },
+    ],
     color: "oklch(70.5% .213 47.604)",
     href: "https://github.com/ferriskey",
-    span: 4,
+    featured: true,
   },
   {
     titleKey: "projects.rustmotion.title",
@@ -27,9 +32,9 @@ const projects = [
     techIcons: [
       { icon: "devicon:rust", label: "Rust" },
     ],
-    color: "oklch(65% .15 30)",
+    color: "oklch(70.5% .213 47.604)",
     href: "https://github.com/LeadcodeDev/rustmotion",
-    span: 2,
+    featured: false,
   },
   {
     titleKey: "projects.seameet.title",
@@ -40,9 +45,9 @@ const projects = [
     techIcons: [
       { icon: "devicon:rust", label: "Rust" },
     ],
-    color: "oklch(65% .17 160)",
+    color: "oklch(70.5% .213 47.604)",
     href: "https://github.com/LeadcodeDev",
-    span: 2,
+    featured: false,
   },
   {
     titleKey: "projects.mineral.title",
@@ -53,56 +58,28 @@ const projects = [
     techIcons: [
       { icon: "devicon:dart", label: "Dart" },
     ],
-    color: "oklch(60% .18 250)",
+    color: "oklch(62% .16 240)",
     href: "https://github.com/music-music/music",
-    span: 4,
+    featured: false,
   },
 ];
+
+const featured = projects[0];
+const side = projects.slice(1, 3);
+const bottom = projects[3];
 ---
 
-<div id="projects" class="relative w-full py-16 sm:py-24 lg:py-32">
-  <!-- Decorative circles -->
-  <div
-    class="absolute inset-0 -z-10 pointer-events-none"
-    style="clip-path: inset(0 -100vw -100vh -100vw);"
-    aria-hidden="true"
-  >
-    <div
-      class="absolute top-[22%] left-[12%] w-80 h-80 rounded-full border-2 border-primary/10"
-    >
-      <div
-        class="absolute inset-0 m-auto w-56 h-56 rounded-full border border-primary/[0.07]"
-      >
-      </div>
-    </div>
-
-    <div
-      class="absolute -bottom-16 -right-24 w-80 h-80 rounded-full border-2 border-primary/9"
-    >
-    </div>
-
-    <div class="absolute top-8 right-1/3 size-2.5 rounded-full bg-primary/10">
-    </div>
-    <div
-      class="absolute bottom-1/4 left-[20%] size-2 rounded-full bg-primary/8"
-    >
-    </div>
-    <div
-      class="absolute top-[60%] right-[8%] size-1.5 rounded-full bg-primary/9"
-    >
-    </div>
-  </div>
-
-  <!-- Content -->
-  <div class="relative w-full max-w-6xl mx-auto px-5">
-    <div class="text-center mb-16">
+<section id="projects" class="relative py-24 sm:py-32">
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Section header -->
+    <div class="text-center mb-16" data-reveal="fade-up">
       <p
-        class="text-sm font-semibold text-primary uppercase tracking-wide mb-3"
+        class="text-sm font-semibold text-primary uppercase tracking-widest mb-3"
         data-t="projects.label"
       >
         Projects
       </p>
-      <h2 class="text-3xl font-semibold text-foreground sm:text-4xl" data-t="projects.title">
+      <h2 class="text-3xl font-bold text-foreground sm:text-4xl" data-t="projects.title">
         Featured Projects
       </h2>
       <p
@@ -113,93 +90,213 @@ const projects = [
       </p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-6 gap-5">
-      {
-        projects.map((project) => (
-          <div
-            class:list={[
-              "project-card group relative overflow-hidden border rounded-2xl bg-background transition-colors duration-300",
-              project.span === 4 ? "sm:col-span-4" : "sm:col-span-2",
-            ]}
-            style={`--project-color: ${project.color};`}
+    <!-- Bento grid -->
+    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+      <!-- Featured: FerrisKey (4col, 2rows) -->
+      <div
+        class="project-card group md:col-span-4 md:row-span-2 relative overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5"
+        style={`--project-color: ${featured.color};`}
+        data-reveal="fade-scale"
+        data-reveal-delay="100"
+      >
+        <a
+          href={featured.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="relative p-8 flex flex-col justify-between gap-6 h-full"
+        >
+          <!-- Header -->
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="project-logo flex items-center justify-center size-12 rounded-xl bg-primary/5 border border-border/30 transition-all duration-300 overflow-hidden">
+                <img src={featured.logoUrl} alt={featured.title} class="size-8 object-contain" />
+              </div>
+              <div>
+                <h3 class="project-title text-xl font-bold text-foreground transition-colors duration-300" data-t={featured.titleKey}>
+                  {featured.title}
+                </h3>
+                <span class="text-xs text-muted-foreground font-medium uppercase tracking-wider">Featured</span>
+              </div>
+            </div>
+            <div class="project-arrow flex items-center justify-center size-9 rounded-lg border border-border/50 bg-card/50 shrink-0 transition-all duration-300 group-hover:rotate-45">
+              <Icon icon="lucide:arrow-up-right" className="size-4 text-muted-foreground transition-colors duration-300" client:load />
+            </div>
+          </div>
+
+          <!-- Description -->
+          <p class="text-base text-muted-foreground leading-relaxed max-w-md" data-t={featured.descKey}>
+            {featured.description}
+          </p>
+
+          <!-- Highlights -->
+          <div class="space-y-3">
+            {featured.highlights.map((h) => (
+              <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center size-8 rounded-lg bg-primary/5 shrink-0">
+                  <Icon icon={h.icon} className="size-4 text-muted-foreground" client:load />
+                </div>
+                <span class="text-sm text-muted-foreground">{h.text}</span>
+              </div>
+            ))}
+          </div>
+
+          <!-- Tech stack with labels -->
+          <div class="flex items-center gap-3 flex-wrap">
+            {featured.techIcons.map((tech) => (
+              <div
+                class="tech-badge flex items-center gap-2 rounded-lg border border-border/30 bg-card/50 px-3 py-1.5 transition-all duration-300"
+              >
+                <Icon
+                  icon={tech.icon}
+                  className="size-5 transition-all duration-300"
+                  client:load
+                />
+                <span class="text-xs text-muted-foreground font-medium">{tech.label}</span>
+              </div>
+            ))}
+          </div>
+        </a>
+      </div>
+
+      <!-- Side projects (2col each, stacked) -->
+      {side.map((project, i) => (
+        <div
+          class="project-card group md:col-span-2 relative overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5"
+          style={`--project-color: ${project.color};`}
+          data-reveal="fade-scale"
+          data-reveal-delay={String(200 + i * 100)}
+        >
+          <a
+            href={project.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="relative p-6 flex flex-col gap-4 h-full"
           >
-            <a
-              href={project.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="relative bg-card p-8 flex flex-col gap-6 h-full rounded-2xl transition-all duration-300 hover:shadow-lg"
-            >
-              <!-- Background logo -->
-              <div class="absolute -bottom-8 -right-8 pointer-events-none opacity-[0.04] transition-opacity duration-500 group-hover:opacity-[0.08]" aria-hidden="true">
-                {project.logoUrl ? (
-                  <img src={project.logoUrl} alt="" class="size-72 object-contain" />
-                ) : (
+            <!-- Header -->
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="project-logo flex items-center justify-center size-10 rounded-lg bg-primary/5 border border-border/30 transition-all duration-300">
+                  <Icon icon={project.logoIcon} className="size-5 text-muted-foreground transition-colors duration-300" client:load />
+                </div>
+                <h3 class="project-title text-lg font-semibold text-foreground transition-colors duration-300" data-t={project.titleKey}>
+                  {project.title}
+                </h3>
+              </div>
+              <div class="project-arrow flex items-center justify-center size-8 rounded-lg border border-border/50 bg-card/50 shrink-0 transition-all duration-300 group-hover:rotate-45">
+                <Icon icon="lucide:arrow-up-right" className="size-3.5 text-muted-foreground transition-colors duration-300" client:load />
+              </div>
+            </div>
+
+            <!-- Description -->
+            <p class="text-sm text-muted-foreground leading-relaxed flex-1" data-t={project.descKey}>
+              {project.description}
+            </p>
+
+            <!-- Tech icons -->
+            <div class="flex items-center gap-2">
+              {project.techIcons.map((tech) => (
+                <div
+                  class="tech-badge flex items-center justify-center size-10 rounded-lg border border-border/30 bg-card/50 transition-all duration-300"
+                  title={tech.label}
+                >
                   <Icon
-                    icon={project.logoIcon}
-                    className="size-72 text-muted-foreground"
+                    icon={tech.icon}
+                    className="size-5 grayscale opacity-40 transition-all duration-300"
                     client:load
                   />
-                )}
-              </div>
-
-              <!-- Header: logo + title + arrow -->
-              <div class="flex items-start justify-between gap-4">
-                <div class="flex items-center gap-3">
-                  <div class="project-logo flex items-center justify-center size-11 rounded-lg bg-muted/80 transition-all duration-300 overflow-hidden">
-                    {project.logoUrl ? (
-                      <img src={project.logoUrl} alt={project.title} class="size-8 object-contain" />
-                    ) : (
-                      <Icon icon={project.logoIcon} className="size-6 text-muted-foreground transition-colors duration-300" client:load />
-                    )}
-                  </div>
-                  <h3 class="project-title text-xl font-semibold text-foreground transition-colors duration-300" data-t={project.titleKey}>
-                    {project.title}
-                  </h3>
                 </div>
-                <div class="project-arrow flex items-center justify-center size-9 rounded-lg border border-border bg-muted/50 shrink-0 transition-all duration-300">
-                  <Icon icon="mdi:arrow-top-right" className="size-4 text-muted-foreground transition-colors duration-300" client:load />
-                </div>
-              </div>
+              ))}
+            </div>
+          </a>
+        </div>
+      ))}
 
-              <!-- Description -->
-              <p class="text-sm text-muted-foreground leading-relaxed flex-1" data-t={project.descKey}>
-                {project.description}
-              </p>
-
-              <!-- Tech icons as mini square cards -->
-              <div class="flex items-center gap-2">
-                {project.techIcons.map((tech) => (
-                  <div
-                    class="tech-badge flex items-center justify-center size-12 rounded-xl border border-border bg-muted/50 transition-all duration-300"
-                    title={tech.label}
-                  >
-                    <Icon
-                      icon={tech.icon}
-                      className="size-7 grayscale opacity-40 transition-all duration-300"
-                      client:load
-                    />
-                  </div>
-                ))}
-              </div>
-            </a>
+      <!-- Bottom: Mineral (full width) -->
+      <div
+        class="project-card group md:col-span-6 relative overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5"
+        style={`--project-color: ${bottom.color};`}
+        data-reveal="fade-scale"
+        data-reveal-delay="400"
+      >
+        <a
+          href={bottom.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="relative p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-6 h-full"
+        >
+          <!-- Left: logo + title -->
+          <div class="flex items-center gap-4 shrink-0">
+            <div class="project-logo flex items-center justify-center size-12 rounded-xl bg-primary/5 border border-border/30 transition-all duration-300 overflow-hidden">
+              <img src={bottom.logoUrl} alt={bottom.title} class="size-8 object-contain" />
+            </div>
+            <div>
+              <h3 class="project-title text-xl font-semibold text-foreground transition-colors duration-300" data-t={bottom.titleKey}>
+                {bottom.title}
+              </h3>
+            </div>
           </div>
-        ))
-      }
+
+          <!-- Description -->
+          <p class="text-sm text-muted-foreground leading-relaxed flex-1" data-t={bottom.descKey}>
+            {bottom.description}
+          </p>
+
+          <!-- Tech + arrow -->
+          <div class="flex items-center gap-3 shrink-0">
+            {bottom.techIcons.map((tech) => (
+              <div
+                class="tech-badge flex items-center justify-center size-10 rounded-lg border border-border/30 bg-card/50 transition-all duration-300"
+                title={tech.label}
+              >
+                <Icon
+                  icon={tech.icon}
+                  className="size-5 grayscale opacity-40 transition-all duration-300"
+                  client:load
+                />
+              </div>
+            ))}
+            <div class="project-arrow flex items-center justify-center size-9 rounded-lg border border-border/50 bg-card/50 shrink-0 transition-all duration-300 group-hover:rotate-45 ml-2">
+              <Icon icon="lucide:arrow-up-right" className="size-4 text-muted-foreground transition-colors duration-300" client:load />
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- View all link -->
+    <div class="text-center mt-8" data-reveal="fade-up" data-reveal-delay="500">
+      <a
+        href="https://github.com/LeadcodeDev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+      >
+        <span data-t="projects.viewAll">View all on GitHub</span>
+        <Icon icon="lucide:arrow-up-right" className="size-4" client:load />
+      </a>
     </div>
   </div>
-</div>
+</section>
 
 <style>
+  .project-card {
+    border-color: color-mix(in oklch, var(--project-color) 20%, transparent);
+  }
   .project-card:hover {
-    border-color: color-mix(in oklch, var(--project-color) 30%, transparent);
+    border-color: color-mix(in oklch, var(--project-color) 40%, transparent);
+  }
+  .project-card .project-logo {
+    background: color-mix(in oklch, var(--project-color) 10%, transparent);
+    border-color: color-mix(in oklch, var(--project-color) 15%, transparent);
   }
   .project-card:hover .project-logo {
-    background: color-mix(in oklch, var(--project-color) 15%, transparent);
+    background: color-mix(in oklch, var(--project-color) 20%, transparent);
+    border-color: color-mix(in oklch, var(--project-color) 25%, transparent);
   }
-  .project-card:hover .project-logo :global(svg) {
+  .project-card .project-logo :global(svg) {
     color: var(--project-color);
   }
-  .project-card:hover .project-title {
+  .project-card .project-title {
     color: var(--project-color);
   }
   .project-card:hover .project-arrow {
@@ -209,11 +306,7 @@ const projects = [
   .project-card:hover .project-arrow :global(svg) {
     color: var(--project-color);
   }
-  .project-card:hover .tech-badge {
-    border-color: color-mix(in oklch, var(--project-color) 20%, transparent);
-    background: color-mix(in oklch, var(--project-color) 5%, transparent);
-  }
-  .project-card:hover .tech-badge :global(svg) {
+  .project-card .tech-badge :global(svg) {
     filter: grayscale(0);
     opacity: 1;
   }
