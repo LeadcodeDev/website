@@ -1,4 +1,5 @@
 ---
+import { cn } from "@explainer/ui";
 import { Icon } from "@iconify/react";
 
 interface ProjectTw {
@@ -23,6 +24,22 @@ interface Project {
 
 const projects: Project[] = [
   {
+    titleKey: "projects.ferriskey.title",
+    descKey: "projects.ferriskey.description",
+    title: "FerrisKey",
+    description: "Enterprise-grade IAM platform built in Rust. OIDC, multi-tenancy, policy engine, and Kubernetes-native — designed for systems where correctness is non-negotiable.",
+    icon: "mdi:shield-key-outline",
+    tags: ["Rust", "IAM", "OIDC", "Kubernetes"],
+    href: "https://github.com/ferriskey/ferriskey",
+    tw: {
+      card: "border-orange-500/20 hover:border-orange-500/40",
+      logo: "bg-orange-500/10 border-orange-500/[15%]",
+      icon: "text-orange-400",
+      arrowHover: "group-hover:border-orange-400 group-hover:bg-orange-500/10",
+      arrowIcon: "group-hover:text-orange-400",
+    },
+  },
+  {
     titleKey: "projects.ferriscord.title",
     descKey: "projects.ferriscord.description",
     title: "Ferriscord",
@@ -36,22 +53,6 @@ const projects: Project[] = [
       icon: "text-violet-400",
       arrowHover: "group-hover:border-violet-400 group-hover:bg-violet-500/10",
       arrowIcon: "group-hover:text-violet-400",
-    },
-  },
-  {
-    titleKey: "projects.ferrisletter.title",
-    descKey: "projects.ferrisletter.description",
-    title: "Ferrisletter",
-    description: "A FerrisLabs product for messaging and newsletter workflows with clean delivery and platform boundaries.",
-    icon: "mdi:email-open-multiple-outline",
-    tags: ["Postgres", "Architecture", "Open source"],
-    href: "https://github.com/ferrislabs",
-    tw: {
-      card: "border-blue-500/20 hover:border-blue-500/40",
-      logo: "bg-blue-500/10 border-blue-500/[15%]",
-      icon: "text-blue-400",
-      arrowHover: "group-hover:border-blue-400 group-hover:bg-blue-500/10",
-      arrowIcon: "group-hover:text-blue-400",
     },
   },
   {
@@ -71,6 +72,22 @@ const projects: Project[] = [
     },
   },
   {
+    titleKey: "projects.seameet.title",
+    descKey: "projects.seameet.description",
+    title: "Seameet",
+    description: "A core engine for real-time video communication, designed as a composable system with pluggable transport layers.",
+    icon: "mdi:video-outline",
+    tags: ["Rust", "WebRTC", "Realtime"],
+    href: "https://github.com/LeadcodeDev/seameet",
+    tw: {
+      card: "border-teal-500/20 hover:border-teal-500/40",
+      logo: "bg-teal-500/10 border-teal-500/[15%]",
+      icon: "text-teal-400",
+      arrowHover: "group-hover:border-teal-400 group-hover:bg-teal-500/10",
+      arrowIcon: "group-hover:text-teal-400",
+    },
+  },
+  {
     titleKey: "projects.rustmotion.title",
     descKey: "projects.rustmotion.description",
     title: "Rustmotion",
@@ -87,19 +104,51 @@ const projects: Project[] = [
     },
   },
   {
-    titleKey: "projects.seameet.title",
-    descKey: "projects.seameet.description",
-    title: "Seameet",
-    description: "A core engine for real-time video communication, designed as a composable system with pluggable transport layers.",
-    icon: "mdi:video-outline",
-    tags: ["Rust", "WebRTC", "Realtime"],
-    href: "https://github.com/LeadcodeDev/seameet",
+    titleKey: "projects.explainer.title",
+    descKey: "projects.explainer.description",
+    title: "Explainer",
+    description: "A boilerplate for building complete documentation systems. MDX content, TypeScript logic, and Astro for static generation — opinionated structure for maintainable docs.",
+    icon: "mdi:book-open-page-variant-outline",
+    tags: ["Astro", "MDX", "TypeScript"],
+    href: "https://github.com/LeadcodeDev/explainer_v2",
     tw: {
-      card: "border-teal-500/20 hover:border-teal-500/40",
-      logo: "bg-teal-500/10 border-teal-500/[15%]",
-      icon: "text-teal-400",
-      arrowHover: "group-hover:border-teal-400 group-hover:bg-teal-500/10",
-      arrowIcon: "group-hover:text-teal-400",
+      card: "border-amber-500/20 hover:border-amber-500/40",
+      logo: "bg-amber-500/10 border-amber-500/[15%]",
+      icon: "text-amber-400",
+      arrowHover: "group-hover:border-amber-400 group-hover:bg-amber-500/10",
+      arrowIcon: "group-hover:text-amber-400",
+    },
+  },
+  {
+    titleKey: "projects.sqlxgen.title",
+    descKey: "projects.sqlxgen.description",
+    title: "sqlx_gen",
+    description: "Generate Rust structs and CRUD repositories from your database schema — correct types, derives, and sqlx annotations. Supports PostgreSQL, MySQL, SQLite.",
+    icon: "mdi:database-cog-outline",
+    tags: ["Rust", "SQLx", "Codegen"],
+    href: "https://github.com/LeadcodeDev/sqlx_gen",
+    tw: {
+      card: "border-emerald-500/20 hover:border-emerald-500/40",
+      logo: "bg-emerald-500/10 border-emerald-500/[15%]",
+      icon: "text-emerald-400",
+      arrowHover: "group-hover:border-emerald-400 group-hover:bg-emerald-500/10",
+      arrowIcon: "group-hover:text-emerald-400",
+    },
+  },
+  {
+    titleKey: "projects.ferrisletter.title",
+    descKey: "projects.ferrisletter.description",
+    title: "Ferrisletter",
+    description: "A FerrisLabs product for messaging and newsletter workflows with clean delivery and platform boundaries.",
+    icon: "mdi:email-open-multiple-outline",
+    tags: ["Postgres", "Architecture", "Open source"],
+    href: "https://github.com/ferrislabs",
+    tw: {
+      card: "border-blue-500/20 hover:border-blue-500/40",
+      logo: "bg-blue-500/10 border-blue-500/[15%]",
+      icon: "text-blue-400",
+      arrowHover: "group-hover:border-blue-400 group-hover:bg-blue-500/10",
+      arrowIcon: "group-hover:text-blue-400",
     },
   },
   {
@@ -159,7 +208,10 @@ const projects: Project[] = [
             href={project.href}
             target="_blank"
             rel="noopener noreferrer"
-            class={`group rounded-2xl bg-card/50 backdrop-blur-sm border p-6 flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 ${project.tw!.card}`}
+            class={cn(
+              'group rounded-2xl bg-card/50 backdrop-blur-sm border p-6 flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-primary/5',
+              project.tw!.card
+            )}
             data-reveal="fade-scale"
             data-reveal-delay={String(100 + i * 100)}
           >
