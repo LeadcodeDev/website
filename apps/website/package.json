@@ -15,6 +15,7 @@
     "@explainer/ui": "workspace:*",
     "@iconify/react": "^5.2.0",
     "@tailwindcss/vite": "^4.0.0",
+    "@xyflow/react": "^12.10.2",
     "astro": "^5.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

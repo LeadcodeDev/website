@@ -1,0 +1,87 @@
+---
+import { Icon } from "@iconify/react";
+
+const top = [
+  {
+    icon: "mdi:shield-key-outline",
+    titleKey: "expertise.iam.title",
+    descKey: "expertise.iam.description",
+    title: "IAM & OIDC",
+    description: "OIDC, OAuth2, FerrisKey, token lifecycle, multi-tenant realms and secure product boundaries. Protocol implementation from spec — not from tutorials.",
+  },
+  {
+    icon: "lucide:shield-check",
+    titleKey: "expertise.authz.title",
+    descKey: "expertise.authz.description",
+    title: "Authorization & policy",
+    description: "OPA, RBAC, ABAC, delegated authorization and policy-as-code. Fine-grained access control that stays auditable when security teams need answers.",
+  },
+]
+
+const bottom = [
+  {
+    icon: "lucide:server",
+    titleKey: "expertise.platform.title",
+    descKey: "expertise.platform.description",
+    title: "Platform identity",
+    description: "Kubernetes-native identity, service-to-service auth, mTLS and SPIFFE/SPIRE between workloads. IAM at the infrastructure layer.",
+  },
+  {
+    icon: "lucide:network",
+    titleKey: "expertise.distributed.title",
+    descKey: "expertise.distributed.description",
+    title: "Distributed security",
+    description: "Event-driven auth flows, Kafka-based audit pipelines, and consistency decisions for systems that stay explainable under failure.",
+  },
+  {
+    icon: "lucide:activity",
+    titleKey: "expertise.ops.title",
+    descKey: "expertise.ops.description",
+    title: "Operational security",
+    description: "Auth systems that are observable and recoverable. Structured audit logs, token flow metrics, and SLOs for security-critical infrastructure.",
+  },
+]
+---
+
+<section class="relative py-24 sm:py-32">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <!-- Header -->
+    <div class="mb-12" data-reveal="fade-up">
+      <p class="text-sm font-semibold text-primary uppercase tracking-widest mb-3" data-t="expertise.label">Expertise</p>
+      <h2 class="text-3xl font-bold text-foreground sm:text-4xl" data-t="expertise.title">
+        From identity to distributed platforms.
+      </h2>
+      <p class="mt-4 text-lg text-muted-foreground max-w-2xl" data-t="expertise.description">
+        I focus on the parts of a system where product design, security constraints and operational reality meet.
+      </p>
+    </div>
+
+    <!-- Top row: 2 wide cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4" data-reveal="fade-up" data-reveal-delay="100">
+      {top.map((area) => (
+        <div class="rounded-2xl border border-border bg-card p-7 flex flex-col">
+          <div class="flex items-center justify-center size-11 rounded-xl bg-primary/[12%] shrink-0 mb-6">
+            <Icon icon={area.icon} className="size-5 text-primary" client:load />
+          </div>
+          <h3 class="text-xl font-bold text-foreground mb-3" data-t={area.titleKey}>{area.title}</h3>
+          <p class="text-sm text-muted-foreground leading-relaxed" data-t={area.descKey}>{area.description}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Bottom row: 3 narrow cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" data-reveal="fade-up" data-reveal-delay="200">
+      {bottom.map((area) => (
+        <div class="rounded-2xl border border-border bg-card p-7 flex flex-col">
+          <div class="flex items-center justify-center size-11 rounded-xl bg-primary/[12%] shrink-0 mb-6">
+            <Icon icon={area.icon} className="size-5 text-primary" client:load />
+          </div>
+          <h3 class="text-lg font-bold text-foreground mb-3" data-t={area.titleKey}>{area.title}</h3>
+          <p class="text-sm text-muted-foreground leading-relaxed" data-t={area.descKey}>{area.description}</p>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>

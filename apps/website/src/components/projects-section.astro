@@ -219,8 +219,11 @@ const projects: Project[] = [
               <div class={`flex items-center justify-center size-12 rounded-xl border overflow-hidden transition-all duration-300 ${project.tw!.logo}`}>
                 <Icon icon={project.icon} className={`size-6 ${project.tw!.icon}`} client:load />
               </div>
-              <div class={`flex items-center justify-center size-9 rounded-lg border border-border/50 bg-card/50 shrink-0 transition-all duration-300 group-hover:rotate-45 ${project.tw!.arrowHover}`}>
-                <Icon icon="lucide:arrow-up-right" className={`size-4 text-muted-foreground transition-colors duration-300 ${project.tw!.arrowIcon}`} client:load />
+              <div class={cn(
+                'flex items-center justify-center size-9 rounded-lg border border-border/50 bg-card/50 shrink-0 transition-all duration-300 group-hover:rotate-45',
+                project.tw!.arrowHover
+              )}>
+                <Icon icon="lucide:arrow-up-right" className={cn(`size-4 text-muted-foreground transition-colors duration-300`, project.tw!.arrowIcon)} client:load />
               </div>
             </div>
 

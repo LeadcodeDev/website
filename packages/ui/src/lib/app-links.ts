@@ -7,7 +7,7 @@ export interface AppLink {
 
 export const defaultAppLinks: AppLink[] = [
   { id: 'website', label: 'Home', href: '/' },
-  { id: 'docs', label: 'Docs', href: '/' },
+  // { id: 'docs', label: 'Docs', href: '/' },
   { id: 'blog', label: 'Blog', href: '/' },
 ]
 
