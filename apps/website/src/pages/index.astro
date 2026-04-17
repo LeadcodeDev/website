@@ -2,8 +2,9 @@
 import Base from '../layouts/base.astro'
 import { WebsiteNavbar } from '../components/website-navbar'
 import HeroSection from '../components/hero-section.astro'
-import AboutSection from '../components/about-section.astro'
-import ExperienceSection from '../components/experience-section.astro'
+import FerrisKeySpotlightSection from '../components/ferriskey-spotlight-section.astro'
+import PrinciplesSection from '../components/principles-section.astro'
+import EcosystemSection from '../components/ecosystem-section.astro'
 import ProjectsSection from '../components/projects-section.astro'
 import SkillsSection from '../components/skills-section.astro'
 import LatestArticlesSection from '../components/latest-articles-section.astro'
@@ -22,12 +23,13 @@ const translations = ui.fr
 const thumbnails = { en: '/thumbnail.png', fr: '/thumbnails/fr/thumbnail.png' }
 ---
 
-<Base title="Baptiste Parmantier" description="Software Engineer with 10+ years of experience. Building open-source tools and crafting modern web applications." thumbnail="/thumbnail.png">
+<Base title="Baptiste Parmantier" description="Software Architect and IAM expert with 10+ years of experience. Co-founder of FerrisKey. Designing scalable distributed systems." thumbnail="/thumbnail.png">
   <WebsiteNavbar appUrlOverrides={appUrlOverrides} client:load transition:persist />
 
   <HeroSection />
-  <AboutSection />
-  <ExperienceSection />
+  <FerrisKeySpotlightSection />
+  <PrinciplesSection />
+  <EcosystemSection />
   <ProjectsSection />
   <SkillsSection />
   <LatestArticlesSection />

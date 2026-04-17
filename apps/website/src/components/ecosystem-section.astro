@@ -1,0 +1,138 @@
+---
+import { Icon } from "@iconify/react";
+---
+
+<section class="relative py-24 sm:py-32">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <!-- Header -->
+    <div class="mb-12" data-reveal="fade-up">
+      <p class="text-sm font-semibold text-primary uppercase tracking-widest mb-3">
+        Platform
+      </p>
+      <h2 class="text-3xl font-bold text-foreground sm:text-4xl">
+        Not isolated projects.<br class="hidden sm:block" /> A coherent platform.
+      </h2>
+      <p class="mt-4 text-lg text-muted-foreground max-w-2xl">
+        Each product has a defined role, clear service boundaries, and a shared identity foundation. That's what distinguishes a platform from a collection of repos.
+      </p>
+    </div>
+
+    <!-- FerrisKey featured (orange) -->
+    <a
+      href="https://ferriskey.rs"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group flex flex-col sm:flex-row items-start sm:items-center gap-6 rounded-2xl border p-7 sm:p-8 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl bg-orange-400/[4%] border-orange-400/[22%] hover:border-orange-400/40 hover:shadow-orange-500/[8%]"
+      data-reveal="fade-up"
+      data-reveal-delay="100"
+    >
+      <div class="flex items-center justify-center size-14 rounded-2xl border shrink-0 bg-orange-400/[12%] border-orange-400/[28%]">
+        <img src="https://ferriskey.rs/logo.svg" alt="FerrisKey" class="size-8" />
+      </div>
+
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-3 mb-2 flex-wrap">
+          <h3 class="text-xl font-bold text-foreground">FerrisKey</h3>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-orange-400/[12%] text-orange-400">Identity Foundation</span>
+        </div>
+        <p class="text-muted-foreground text-sm leading-relaxed">
+          The IAM layer of the platform. Authentication, authorization, OIDC, and multi-tenant policy — every service authenticates through FerrisKey. The foundation everything else depends on.
+        </p>
+        <div class="flex gap-2 mt-3 flex-wrap">
+          {["OIDC", "Multi-tenancy", "Policy engine", "Rust", "Kubernetes"].map((tag) => (
+            <span class="text-xs text-muted-foreground border border-border/50 rounded-lg px-2.5 py-1">{tag}</span>
+          ))}
+        </div>
+      </div>
+
+      <div class="shrink-0 self-start sm:self-auto flex items-center justify-center size-10 rounded-xl border border-border/50 transition-all duration-300 group-hover:rotate-45 group-hover:border-orange-400 group-hover:bg-orange-400/10">
+        <Icon icon="lucide:arrow-up-right" className="size-4 text-muted-foreground transition-colors duration-300 group-hover:text-orange-400" client:load />
+      </div>
+    </a>
+
+    <!-- Connector visual -->
+    <div class="relative flex justify-center items-center py-1 my-2" aria-hidden="true">
+      <div class="absolute left-1/4 right-1/4 h-px bg-border/25 top-1/2"></div>
+      <div class="absolute left-1/4 h-4 w-px bg-border/25 top-1/2 -translate-y-full"></div>
+      <div class="absolute right-1/4 h-4 w-px bg-border/25 top-1/2 -translate-y-full"></div>
+      <div class="absolute left-1/4 h-4 w-px bg-border/25 top-1/2"></div>
+      <div class="absolute right-1/4 h-4 w-px bg-border/25 top-1/2"></div>
+    </div>
+
+    <!-- Built on label -->
+    <div class="flex items-center gap-4 mb-3" data-reveal="fade-up" data-reveal-delay="200">
+      <div class="h-px flex-1 bg-border/20"></div>
+      <span class="text-xs font-semibold text-muted-foreground/40 uppercase tracking-widest whitespace-nowrap">Built on FerrisKey</span>
+      <div class="h-px flex-1 bg-border/20"></div>
+    </div>
+
+    <!-- Ferriscord + Ferrisletter -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+      <!-- Ferriscord (violet) -->
+      <a
+        href="https://github.com/ferrislabs"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 p-6 flex flex-col transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:border-violet-500/35"
+        data-reveal="fade-up"
+        data-reveal-delay="300"
+      >
+        <div class="flex items-start justify-between mb-5">
+          <div class="flex items-center justify-center size-11 rounded-xl border bg-violet-500/10 border-violet-500/[15%]">
+            <Icon icon="mdi:clipboard-check-outline" className="size-5 text-violet-400" client:load />
+          </div>
+          <div class="flex items-center justify-center size-9 rounded-lg border border-border/50 transition-all duration-300 group-hover:rotate-45 group-hover:border-violet-400 group-hover:bg-violet-500/10">
+            <Icon icon="lucide:arrow-up-right" className="size-3.5 text-muted-foreground transition-colors duration-300 group-hover:text-violet-400" client:load />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="text-base font-semibold text-foreground">Ferriscord</h3>
+          <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-violet-500/[12%] text-violet-400">Realtime Layer</span>
+        </div>
+        <p class="text-sm text-muted-foreground leading-relaxed flex-1">
+          Event-driven realtime collaboration engine. Protocol design for reliable message delivery, ScyllaDB for low-latency storage, and Kafka for horizontal coordination.
+        </p>
+        <div class="flex gap-2 mt-4 flex-wrap">
+          {["Rust", "Kafka", "ScyllaDB"].map((tag) => (
+            <span class="text-xs text-muted-foreground border border-border/50 rounded-lg px-2.5 py-1">{tag}</span>
+          ))}
+        </div>
+      </a>
+
+      <!-- Ferrisletter (blue) -->
+      <a
+        href="https://github.com/ferrislabs"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 p-6 flex flex-col transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:border-blue-500/35"
+        data-reveal="fade-up"
+        data-reveal-delay="400"
+      >
+        <div class="flex items-start justify-between mb-5">
+          <div class="flex items-center justify-center size-11 rounded-xl border bg-blue-500/10 border-blue-500/[15%]">
+            <Icon icon="mdi:email-open-multiple-outline" className="size-5 text-blue-400" client:load />
+          </div>
+          <div class="flex items-center justify-center size-9 rounded-lg border border-border/50 transition-all duration-300 group-hover:rotate-45 group-hover:border-blue-400 group-hover:bg-blue-500/10">
+            <Icon icon="lucide:arrow-up-right" className="size-3.5 text-muted-foreground transition-colors duration-300 group-hover:text-blue-400" client:load />
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="text-base font-semibold text-foreground">Ferrisletter</h3>
+          <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-500/[12%] text-blue-400">Messaging Layer</span>
+        </div>
+        <p class="text-sm text-muted-foreground leading-relaxed flex-1">
+          Newsletter and transactional messaging platform. Clean delivery guarantees, platform boundary design, and identity-aware routing from FerrisKey.
+        </p>
+        <div class="flex gap-2 mt-4 flex-wrap">
+          {["Postgres", "Architecture", "Open source"].map((tag) => (
+            <span class="text-xs text-muted-foreground border border-border/50 rounded-lg px-2.5 py-1">{tag}</span>
+          ))}
+        </div>
+      </a>
+    </div>
+  </div>
+</section>

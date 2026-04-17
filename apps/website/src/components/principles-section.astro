@@ -1,0 +1,92 @@
+---
+import { Icon } from "@iconify/react";
+
+const pillars = [
+  {
+    icon: "lucide:shield-check",
+    titleKey: "pillars.card1.title",
+    descKey: "pillars.card1.description",
+    title: "Identity & Architecture",
+    description: "I design systems at the domain level — defining service boundaries, API contracts, and data ownership before touching a framework. My IAM expertise (OIDC, policies, multi-tenancy) comes from building FerrisKey: an identity platform where correctness isn't optional.",
+    proofLabel: "FerrisKey",
+    proofHref: "#ferriskey",
+    internal: true,
+  },
+  {
+    icon: "lucide:network",
+    titleKey: "pillars.card2.title",
+    descKey: "pillars.card2.description",
+    title: "Distributed Systems",
+    description: "I build services that coordinate reliably at scale. Event-driven architectures, Kubernetes orchestration, and consistency models designed for failure — not just for the happy path.",
+    proofLabel: "Ferriscord",
+    proofHref: "https://github.com/ferrislabs",
+    internal: false,
+  },
+  {
+    icon: "lucide:activity",
+    titleKey: "pillars.card3.title",
+    descKey: "pillars.card3.description",
+    title: "Production Lifecycle",
+    description: "I don't stop at the deploy. CI/CD pipelines, structured observability with Prometheus and Loki, and the mindset of an owner — not a contractor. If it pages at 3am, I'm the one who fixed the design that caused it.",
+    proofLabel: "GitHub Actions + Prometheus",
+    proofHref: "https://github.com/ferriskey/ferriskey",
+    internal: false,
+  },
+];
+---
+
+<section class="relative py-24 sm:py-32">
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Section header -->
+    <div class="text-center mb-16" data-reveal="fade-up">
+      <p
+        class="text-sm font-semibold text-primary uppercase tracking-widest mb-3"
+        data-t="pillars.label"
+      >
+        What I Do
+      </p>
+      <h2 class="text-3xl font-bold text-foreground sm:text-4xl" data-t="pillars.title">
+        Three things I'm built for
+      </h2>
+      <p
+        class="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto text-balance"
+        data-t="pillars.description"
+      >
+        Not a list of frameworks. What I actually deliver, end to end.
+      </p>
+    </div>
+
+    <!-- Pillars grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {pillars.map((p, i) => (
+        <div
+          class="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col"
+          data-reveal="fade-up"
+          data-reveal-delay={String(i * 100)}
+        >
+          <div class="flex items-center justify-center size-12 rounded-xl bg-primary/10 mb-6 group-hover:bg-primary/15 transition-colors">
+            <Icon icon={p.icon} className="size-6 text-primary" client:load />
+          </div>
+          <h3 class="text-xl font-semibold text-foreground mb-3" data-t={p.titleKey}>
+            {p.title}
+          </h3>
+          <p class="text-sm text-muted-foreground leading-relaxed flex-1" data-t={p.descKey}>
+            {p.description}
+          </p>
+          <div class="mt-6 pt-5 border-t border-border/30 flex items-center justify-between">
+            <span class="text-xs text-muted-foreground/50">Proof</span>
+            <a
+              href={p.proofHref}
+              target={p.internal ? undefined : "_blank"}
+              rel={p.internal ? undefined : "noopener noreferrer"}
+              class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              {p.proofLabel}
+              <Icon icon={p.internal ? "lucide:arrow-down" : "lucide:arrow-up-right"} className="size-3" client:load />
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -211,12 +211,6 @@ function formatDate(date: Date, locale: string) {
   </section>
 )}
 
-<style>
-  .post-card:hover .post-card-inner {
-    transform: translateY(var(--slide));
-  }
-</style>
-
 <script>
   function showLocaleArticles() {
     const match = document.cookie.match(/(?:^|; )locale=([^;]*)/)
@@ -258,7 +252,11 @@ function formatDate(date: Date, locale: string) {
     measurements.forEach(({ card, link, body, imgHeight }) => {
       link.style.height = `${maxCardHeight}px`
       body.style.minHeight = `${maxCardHeight}px`
-      card.style.setProperty('--slide', `-${imgHeight}px`)
+      const inner = card.querySelector('.post-card-inner') as HTMLElement | null
+      if (inner) {
+        card.addEventListener('mouseenter', () => { inner.style.transform = `translateY(-${imgHeight}px)` })
+        card.addEventListener('mouseleave', () => { inner.style.transform = '' })
+      }
     })
   }
 

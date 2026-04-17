@@ -4,183 +4,170 @@ import { Icon } from '@iconify/react'
 import { Button } from '@explainer/ui'
 ---
 
-<div
-  class="relative px-4 sm:px-6 lg:px-8 flex flex-col py-24 sm:py-32 lg:py-40 pb-0! overflow-hidden"
->
-  <div>
-    <div class="absolute inset-0 w-full -z-10">
-      <BackgroundAnimation client:load />
-    </div>
+<style>
+  .h-in {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: h-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes h-reveal {
+    to { opacity: 1; transform: none; }
+  }
+</style>
 
-    <!-- Dot grid overlay -->
-    <div class="absolute inset-0 dot-grid-bg -z-5 pointer-events-none" aria-hidden="true"></div>
+<div class="relative px-4 sm:px-6 lg:px-8 flex flex-col pt-24 sm:pt-32 lg:pt-36 overflow-hidden">
+  <div class="absolute inset-0 -z-20 w-full">
+    <BackgroundAnimation client:load />
+  </div>
 
-    <!-- Decorative circles -->
+  <div
+    class="absolute inset-0 -z-5 pointer-events-none"
+    style="clip-path: inset(0 -100vw 0 -100vw);"
+    aria-hidden="true"
+  >
     <div
-      class="absolute inset-0 -z-5 pointer-events-none"
-      style="clip-path: inset(0 -100vw 0 -100vw);"
-      aria-hidden="true"
+      class="absolute -top-16 -left-16 w-56 h-56 sm:-top-32 sm:-left-32 sm:w-md sm:h-112 rounded-full border-2 border-primary/10"
     >
       <div
-        class="absolute -top-16 -left-16 w-56 h-56 sm:-top-32 sm:-left-32 sm:w-md sm:h-112 rounded-full border-2 border-primary/10"
+        class="absolute inset-0 m-auto w-32 h-32 sm:w-80 sm:h-80 rounded-full border border-primary/[0.07]"
       >
-        <div
-          class="absolute inset-0 m-auto w-32 h-32 sm:w-80 sm:h-80 rounded-full border border-primary/[0.07]"
+      </div>
+    </div>
+
+    <div
+      class="hidden sm:block absolute -top-24 -right-24 w-80 h-80 rounded-full border-2 border-primary/10"
+    >
+    </div>
+
+    <div
+      class="hidden sm:block absolute top-1/2 -left-16 w-48 h-48 rounded-full border border-primary/8 -translate-y-1/2"
+    >
+    </div>
+
+    <div
+      class="hidden sm:block absolute -bottom-16 -right-16 w-48 h-48 rounded-full border-2 border-primary/8"
+    >
+    </div>
+
+    <!-- Floating dots -->
+    <div
+      class="hidden sm:block absolute top-1/4 right-[15%] size-3 rounded-full bg-primary/10"
+    >
+    </div>
+    <div
+      class="hidden sm:block absolute top-[40%] left-[25%] size-2 rounded-full bg-primary/8"
+    >
+    </div>
+    <div
+      class="hidden sm:block absolute bottom-1/3 right-1/3 size-2.5 rounded-full bg-primary/9"
+    >
+    </div>
+  </div>
+
+  <!-- Bottom-left circle -->
+  <div
+    class="hidden sm:block absolute bottom-0 left-[33%] -translate-x-1/2 -z-5 pointer-events-none"
+    aria-hidden="true"
+  >
+    <div
+      class="absolute -bottom-24 -left-32 w-64 h-64 rounded-full border-2 border-primary/10"
+    >
+    </div>
+  </div>
+
+  <!-- Bottom separator -->
+  <div class="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
+
+  <div class="w-full max-w-6xl mx-auto pb-16 lg:pb-20">
+    <div class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+
+      <div class="order-2 lg:order-1">
+        <div class="h-in" style="animation-delay: 0ms;">
+          <a
+            href="#ferriskey"
+            class="rounded-lg font-semibold inline-flex items-center gap-2 transition-colors px-4 py-1.5 text-xs ring ring-inset ring-primary/50 text-primary hover:bg-primary/10 active:bg-primary/10 no-underline"
+            data-t="hero.badge"
+          >
+            Rust, IAM and distributed systems
+            <Icon icon="mdi:arrow-right" className="size-3.5" client:load />
+          </a>
+        </div>
+
+        <div class="h-in" style="animation-delay: 80ms;">
+          <h1 class="mt-6 text-4xl text-pretty tracking-tight text-foreground font-semibold sm:text-6xl">
+            <span data-t="hero.title">Baptiste Parmantier,</span><br>
+            <span data-t="hero.headline">architect for systems that stay alive</span>
+          </h1>
+        </div>
+        <p
+          class="h-in text-lg sm:text-xl/8 text-muted-foreground text-pretty mt-6 max-w-2xl"
+          style="animation-delay: 160ms;"
+          data-t="hero.description"
         >
-        </div>
-      </div>
-
-      <div
-        class="hidden sm:block absolute -top-24 -right-24 w-80 h-80 rounded-full border-2 border-primary/10"
-      >
-      </div>
-
-      <div
-        class="hidden sm:block absolute top-1/2 -left-16 w-48 h-48 rounded-full border border-primary/8 -translate-y-1/2"
-      >
-      </div>
-
-      <div
-        class="hidden sm:block absolute -bottom-16 -right-16 w-48 h-48 rounded-full border-2 border-primary/8"
-      >
-      </div>
-
-      <!-- Floating dots -->
-      <div class="hidden sm:block absolute top-1/4 right-[15%] size-3 rounded-full bg-primary/10"></div>
-      <div class="hidden sm:block absolute top-[40%] left-[25%] size-2 rounded-full bg-primary/8"></div>
-      <div class="hidden sm:block absolute bottom-1/3 right-1/3 size-2.5 rounded-full bg-primary/9"></div>
-    </div>
-
-    <!-- Bottom-left circle -->
-    <div
-      class="hidden sm:block absolute bottom-0 left-[33%] -translate-x-1/2 -z-5 pointer-events-none"
-      aria-hidden="true"
-    >
-      <div class="absolute -bottom-24 -left-32 w-64 h-64 rounded-full border-2 border-primary/10"></div>
-    </div>
-
-    <!-- Bottom separator -->
-    <div
-      class="absolute bottom-0 inset-x-0 h-px bg-linear-to-r from-transparent via-border to-transparent"
-    >
-    </div>
-
-    <div class="w-full max-w-6xl mx-auto pb-24 lg:pb-32">
-      <!-- Split layout: avatar left, text right -->
-      <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-center">
-        <!-- Left: avatar with decorative frame (40%) -->
-        <div class="lg:col-span-2 flex justify-center lg:order-1 order-1 hero-animate" style="animation-delay: 0ms;">
-          <div class="relative">
-            <!-- Avatar -->
-            <img
-              src="https://github.com/LeadcodeDev.png"
-              alt="Baptiste Parmantier"
-              class="relative size-48 sm:size-56 lg:size-64 rounded-full border-4 border-primary/20 shadow-2xl shadow-primary/10"
-            />
-            <!-- Social icons below avatar -->
-            <div class="flex justify-center gap-3 mt-6">
-              <a
-                href="https://github.com/LeadcodeDev"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center justify-center size-10 rounded-full border border-border/50 bg-card/50 backdrop-blur-sm text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-300"
-                aria-label="GitHub"
-              >
-                <Icon icon="mdi:github" className="size-5" client:load />
-              </a>
-              <a
-                href="https://www.linkedin.com/in/baptiste-parmantier"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center justify-center size-10 rounded-full border border-border/50 bg-card/50 backdrop-blur-sm text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-300"
-                aria-label="LinkedIn"
-              >
-                <Icon icon="mdi:linkedin" className="size-5" client:load />
-              </a>
-              <a
-                href="mailto:baptiste.parmantier.pro@gmail.com"
-                class="flex items-center justify-center size-10 rounded-full border border-border/50 bg-card/50 backdrop-blur-sm text-muted-foreground hover:text-primary hover:border-primary/40 transition-all duration-300"
-                aria-label="Email"
-              >
-                <Icon icon="mdi:email-outline" className="size-5" client:load />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right: text content (60%) -->
-        <div class="lg:col-span-3 text-center lg:text-left lg:order-2 order-2">
-          <div class="mb-6 hero-animate" style="animation-delay: 100ms;">
+          I build IAM primitives, distributed architectures and production systems. From the first API contract to the last alert resolved.
+        </p>
+        <div class="h-in pt-8 flex flex-wrap gap-x-4 gap-y-3" style="animation-delay: 240ms;">
+          <Button size="lg" className="cursor-pointer" client:load>
+            <a href="#ferriskey" class="flex items-center gap-2">
+              <span data-t="hero.primaryAction">View my projects</span>
+              <Icon icon="mdi:arrow-right" aria-hidden="true" className="size-5" client:load />
+            </a>
+          </Button>
+          <Button variant="outline" size="lg" className="cursor-pointer" client:load>
             <a
               href="https://github.com/LeadcodeDev"
               target="_blank"
               rel="noopener noreferrer"
-              class="rounded-full font-semibold inline-flex items-center gap-2 transition-colors px-4 py-1.5 text-xs ring ring-inset ring-primary/50 text-primary hover:bg-primary/10 active:bg-primary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              class="flex items-center gap-2"
             >
-              <span data-t="hero.badge">Software Engineer</span>
-              <Icon icon="mdi:arrow-right" className="size-3.5" client:load />
+              <Icon icon="mdi:github" aria-hidden="true" className="size-5" client:load />
+              <span data-t="hero.secondaryAction">GitHub</span>
             </a>
+          </Button>
+        </div>
+        <div class="h-in mt-8 flex gap-x-8 gap-y-3 flex-wrap" style="animation-delay: 320ms;">
+          <div class="flex items-center gap-2 text-sm text-muted-foreground">
+            <Icon icon="mdi:language-rust" className="size-4 text-primary" client:load />
+            <span data-t="hero.tag1">Rust backend</span>
           </div>
-
-          <h1
-            class="hero-animate text-5xl text-pretty tracking-tight text-foreground font-semibold sm:text-7xl"
-            style="animation-delay: 200ms;"
-            data-t="hero.title"
-          >
-            Baptiste Parmantier
-          </h1>
-          <p
-            class="hero-animate text-lg sm:text-xl/8 text-muted-foreground text-balance mt-6 max-w-xl lg:mx-0 mx-auto"
-            style="animation-delay: 350ms;"
-            data-t="hero.description"
-          >
-            Software Engineer passionate about building developer tools, open-source projects, and modern web applications.
-          </p>
-
-          <!-- CTAs -->
-          <div class="hero-animate pt-8 flex lg:justify-start justify-center" style="animation-delay: 500ms;">
-            <div class="flex flex-wrap gap-x-4 gap-y-3">
-              <Button size="lg" className="cursor-pointer" client:load>
-                <a
-                  href="#projects"
-                  class="flex gap-2"
-                >
-                  <span data-t="hero.primaryAction">View Projects</span>
-                  <Icon icon="mdi:arrow-right" aria-hidden="true" className="size-5" client:load />
-                </a>
-              </Button>
-              <Button variant="outline" size="lg" className="cursor-pointer" client:load>
-                <a
-                  href="https://github.com/LeadcodeDev"
-                  class="flex gap-2"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Icon icon="mdi:github" aria-hidden="true" className="size-5" client:load />
-                  <span data-t="hero.secondaryAction">GitHub Profile</span>
-                </a>
-              </Button>
-            </div>
+          <div class="flex items-center gap-2 text-sm text-muted-foreground">
+            <Icon icon="mdi:shield-key-outline" className="size-4 text-primary" client:load />
+            <span data-t="hero.tag2">IAM and security</span>
           </div>
+          <div class="flex items-center gap-2 text-sm text-muted-foreground">
+            <Icon icon="mdi:source-branch" className="size-4 text-primary" client:load />
+            <span data-t="hero.tag3">Open source lead</span>
+          </div>
+        </div>
+      </div>
+      <div class="order-1 lg:order-2">
 
-          <!-- Stats row -->
-          <div class="hero-animate mt-8 flex lg:justify-start justify-center gap-x-6 gap-y-3 flex-wrap" style="animation-delay: 650ms;">
-            <div class="flex items-center gap-2 text-sm text-muted-foreground">
-              <Icon icon="mdi:map-marker-outline" className="size-4 text-primary/70" client:load />
-              <span data-t="hero.location">Vendee, France</span>
-            </div>
-            <div class="flex items-center gap-2 text-sm text-muted-foreground">
-              <Icon icon="mdi:briefcase-outline" className="size-4 text-primary/70" client:load />
-              <span data-t="hero.experience">10+ years experience</span>
-            </div>
-            <div class="flex items-center gap-2 text-sm text-muted-foreground">
-              <Icon icon="mdi:open-source-initiative" className="size-4 text-primary/70" client:load />
-              <span data-t="hero.openSource">Open source contributor</span>
-            </div>
+        <!-- Photo -->
+        <div class="overflow-hidden rounded-lg border bg-background">
+          <img
+            src="https://github.com/LeadcodeDev.png"
+            alt="Baptiste Parmantier"
+            class="aspect-square w-full object-cover object-top"
+            loading="eager"
+          />
+        </div>
+        <div class="mt-4 grid grid-cols-3 gap-3">
+          <div class="rounded-lg border bg-background p-4">
+            <p class="text-2xl font-semibold text-foreground">Rust</p>
+            <p class="mt-1 text-xs text-muted-foreground">services, CLI, APIs</p>
+          </div>
+          <div class="rounded-lg border bg-background p-4">
+            <p class="text-2xl font-semibold text-foreground">IAM</p>
+            <p class="mt-1 text-xs text-muted-foreground">Keycloak, OIDC</p>
+          </div>
+          <div class="rounded-lg border bg-background p-4">
+            <p class="text-2xl font-semibold text-foreground">K8s</p>
+            <p class="mt-1 text-xs text-muted-foreground">OPA, AuthZen, MCP</p>
           </div>
         </div>
 
       </div>
+
     </div>
   </div>
 </div>
