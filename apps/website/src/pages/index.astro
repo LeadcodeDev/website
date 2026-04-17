@@ -2,11 +2,12 @@
 import Base from '../layouts/base.astro'
 import { WebsiteNavbar } from '../components/website-navbar'
 import HeroSection from '../components/hero-section.astro'
-import FeaturesSection from '../components/features-section.astro'
-import HighlightsSection from '../components/highlights-section.astro'
-import TestimonialsSection from '../components/testimonials-section.astro'
-import CtaSection from '../components/cta-section.astro'
+import FerrisKeySpotlightSection from '../components/ferriskey-spotlight-section.astro'
+import PrinciplesSection from '../components/principles-section.astro'
+import IamSection from '../components/iam-section.astro'
+import ProjectsSection from '../components/projects-section.astro'
 import LatestArticlesSection from '../components/latest-articles-section.astro'
+import ContactSection from '../components/contact-section.astro'
 import { Footer } from '@explainer/ui'
 import { siteConfig } from '../config'
 import { ui } from '../i18n/ui'
@@ -21,15 +22,16 @@ const translations = ui.fr
 const thumbnails = { en: '/thumbnail.png', fr: '/thumbnails/fr/thumbnail.png' }
 ---
 
-<Base title="Explainer" description="Documentation boilerplate for developers." thumbnail="/thumbnail.png">
+<Base title="Baptiste Parmantier" description="Software Architect and IAM expert with 10+ years of experience. Co-founder of FerrisKey. Designing scalable distributed systems." thumbnail="/thumbnail.png">
   <WebsiteNavbar appUrlOverrides={appUrlOverrides} client:load transition:persist />
 
   <HeroSection />
-  <FeaturesSection />
-  <HighlightsSection />
-  <TestimonialsSection />
+  <FerrisKeySpotlightSection />
+  <PrinciplesSection />
+  <IamSection />
+  <ProjectsSection />
   <LatestArticlesSection />
-  <CtaSection />
+  <ContactSection />
 
   <div class="mx-auto max-w-6xl px-6">
     <Footer config={siteConfig} appUrlOverrides={appUrlOverrides} client:load />

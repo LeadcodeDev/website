@@ -1,0 +1,113 @@
+---
+import { Icon } from "@iconify/react";
+import { Button } from "@explainer/ui";
+
+const proofs = [
+  {
+    icon: "lucide:boxes",
+    titleKey: "ferriskey.proof1.title",
+    descKey: "ferriskey.proof1.description",
+    title: "Architecture",
+    description: "Hexagonal architecture in Rust. Service boundaries designed before the first line of code. API contracts that the entire stack depends on.",
+  },
+  {
+    icon: "lucide:network",
+    titleKey: "ferriskey.proof2.title",
+    descKey: "ferriskey.proof2.description",
+    title: "Distributed",
+    description: "Multiple services on Kubernetes. Event-driven coordination, eventual consistency, and horizontal scalability by design.",
+  },
+  {
+    icon: "lucide:activity",
+    titleKey: "ferriskey.proof3.title",
+    descKey: "ferriskey.proof3.description",
+    title: "Production",
+    description: "GitHub Actions CI/CD, Prometheus + Loki for observability. Maintained with SLO discipline — shipped and kept alive.",
+  },
+];
+---
+
+<section id="ferriskey" class="relative py-24 sm:py-32 overflow-hidden">
+  <div
+    class="absolute inset-0 -z-10 pointer-events-none"
+    style="background: radial-gradient(ellipse at 20% 60%, color-mix(in oklch, var(--primary) 8%, transparent) 0%, transparent 60%);"
+    aria-hidden="true"
+  ></div>
+
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="mb-10" data-reveal="fade-up">
+      <p class="text-sm font-semibold text-primary uppercase tracking-widest" data-t="ferriskey.label">
+        Flagship Product
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+      <!-- Left (2/5) -->
+      <div class="lg:col-span-2" data-reveal="fade-right">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="flex items-center justify-center size-14 rounded-2xl border bg-primary/[12%] border-primary/[28%]">
+            <img src="https://ferriskey.rs/logo.svg" alt="FerrisKey" class="size-8" />
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-foreground sm:text-3xl" data-t="ferriskey.title">
+              FerrisKey
+            </h2>
+            <p class="text-sm font-medium mt-0.5 text-primary" data-t="ferriskey.subtitle">
+              Open-source IAM platform, built in Rust
+            </p>
+          </div>
+        </div>
+
+        <p class="text-muted-foreground leading-relaxed" data-t="ferriskey.description">
+          FerrisKey is an enterprise-grade identity and access management platform — the kind of system where correctness is non-negotiable. I co-founded it, designed the architecture, wrote the core, and own the production stack.
+        </p>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <Button size="default" className="cursor-pointer" client:load>
+            <a
+              href="https://ferriskey.rs"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2"
+            >
+              <Icon icon="lucide:globe" className="size-4" client:load />
+              <span data-t="ferriskey.cta.website">Visit ferriskey.rs</span>
+            </a>
+          </Button>
+          <Button variant="outline" size="default" className="cursor-pointer" client:load>
+            <a
+              href="https://github.com/ferriskey/ferriskey"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2"
+            >
+              <Icon icon="mdi:github" className="size-4" client:load />
+              <span data-t="ferriskey.cta.github">View on GitHub</span>
+            </a>
+          </Button>
+        </div>
+      </div>
+
+      <!-- Right (3/5) -->
+      <div class="lg:col-span-3 space-y-4" data-reveal="fade-left" data-reveal-delay="100">
+        {proofs.map((proof) => (
+          <div class="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/30">
+            <div class="flex items-start gap-4">
+              <div class="flex items-center justify-center size-10 rounded-xl shrink-0 mt-0.5 bg-primary/[12%]">
+                <Icon icon={proof.icon} className="size-5 text-primary" client:load />
+              </div>
+              <div>
+                <h3 class="text-base font-semibold text-foreground mb-1" data-t={proof.titleKey}>
+                  {proof.title}
+                </h3>
+                <p class="text-sm text-muted-foreground leading-relaxed" data-t={proof.descKey}>
+                  {proof.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

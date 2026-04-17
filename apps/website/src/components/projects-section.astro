@@ -1,0 +1,253 @@
+---
+import { cn } from "@explainer/ui";
+import { Icon } from "@iconify/react";
+
+interface ProjectTw {
+  card: string;
+  logo: string;
+  icon: string;
+  arrowHover: string;
+  arrowIcon: string;
+}
+
+interface Project {
+  titleKey: string;
+  descKey: string;
+  title: string;
+  description: string;
+  icon: string;
+  tags: string[];
+  href: string;
+  isMore?: boolean;
+  tw?: ProjectTw;
+}
+
+const projects: Project[] = [
+  {
+    titleKey: "projects.ferriskey.title",
+    descKey: "projects.ferriskey.description",
+    title: "FerrisKey",
+    description: "Enterprise-grade IAM platform built in Rust. OIDC, multi-tenancy, policy engine, and Kubernetes-native — designed for systems where correctness is non-negotiable.",
+    icon: "mdi:shield-key-outline",
+    tags: ["Rust", "IAM", "OIDC", "Kubernetes"],
+    href: "https://github.com/ferriskey/ferriskey",
+    tw: {
+      card: "border-orange-500/20 hover:border-orange-500/40",
+      logo: "bg-orange-500/10 border-orange-500/[15%]",
+      icon: "text-orange-400",
+      arrowHover: "group-hover:border-orange-400 group-hover:bg-orange-500/10",
+      arrowIcon: "group-hover:text-orange-400",
+    },
+  },
+  {
+    titleKey: "projects.ferriscord.title",
+    descKey: "projects.ferriscord.description",
+    title: "Ferriscord",
+    description: "A FerrisLabs project focused on realtime collaboration foundations, protocol design and reliable services.",
+    icon: "mdi:clipboard-check-outline",
+    tags: ["Rust", "Realtime", "ScyllaDB", "Kafka"],
+    href: "https://github.com/ferrislabs",
+    tw: {
+      card: "border-violet-500/20 hover:border-violet-500/40",
+      logo: "bg-violet-500/10 border-violet-500/[15%]",
+      icon: "text-violet-400",
+      arrowHover: "group-hover:border-violet-400 group-hover:bg-violet-500/10",
+      arrowIcon: "group-hover:text-violet-400",
+    },
+  },
+  {
+    titleKey: "projects.mineral.title",
+    descKey: "projects.mineral.description",
+    title: "Mineral",
+    description: "A framework for Discord bots designed around modular plugin architecture and a declarative API surface. Built with Dart.",
+    icon: "mdi:diamond-outline",
+    tags: ["Dart", "Framework", "Plugin architecture"],
+    href: "https://github.com/mineral-dart",
+    tw: {
+      card: "border-fuchsia-500/20 hover:border-fuchsia-500/40",
+      logo: "bg-fuchsia-500/10 border-fuchsia-500/[15%]",
+      icon: "text-fuchsia-400",
+      arrowHover: "group-hover:border-fuchsia-400 group-hover:bg-fuchsia-500/10",
+      arrowIcon: "group-hover:text-fuchsia-400",
+    },
+  },
+  {
+    titleKey: "projects.seameet.title",
+    descKey: "projects.seameet.description",
+    title: "Seameet",
+    description: "A core engine for real-time video communication, designed as a composable system with pluggable transport layers.",
+    icon: "mdi:video-outline",
+    tags: ["Rust", "WebRTC", "Realtime"],
+    href: "https://github.com/LeadcodeDev/seameet",
+    tw: {
+      card: "border-teal-500/20 hover:border-teal-500/40",
+      logo: "bg-teal-500/10 border-teal-500/[15%]",
+      icon: "text-teal-400",
+      arrowHover: "group-hover:border-teal-400 group-hover:bg-teal-500/10",
+      arrowIcon: "group-hover:text-teal-400",
+    },
+  },
+  {
+    titleKey: "projects.rustmotion.title",
+    descKey: "projects.rustmotion.description",
+    title: "Rustmotion",
+    description: "A rendering engine that compiles JSON scene graphs into motion design videos. Zero-dependency architecture.",
+    icon: "mdi:movie-open-outline",
+    tags: ["Rust", "Rendering", "Zero-dependency"],
+    href: "https://github.com/LeadcodeDev/rustmotion",
+    tw: {
+      card: "border-cyan-500/20 hover:border-cyan-500/40",
+      logo: "bg-cyan-500/10 border-cyan-500/[15%]",
+      icon: "text-cyan-400",
+      arrowHover: "group-hover:border-cyan-400 group-hover:bg-cyan-500/10",
+      arrowIcon: "group-hover:text-cyan-400",
+    },
+  },
+  {
+    titleKey: "projects.explainer.title",
+    descKey: "projects.explainer.description",
+    title: "Explainer",
+    description: "A boilerplate for building complete documentation systems. MDX content, TypeScript logic, and Astro for static generation — opinionated structure for maintainable docs.",
+    icon: "mdi:book-open-page-variant-outline",
+    tags: ["Astro", "MDX", "TypeScript"],
+    href: "https://github.com/LeadcodeDev/explainer_v2",
+    tw: {
+      card: "border-amber-500/20 hover:border-amber-500/40",
+      logo: "bg-amber-500/10 border-amber-500/[15%]",
+      icon: "text-amber-400",
+      arrowHover: "group-hover:border-amber-400 group-hover:bg-amber-500/10",
+      arrowIcon: "group-hover:text-amber-400",
+    },
+  },
+  {
+    titleKey: "projects.sqlxgen.title",
+    descKey: "projects.sqlxgen.description",
+    title: "sqlx_gen",
+    description: "Generate Rust structs and CRUD repositories from your database schema — correct types, derives, and sqlx annotations. Supports PostgreSQL, MySQL, SQLite.",
+    icon: "mdi:database-cog-outline",
+    tags: ["Rust", "SQLx", "Codegen"],
+    href: "https://github.com/LeadcodeDev/sqlx_gen",
+    tw: {
+      card: "border-emerald-500/20 hover:border-emerald-500/40",
+      logo: "bg-emerald-500/10 border-emerald-500/[15%]",
+      icon: "text-emerald-400",
+      arrowHover: "group-hover:border-emerald-400 group-hover:bg-emerald-500/10",
+      arrowIcon: "group-hover:text-emerald-400",
+    },
+  },
+  {
+    titleKey: "projects.ferrisletter.title",
+    descKey: "projects.ferrisletter.description",
+    title: "Ferrisletter",
+    description: "A FerrisLabs product for messaging and newsletter workflows with clean delivery and platform boundaries.",
+    icon: "mdi:email-open-multiple-outline",
+    tags: ["Postgres", "Architecture", "Open source"],
+    href: "https://github.com/ferrislabs",
+    tw: {
+      card: "border-blue-500/20 hover:border-blue-500/40",
+      logo: "bg-blue-500/10 border-blue-500/[15%]",
+      icon: "text-blue-400",
+      arrowHover: "group-hover:border-blue-400 group-hover:bg-blue-500/10",
+      arrowIcon: "group-hover:text-blue-400",
+    },
+  },
+  {
+    titleKey: "projects.more.title",
+    descKey: "projects.more.description",
+    title: "And many more...",
+    description: "Discover all my open-source projects on GitHub.",
+    icon: "mdi:github",
+    tags: [],
+    href: "https://github.com/LeadcodeDev",
+    isMore: true,
+  },
+];
+---
+
+<section id="projects" class="relative py-24 sm:py-32">
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Header -->
+    <div class="mb-12" data-reveal="fade-up">
+      <p class="text-sm font-semibold text-primary uppercase tracking-widest mb-3" data-t="projects.label">
+        Projects
+      </p>
+      <h2 class="text-3xl font-bold text-foreground sm:text-4xl" data-t="projects.title">
+        Open source products, not demo code
+      </h2>
+      <p class="mt-4 text-lg text-muted-foreground max-w-2xl" data-t="projects.description">
+        Each project is a system decision made concrete — architecture choices, protocol design, and long-term maintenance.
+      </p>
+    </div>
+
+    <!-- Project grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {projects.map((project, i) => (
+        project.isMore ? (
+          <a
+            href={project.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group rounded-2xl border border-dashed border-border/40 p-6 flex flex-col items-center justify-center text-center gap-3 transition-all duration-300 hover:border-border/70 hover:bg-card/30"
+            data-reveal="fade-scale"
+            data-reveal-delay={String(100 + i * 100)}
+          >
+            <div class="flex items-center justify-center size-10 rounded-xl bg-muted/30">
+              <Icon icon={project.icon} className="size-5 text-muted-foreground/50" client:load />
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-muted-foreground" data-t={project.titleKey}>
+                {project.title}
+              </h3>
+              <p class="mt-1 text-sm text-muted-foreground/60" data-t={project.descKey}>
+                {project.description}
+              </p>
+            </div>
+          </a>
+        ) : (
+          <a
+            href={project.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={cn(
+              'group rounded-2xl bg-card/50 backdrop-blur-sm border p-6 flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-primary/5',
+              project.tw!.card
+            )}
+            data-reveal="fade-scale"
+            data-reveal-delay={String(100 + i * 100)}
+          >
+            <div class="flex items-start justify-between">
+              <div class={`flex items-center justify-center size-12 rounded-xl border overflow-hidden transition-all duration-300 ${project.tw!.logo}`}>
+                <Icon icon={project.icon} className={`size-6 ${project.tw!.icon}`} client:load />
+              </div>
+              <div class={cn(
+                'flex items-center justify-center size-9 rounded-lg border border-border/50 bg-card/50 shrink-0 transition-all duration-300 group-hover:rotate-45',
+                project.tw!.arrowHover
+              )}>
+                <Icon icon="lucide:arrow-up-right" className={cn(`size-4 text-muted-foreground transition-colors duration-300`, project.tw!.arrowIcon)} client:load />
+              </div>
+            </div>
+
+            <div class="flex-1 min-h-8"></div>
+
+            <h3 class="text-lg font-semibold text-foreground" data-t={project.titleKey}>
+              {project.title}
+            </h3>
+            <p class="mt-2 text-sm text-muted-foreground leading-relaxed" data-t={project.descKey}>
+              {project.description}
+            </p>
+
+            {project.tags.length > 0 && (
+              <div class="flex items-center gap-2 flex-wrap mt-6">
+                {project.tags.map((tag) => (
+                  <span class="text-xs text-muted-foreground border border-border/50 rounded-lg px-2.5 py-1">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </a>
+        )
+      ))}
+    </div>
+  </div>
+</section>

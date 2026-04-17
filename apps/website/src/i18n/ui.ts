@@ -4,84 +4,126 @@ export const ui = {
   en: {
     // Page
     'page.title': 'Baptiste Parmantier',
-    'page.description': 'Documentation boilerplate for developers.',
+    'page.description': 'Software Architect and IAM expert with 10+ years of experience. Co-founder of FerrisKey. Designing scalable distributed systems.',
     'footer.text': 'Built with Explainer v2',
 
     // Navbar
-    'nav.features': 'Features',
-    'nav.getStarted': 'Get Started',
+    'nav.projects': 'Projects',
+    'nav.experience': 'Experience',
+    'nav.articles': 'Articles',
+    'nav.contact': 'Contact',
 
     // Hero
-    'hero.badge': 'Explainer',
-    'hero.title': 'Explain your ideas',
-    'hero.description':
-      'Quickly design your documentation and optimise it for search engine optimisation to showcase your products.',
-    'hero.primaryAction': 'Getting Started',
-    'hero.secondaryAction': 'View on GitHub',
-    'hero.openSource': 'Open source',
-    'hero.license': 'MIT License',
-    'hero.downloads': '1k+ downloads',
+    'hero.badge': 'Rust, IAM and distributed systems',
+    'hero.title': 'Baptiste Parmantier,',
+    'hero.headline': 'architect for systems that stay alive',
+    'hero.description': 'I build IAM primitives, distributed architectures and production systems. From the first API contract to the last alert resolved.',
+    'hero.primaryAction': 'View FerrisKey',
+    'hero.secondaryAction': 'GitHub',
+    'hero.tag1': 'Rust backend',
+    'hero.tag2': 'IAM and security',
+    'hero.tag3': 'Open source lead',
+    'hero.currentlyAt': 'Currently at',
 
-    // Features
-    'features.label': 'Features',
-    'features.title': 'Everything you need, out of the box',
-    'features.description':
-      'Explainer gives you the tools to focus on your content, not your tooling.',
-    'features.markdown.title': 'Markdown & MDX',
-    'features.markdown.description':
-      'Write content in Markdown or MDX with custom components, directives, and JSX support.',
-    'features.fast.title': 'Lightning fast',
-    'features.fast.description':
-      'Static site generation for instant page loads. Zero JavaScript shipped by default.',
-    'features.code.title': 'Rich code blocks',
-    'features.code.description':
-      'Dual-theme syntax highlighting, line diffs, focus mode, and 60+ language icons.',
-    'features.search.title': 'Built-in search',
-    'features.search.description':
-      'Command palette search so your readers find any page instantly.',
-    'features.seo.title': 'SEO ready',
-    'features.seo.description': 'Auto-generated OG thumbnails, sitemap, robots.txt, and RSS feed.',
-    'features.darkMode.title': 'Dark mode',
-    'features.darkMode.description':
-      'Full light and dark theme support with system preference detection.',
+    // FerrisKey Spotlight
+    'ferriskey.label': 'Flagship Product',
+    'ferriskey.title': 'FerrisKey',
+    'ferriskey.subtitle': 'Open-source IAM platform, built in Rust',
+    'ferriskey.description': 'FerrisKey is an enterprise-grade identity and access management platform — the kind of system where correctness is non-negotiable. I co-founded it, designed the architecture, wrote the core, and own the production stack.',
+    'ferriskey.proof1.title': 'Architecture',
+    'ferriskey.proof1.description': 'Hexagonal architecture in Rust. Service boundaries designed before the first line of code. API contracts that the entire stack depends on.',
+    'ferriskey.proof2.title': 'Distributed',
+    'ferriskey.proof2.description': 'Multiple services on Kubernetes. Event-driven coordination, eventual consistency, and horizontal scalability by design.',
+    'ferriskey.proof3.title': 'Production',
+    'ferriskey.proof3.description': 'GitHub Actions CI/CD, Prometheus + Loki for observability. Maintained with SLO discipline — shipped and kept alive.',
+    'ferriskey.cta.website': 'Visit ferriskey.rs',
+    'ferriskey.cta.github': 'View on GitHub',
 
-    // Highlights
-    'highlights.label': 'Highlights',
-    'highlights.title': 'Why Explainer?',
-    'highlights.description': "Built for developers who care about their users' experience.",
-    'highlights.ship.title': 'Ship docs in minutes, not days',
-    'highlights.ship.description':
-      'Clone the repo, write your Markdown, deploy. No complex setup, no build pipeline to configure. Your documentation is live before your coffee gets cold.',
-    'highlights.brand.title': 'Your brand, your way',
-    'highlights.brand.description':
-      'Tailwind CSS design tokens let you match your documentation to your product identity with a few CSS variable changes.',
-    'highlights.extensible.title': 'Extensible by design',
-    'highlights.extensible.description':
-      'Drop in React, Vue, or Svelte components directly in your Markdown. Build interactive examples, live demos, and API playgrounds.',
-    'highlights.growth.title': 'Built for growth',
-    'highlights.growth.description':
-      'From a single getting-started guide to hundreds of pages — the architecture scales with your project. Multi-collection docs, versioning-ready structure, and automatic navigation.',
+    // Pillars (replaces Principles)
+    'pillars.label': 'What I Do',
+    'pillars.title': "Three things I'm built for",
+    'pillars.description': 'Not a list of frameworks. What I actually deliver, end to end.',
+    'pillars.card1.title': 'Identity & Architecture',
+    'pillars.card1.description': "I design systems at the domain level — defining service boundaries, API contracts, and data ownership before touching a framework. My IAM expertise (OIDC, policies, multi-tenancy) comes from building FerrisKey: an identity platform where correctness isn't optional.",
+    'pillars.card2.title': 'Distributed Systems',
+    'pillars.card2.description': 'I build services that coordinate reliably at scale. Event-driven architectures, Kubernetes orchestration, and consistency models designed for failure — not just for the happy path.',
+    'pillars.card3.title': 'Production Lifecycle',
+    'pillars.card3.description': "I don't stop at the deploy. CI/CD pipelines, structured observability with Prometheus and Loki, and the mindset of an owner — not a contractor. If it pages at 3am, I'm the one who fixed the design that caused it.",
 
-    // Testimonials
-    'testimonials.label': 'Testimonials',
-    'testimonials.title': 'Loved by developers',
-    'testimonials.description': 'See what developers are saying about their experience.',
-    'testimonials.1.body':
-      "The best documentation framework I've used. Setup took 5 minutes and the output looks incredible.",
-    'testimonials.2.body':
-      "Finally, a docs tool that doesn't fight you. Markdown in, beautiful site out. Exactly what we needed.",
-    'testimonials.3.body':
-      'The built-in search and SEO features saved us weeks of work. Our docs rank on page one now.',
-    'testimonials.4.body':
-      'Dark mode, code highlighting, view transitions — it has everything out of the box. No plugins needed.',
-    'testimonials.5.body':
-      'We migrated from Docusaurus in a weekend. The MDX component system is so much more flexible.',
-    'testimonials.6.body':
-      'The developer experience is top notch. Hot reload is instant and the API reference integration is perfect.',
-    'testimonials.7.body':
-      'Our team loves writing docs now. The components make it easy to create rich, interactive content.',
-    'testimonials.8.body':
-      'Seriously impressed by the OG thumbnail generation. Every page gets a beautiful social card automatically.',
+    // About (kept for i18n completeness, section removed from page)
+    'about.label': 'About',
+    'about.title': 'Who I am',
+    'about.description': 'Designing systems that scale, one architecture decision at a time.',
+    'about.bio1': "I'm a Software Architect with over 10 years of experience designing systems that balance performance, maintainability, and developer experience. I care deeply about making the right trade-offs, not just shipping features.",
+    'about.bio2': 'I work across the full stack, but my focus is at the architecture level: defining service boundaries, choosing the right patterns for the problem, and designing APIs that teams can build on. From event-driven backends in Rust to modular frontend architectures, I design for the long term.',
+    'about.bio3': 'I build open-source tools that reflect these principles and write about software architecture to help other engineers think beyond the code.',
+    'about.stat1.value': '10+',
+    'about.stat1.label': 'Years designing systems',
+    'about.stat2.value': '15+',
+    'about.stat2.label': 'Architectures designed',
+    'about.stat3.value': '30+',
+    'about.stat3.label': 'Open-source repos',
+    'about.stat4.value': '5+',
+    'about.stat4.label': 'Teams mentored',
+
+    // Projects
+    'projects.label': 'Projects',
+    'projects.title': 'Open source products, not demo code',
+    'projects.description': 'Each project is a system decision made concrete — architecture choices, protocol design, and long-term maintenance.',
+    'projects.viewAll': 'View all on GitHub',
+    'projects.ferriskey.title': 'FerrisKey',
+    'projects.ferriskey.description': 'Enterprise-grade IAM platform built in Rust. OIDC, multi-tenancy, policy engine, and Kubernetes-native — designed for systems where correctness is non-negotiable.',
+    'projects.ferriscord.title': 'Ferriscord',
+    'projects.ferriscord.description': 'A FerrisLabs project focused on realtime collaboration foundations, protocol design and reliable services.',
+    'projects.ferrisletter.title': 'Ferrisletter',
+    'projects.ferrisletter.description': 'A FerrisLabs product for messaging and newsletter workflows with clean delivery and platform boundaries.',
+    'projects.mineral.title': 'Mineral',
+    'projects.mineral.description': 'A framework for Discord bots designed around modular plugin architecture and a declarative API surface, built with Dart.',
+    'projects.rustmotion.title': 'Rustmotion',
+    'projects.rustmotion.description': 'A rendering engine that compiles JSON scene graphs into motion design videos. Zero-dependency architecture — no browser, no runtime, just a single Rust binary.',
+    'projects.seameet.title': 'Seameet',
+    'projects.seameet.description': 'A core engine for real-time video communication, designed as a composable system with pluggable transport layers. Built in Rust for predictable latency.',
+    'projects.explainer.title': 'Explainer',
+    'projects.explainer.description': 'A boilerplate for building complete documentation systems. MDX content, TypeScript logic, and Astro for static generation — opinionated structure for maintainable docs.',
+    'projects.sqlxgen.title': 'sqlx_gen',
+    'projects.sqlxgen.description': 'Generate Rust structs and CRUD repositories from your database schema — correct types, derives, and sqlx annotations. Supports PostgreSQL, MySQL, SQLite.',
+    'projects.more.title': 'And many more...',
+    'projects.more.description': 'Discover all my open-source projects on GitHub.',
+
+    // Expertise (IAM section)
+    'expertise.label': 'Expertise',
+    'expertise.title': 'From identity to distributed platforms.',
+    'expertise.description': 'I focus on the parts of a system where product design, security constraints and operational reality meet.',
+    'expertise.iam.title': 'IAM & OIDC',
+    'expertise.iam.description': 'OIDC, OAuth2, FerrisKey, token lifecycle, multi-tenant realms and secure product boundaries. Protocol implementation from spec — not from tutorials.',
+    'expertise.authz.title': 'Authorization & policy',
+    'expertise.authz.description': 'OPA, RBAC, ABAC, delegated authorization and policy-as-code. Fine-grained access control that stays auditable when security teams need answers.',
+    'expertise.platform.title': 'Platform identity',
+    'expertise.platform.description': 'Kubernetes-native identity, service-to-service auth, mTLS and SPIFFE/SPIRE between workloads. IAM at the infrastructure layer.',
+    'expertise.distributed.title': 'Distributed security',
+    'expertise.distributed.description': 'Event-driven auth flows, Kafka-based audit pipelines, and consistency decisions for systems that stay explainable under failure.',
+    'expertise.ops.title': 'Operational security',
+    'expertise.ops.description': 'Auth systems that are observable and recoverable. Structured audit logs, token flow metrics, and SLOs for security-critical infrastructure.',
+
+    // Experience
+    'experience.label': 'Experience',
+    'experience.title': 'Professional Journey',
+    'experience.description': 'From writing code to designing the systems around it.',
+    'experience.entry1.date': '2022 - Present',
+    'experience.entry1.role': 'Software Architect & Co-founder',
+    'experience.entry1.company': 'FerrisKey & Open Source',
+    'experience.entry1.description': 'Co-founded FerrisKey, an open-source IAM platform in Rust. Designed the architecture, defined service boundaries and API contracts, and own the full production stack — from CI/CD to observability.',
+    'experience.entry2.date': '2019 - 2022',
+    'experience.entry2.role': 'Software Engineer & System Designer',
+    'experience.entry2.company': 'Company',
+    'experience.entry2.description': 'Designed and built web application architectures with Vue.js and AdonisJS. Defined CI/CD pipelines, data models, and mentored developers on clean architecture practices.',
+    'experience.entry3.date': '2016 - 2019',
+    'experience.entry3.role': 'Software Developer',
+    'experience.entry3.company': 'Company',
+    'experience.entry3.description': 'Built web applications and discovered the importance of well-structured codebases and the open-source ecosystem.',
+
+    // Skills (band)
+    'skills.label': 'Stack',
 
     // Articles
     'articles.label': 'Blog',
@@ -89,94 +131,135 @@ export const ui = {
     'articles.description': 'Stay up to date with the latest news and updates.',
     'articles.viewAll': 'View all articles',
 
-    // CTA
-    'cta.title': 'Ready to get started?',
-    'cta.description':
-      'Start building your documentation in minutes. Free, open source, and yours to customize.',
-    'cta.action': 'Read the docs',
+    // Contact
+    'contact.title': "Let's design something together",
+    'contact.description': 'Have a system to design, an architecture to review, or just want to talk tech? Feel free to reach out.',
+    'contact.email': 'Send an email',
+    'contact.linkedin': 'LinkedIn',
   },
   fr: {
     // Page
     'page.title': 'Baptiste Parmantier',
-    'page.description': 'Boilerplate de documentation pour les développeurs.',
+    'page.description': "Architecte logiciel et expert IAM avec plus de 10 ans d'expérience. Co-fondateur de FerrisKey. Conception de systèmes distribués scalables.",
     'footer.text': 'Construit avec Explainer v2',
 
     // Navbar
-    'nav.features': 'Fonctionnalités',
-    'nav.getStarted': 'Commencer',
+    'nav.projects': 'Projets',
+    'nav.experience': 'Parcours',
+    'nav.articles': 'Articles',
+    'nav.contact': 'Contact',
 
     // Hero
-    'hero.badge': 'Explainer',
-    'hero.title': 'Expliquez vos idées',
-    'hero.description':
-      'Concevez rapidement votre documentation et optimisez-la pour le référencement afin de mettre en valeur vos produits.',
-    'hero.primaryAction': 'Commencer',
-    'hero.secondaryAction': 'Voir sur GitHub',
-    'hero.openSource': 'Open source',
-    'hero.license': 'Licence MIT',
-    'hero.downloads': '1k+ téléchargements',
+    'hero.badge': 'Rust, IAM et systèmes distribués',
+    'hero.title': 'Baptiste Parmantier,',
+    'hero.headline': 'architecte de systèmes qui restent en vie',
+    'hero.description': "Je conçois des primitives IAM, des architectures distribuées et des systèmes production. Du premier contrat d'API jusqu'à la dernière alerte résolue.",
+    'hero.primaryAction': 'Voir FerrisKey',
+    'hero.secondaryAction': 'GitHub',
+    'hero.tag1': 'Backend Rust',
+    'hero.tag2': 'IAM et sécurité',
+    'hero.tag3': 'Open source lead',
+    'hero.currentlyAt': 'Actuellement chez',
 
-    // Features
-    'features.label': 'Fonctionnalités',
-    'features.title': "Tout ce dont vous avez besoin, prêt à l'emploi",
-    'features.description':
-      'Explainer vous donne les outils pour vous concentrer sur votre contenu, pas sur vos outils.',
-    'features.markdown.title': 'Markdown & MDX',
-    'features.markdown.description':
-      'Rédigez du contenu en Markdown ou MDX avec des composants personnalisés, des directives et le support JSX.',
-    'features.fast.title': 'Ultra rapide',
-    'features.fast.description':
-      'Génération de site statique pour des chargements instantanés. Zéro JavaScript envoyé par défaut.',
-    'features.code.title': 'Blocs de code riches',
-    'features.code.description':
-      'Coloration syntaxique double thème, diffs de lignes, mode focus et plus de 60 icônes de langages.',
-    'features.search.title': 'Recherche intégrée',
-    'features.search.description':
-      "Recherche par palette de commandes pour que vos lecteurs trouvent n'importe quelle page instantanément.",
-    'features.seo.title': 'Prêt pour le SEO',
-    'features.seo.description': 'Miniatures OG auto-générées, sitemap, robots.txt et flux RSS.',
-    'features.darkMode.title': 'Mode sombre',
-    'features.darkMode.description':
-      'Support complet des thèmes clair et sombre avec détection des préférences système.',
+    // FerrisKey Spotlight
+    'ferriskey.label': 'Produit phare',
+    'ferriskey.title': 'FerrisKey',
+    'ferriskey.subtitle': 'Plateforme IAM open-source, construite en Rust',
+    'ferriskey.description': "FerrisKey est une plateforme de gestion des identités et des accès de niveau entreprise — le type de système où l'exactitude n'est pas négociable. Je l'ai co-fondée, conçu l'architecture, écrit le cœur et je possède la stack de production.",
+    'ferriskey.proof1.title': 'Architecture',
+    'ferriskey.proof1.description': "Architecture hexagonale en Rust. Frontières de services définies avant la première ligne de code. Contrats d'API dont toute la stack dépend.",
+    'ferriskey.proof2.title': 'Distribué',
+    'ferriskey.proof2.description': 'Plusieurs services sur Kubernetes. Coordination événementielle, consistance éventuelle et scalabilité horizontale par conception.',
+    'ferriskey.proof3.title': 'Production',
+    'ferriskey.proof3.description': "CI/CD GitHub Actions, Prometheus + Loki pour l'observabilité. Maintenu avec une discipline SLO — livré et maintenu en vie.",
+    'ferriskey.cta.website': 'Visiter ferriskey.rs',
+    'ferriskey.cta.github': 'Voir sur GitHub',
 
-    // Highlights
-    'highlights.label': 'Points forts',
-    'highlights.title': 'Pourquoi Explainer ?',
-    'highlights.description':
-      "Conçu pour les développeurs qui se soucient de l'expérience de leurs utilisateurs.",
-    'highlights.ship.title': 'Publiez en minutes, pas en jours',
-    'highlights.ship.description':
-      'Clonez le repo, écrivez votre Markdown, déployez. Pas de configuration complexe, pas de pipeline de build à configurer. Votre documentation est en ligne avant que votre café ne refroidisse.',
-    'highlights.brand.title': 'Votre marque, à votre façon',
-    'highlights.brand.description':
-      "Les design tokens Tailwind CSS vous permettent d'adapter votre documentation à l'identité de votre produit en quelques changements de variables CSS.",
-    'highlights.extensible.title': 'Extensible par conception',
-    'highlights.extensible.description':
-      'Intégrez des composants React, Vue ou Svelte directement dans votre Markdown. Créez des exemples interactifs, des démos live et des playgrounds API.',
-    'highlights.growth.title': 'Conçu pour grandir',
-    'highlights.growth.description':
-      "D'un simple guide de démarrage à des centaines de pages — l'architecture évolue avec votre projet. Documentation multi-collection, structure prête pour le versioning et navigation automatique.",
+    // Pillars (replaces Principles)
+    'pillars.label': 'Ce que je fais',
+    'pillars.title': 'Trois axes, du premier commit au dernier incident',
+    'pillars.description': 'Pas une liste de frameworks. Ce que je livre concrètement, de bout en bout.',
+    'pillars.card1.title': 'Identité & Architecture',
+    'pillars.card1.description': "Je conçois les systèmes au niveau du domaine — en définissant les frontières de services, les contrats d'API et la propriété des données avant de toucher un framework. Mon expertise IAM (OIDC, politiques, multi-tenancy) vient de la construction de FerrisKey : une plateforme d'identité où l'exactitude n'est pas optionnelle.",
+    'pillars.card2.title': 'Systèmes distribués',
+    'pillars.card2.description': "Je construis des services qui se coordonnent de manière fiable à grande échelle. Architectures événementielles, orchestration Kubernetes et modèles de cohérence conçus pour la défaillance — pas seulement pour le happy path.",
+    'pillars.card3.title': 'Cycle de vie production',
+    'pillars.card3.description': "Je ne m'arrête pas au déploiement. Pipelines CI/CD, observabilité structurée avec Prometheus et Loki, et la mentalité d'un propriétaire — pas d'un prestataire. Si ça sonne à 3h du matin, c'est moi qui ai corrigé la conception qui en est la cause.",
 
-    // Testimonials
-    'testimonials.label': 'Témoignages',
-    'testimonials.title': 'Apprécié par les développeurs',
-    'testimonials.description': 'Découvrez ce que les développeurs disent de leur expérience.',
-    'testimonials.1.body':
-      "Le meilleur framework de documentation que j'ai utilisé. L'installation a pris 5 minutes et le rendu est incroyable.",
-    'testimonials.2.body':
-      "Enfin, un outil de docs qui ne vous combat pas. Du Markdown en entrée, un beau site en sortie. Exactement ce qu'il nous fallait.",
-    'testimonials.3.body':
-      'La recherche intégrée et les fonctionnalités SEO nous ont fait gagner des semaines de travail. Nos docs sont en première page maintenant.',
-    'testimonials.4.body':
-      'Mode sombre, coloration de code, transitions de vue — tout est inclus. Pas besoin de plugins.',
-    'testimonials.5.body':
-      'Nous avons migré depuis Docusaurus en un week-end. Le système de composants MDX est bien plus flexible.',
-    'testimonials.6.body':
-      "L'expérience développeur est au top. Le hot reload est instantané et l'intégration de référence API est parfaite.",
-    'testimonials.7.body':
-      'Notre équipe adore écrire de la documentation maintenant. Les composants rendent facile la création de contenu riche et interactif.',
-    'testimonials.8.body':
-      'Vraiment impressionné par la génération de miniatures OG. Chaque page obtient automatiquement une belle carte sociale.',
+    // About (kept for i18n completeness, section removed from page)
+    'about.label': 'À propos',
+    'about.title': 'Qui suis-je',
+    'about.description': "Concevoir des systèmes qui passent à l'échelle, une décision d'architecture à la fois.",
+    'about.bio1': "Je suis architecte logiciel avec plus de 10 ans d'expérience dans la conception de systèmes qui concilient performance, maintenabilité et expérience développeur. Je m'attache à faire les bons compromis, pas seulement à livrer des fonctionnalités.",
+    'about.bio2': "Je travaille sur l'ensemble de la stack, mais mon focus est au niveau architecture : définir les frontières de services, choisir les bons patterns pour chaque problème, et concevoir des APIs sur lesquelles les équipes peuvent construire. Des backends event-driven en Rust aux architectures frontend modulaires, je conçois pour le long terme.",
+    'about.bio3': "Je construis des outils open-source qui reflètent ces principes et j'écris sur l'architecture logicielle pour aider d'autres ingénieurs à penser au-delà du code.",
+    'about.stat1.value': '10+',
+    'about.stat1.label': 'Années de conception systèmes',
+    'about.stat2.value': '15+',
+    'about.stat2.label': 'Architectures conçues',
+    'about.stat3.value': '30+',
+    'about.stat3.label': 'Repos open-source',
+    'about.stat4.value': '5+',
+    'about.stat4.label': 'Équipes mentorées',
+
+    // Projects
+    'projects.label': 'Projets',
+    'projects.title': 'Des produits open source, pas du code de démo',
+    'projects.description': "Chaque projet est une décision d'architecture rendue concrète — choix de conception, design de protocoles et maintenance à long terme.",
+    'projects.viewAll': 'Voir tout sur GitHub',
+    'projects.ferriskey.title': 'FerrisKey',
+    'projects.ferriskey.description': "Plateforme IAM construite en Rust. OIDC, multi-tenancy, policy engine et Kubernetes-native — conçue pour les systèmes où la correction n'est pas négociable.",
+    'projects.ferriscord.title': 'Ferriscord',
+    'projects.ferriscord.description': 'Un projet FerrisLabs axé sur les fondations de collaboration en temps réel, la conception de protocoles et des services fiables.',
+    'projects.ferrisletter.title': 'Ferrisletter',
+    'projects.ferrisletter.description': 'Un produit FerrisLabs pour les workflows de messagerie et de newsletter avec une livraison propre et des frontières de plateforme claires.',
+    'projects.mineral.title': 'Mineral',
+    'projects.mineral.description': "Un framework pour bots Discord en Dart conçu autour d'une architecture de plugins modulaire et d'une surface d'API déclarative",
+    'projects.rustmotion.title': 'Rustmotion',
+    'projects.rustmotion.description': 'Un moteur de rendu qui compile des graphes de scènes JSON en vidéos de motion design. Architecture zéro-dépendance — pas de navigateur, pas de runtime, juste un binaire Rust.',
+    'projects.seameet.title': 'Seameet',
+    'projects.seameet.description': 'Un moteur pour la communication vidéo en temps réel, conçu comme un système composable avec des couches de transport interchangeables. Construit en Rust pour une latence prévisible.',
+    'projects.explainer.title': 'Explainer',
+    'projects.explainer.description': "Un boilerplate pour construire des systèmes de documentation complets. Contenu MDX, logique TypeScript et Astro pour la génération statique — structure opinionnée pour une doc maintenable.",
+    'projects.sqlxgen.title': 'sqlx_gen',
+    'projects.sqlxgen.description': "Génère des structs Rust et des repositories CRUD depuis votre schéma de base de données — types corrects, derives et annotations sqlx. Supporte PostgreSQL, MySQL, SQLite.",
+    'projects.more.title': "Et bien d'autres...",
+    'projects.more.description': 'Découvrez tous mes projets open-source sur GitHub.',
+
+    // Expertise (IAM section)
+    'expertise.label': 'Expertise',
+    'expertise.title': "De l'identité aux plateformes distribuées.",
+    'expertise.description': "Je me concentre sur les parties d'un système où la conception produit, les contraintes de sécurité et la réalité opérationnelle se rencontrent.",
+    'expertise.iam.title': 'IAM & OIDC',
+    'expertise.iam.description': "OIDC, OAuth2, FerrisKey, cycle de vie des tokens, realms multi-tenant et frontières produit sécurisées. Implémentation du protocole depuis la spec — pas depuis des tutoriels.",
+    'expertise.authz.title': 'Autorisation & politique',
+    'expertise.authz.description': "OPA, RBAC, ABAC, autorisation déléguée et politique-en-tant-que-code. Contrôle d'accès fin qui reste auditable quand les équipes sécurité ont besoin de réponses.",
+    'expertise.platform.title': 'Identité plateforme',
+    'expertise.platform.description': "Identité Kubernetes-native, auth service-à-service, mTLS et SPIFFE/SPIRE entre workloads. IAM au niveau de la couche infrastructure.",
+    'expertise.distributed.title': 'Sécurité distribuée',
+    'expertise.distributed.description': "Flux d'auth événementiels, pipelines d'audit Kafka et décisions de cohérence pour des systèmes qui restent explicables sous la défaillance.",
+    'expertise.ops.title': 'Sécurité opérationnelle',
+    'expertise.ops.description': "Systèmes d'auth observables et récupérables. Logs d'audit structurés, métriques de flux de tokens et SLOs pour l'infrastructure critique en sécurité.",
+
+    // Experience
+    'experience.label': 'Parcours',
+    'experience.title': 'Parcours professionnel',
+    'experience.description': "Du code à la conception des systèmes qui l'entourent.",
+    'experience.entry1.date': '2022 - Présent',
+    'experience.entry1.role': 'Architecte logiciel & Co-fondateur',
+    'experience.entry1.company': 'FerrisKey & Open Source',
+    'experience.entry1.description': "Co-fondateur de FerrisKey, une plateforme IAM open-source en Rust. Conception de l'architecture, définition des frontières de services et des contrats d'API, et propriété de la stack de production complète — du CI/CD à l'observabilité.",
+    'experience.entry2.date': '2019 - 2022',
+    'experience.entry2.role': 'Ingénieur logiciel & Concepteur système',
+    'experience.entry2.company': 'Entreprise',
+    'experience.entry2.description': "Conception et construction d'architectures d'applications web avec Vue.js et AdonisJS. Définition des pipelines CI/CD, des modèles de données et mentorat des développeurs sur les pratiques de clean architecture.",
+    'experience.entry3.date': '2016 - 2019',
+    'experience.entry3.role': 'Développeur logiciel',
+    'experience.entry3.company': 'Entreprise',
+    'experience.entry3.description': "Construction d'applications web et découverte de l'importance de bases de code bien structurées et de l'écosystème open-source.",
+
+    // Skills (band)
+    'skills.label': 'Stack',
 
     // Articles
     'articles.label': 'Blog',
@@ -184,11 +267,11 @@ export const ui = {
     'articles.description': 'Restez informé des dernières actualités et mises à jour.',
     'articles.viewAll': 'Voir tous les articles',
 
-    // CTA
-    'cta.title': 'Prêt à commencer ?',
-    'cta.description':
-      'Commencez à construire votre documentation en quelques minutes. Gratuit, open source et personnalisable.',
-    'cta.action': 'Lire la documentation',
+    // Contact
+    'contact.title': 'Concevons quelque chose ensemble',
+    'contact.description': "Un système à concevoir, une architecture à revoir, ou simplement envie de parler tech ? N'hésitez pas à me contacter.",
+    'contact.email': 'Envoyer un email',
+    'contact.linkedin': 'LinkedIn',
   },
 } as const
 
