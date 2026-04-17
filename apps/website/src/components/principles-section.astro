@@ -37,52 +37,69 @@ const pillars = [
 
 <section class="relative py-24 sm:py-32">
   <div class="max-w-6xl mx-auto px-6">
-    <!-- Section header -->
-    <div class="text-center mb-16" data-reveal="fade-up">
-      <p
-        class="text-sm font-semibold text-primary uppercase tracking-widest mb-3"
-        data-t="pillars.label"
-      >
+
+    <!-- Header: left-aligned -->
+    <div class="mb-16" data-reveal="fade-up">
+      <p class="text-sm font-semibold text-primary uppercase tracking-widest mb-3" data-t="pillars.label">
         What I Do
       </p>
       <h2 class="text-3xl font-bold text-foreground sm:text-4xl" data-t="pillars.title">
         Three things I'm built for
       </h2>
-      <p
-        class="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto text-balance"
-        data-t="pillars.description"
-      >
+      <p class="mt-4 text-lg text-muted-foreground max-w-2xl" data-t="pillars.description">
         Not a list of frameworks. What I actually deliver, end to end.
       </p>
     </div>
 
-    <!-- Pillars grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Numbered rows -->
+    <div class="divide-y divide-border/40">
       {pillars.map((p, i) => (
         <div
-          class="group bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 flex flex-col"
+          class="group relative grid grid-cols-1 lg:grid-cols-[96px_1fr_auto] gap-6 lg:gap-10 py-10 -mx-6 px-6 transition-colors duration-300 hover:bg-primary/[2.5%]"
           data-reveal="fade-up"
-          data-reveal-delay={String(i * 100)}
+          data-reveal-delay={String(i * 120)}
         >
-          <div class="flex items-center justify-center size-12 rounded-xl bg-primary/10 mb-6 group-hover:bg-primary/15 transition-colors">
-            <Icon icon={p.icon} className="size-6 text-primary" client:load />
+          <!-- Left accent on hover -->
+          <div class="absolute left-0 top-0 bottom-0 w-0.5 rounded-full bg-primary/0 group-hover:bg-primary/50 transition-all duration-300" aria-hidden="true"></div>
+
+          <!-- Number -->
+          <div class="flex items-start pt-0.5">
+            <span
+              class="text-[4.5rem] font-mono font-bold leading-none text-foreground/[8%] group-hover:text-primary/20 transition-colors duration-300 select-none"
+            >
+              {String(i + 1).padStart(2, '0')}
+            </span>
           </div>
-          <h3 class="text-xl font-semibold text-foreground mb-3" data-t={p.titleKey}>
-            {p.title}
-          </h3>
-          <p class="text-sm text-muted-foreground leading-relaxed flex-1" data-t={p.descKey}>
-            {p.description}
-          </p>
-          <div class="mt-6 pt-5 border-t border-border/30 flex items-center justify-between">
-            <span class="text-xs text-muted-foreground/50">Proof</span>
+
+          <!-- Content -->
+          <div class="min-w-0">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="flex items-center justify-center size-8 rounded-lg bg-primary/10 shrink-0 group-hover:bg-primary/15 transition-colors duration-300">
+                <Icon icon={p.icon} className="size-4 text-primary" client:load />
+              </div>
+              <h3 class="text-lg font-semibold text-foreground" data-t={p.titleKey}>
+                {p.title}
+              </h3>
+            </div>
+            <p class="text-sm text-muted-foreground leading-relaxed max-w-2xl" data-t={p.descKey}>
+              {p.description}
+            </p>
+          </div>
+
+          <!-- Link -->
+          <div class="flex items-center lg:justify-end shrink-0">
             <a
               href={p.proofHref}
               target={p.internal ? undefined : "_blank"}
               rel={p.internal ? undefined : "noopener noreferrer"}
-              class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+              class="inline-flex items-center gap-2 rounded-lg border border-primary/25 bg-primary/[6%] px-3 py-1.5 text-xs font-semibold text-primary hover:border-primary/50 hover:bg-primary/[10%] transition-all duration-200"
             >
               {p.proofLabel}
-              <Icon icon={p.internal ? "lucide:arrow-down" : "lucide:arrow-up-right"} className="size-3" client:load />
+              <Icon
+                icon={p.internal ? "lucide:arrow-down" : "lucide:arrow-up-right"}
+                className="size-3 shrink-0"
+                client:load
+              />
             </a>
           </div>
         </div>
