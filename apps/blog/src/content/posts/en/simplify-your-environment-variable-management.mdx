@@ -1,0 +1,233 @@
+---
+title: Simplify your environment variable management
+description: Managing environment variables is a critical point in any application; learn how to manage them correctly for Dart.
+thumbnail:
+  title: Simplify your environment variable management
+  description: Learn how to manage your environment variables to make your applications robust.
+  theme: default  # default | gradient | minimal
+date: 2025-03-8
+tags: [Security, Environment, Dart]
+status: published
+author: leadcode_dev
+---
+
+## Introduction
+
+Environment management is an extremely sensitive but almost systematic issue.
+
+Whether you are working on a web, mobile or backend application, environment variables allow you to configure your application according to the environment in which it is being run (**development**, **production**, etc...).
+
+However, managing these variables can quickly become complex, especially when you need to validate their format, type or even presence.
+
+---
+
+## Features
+
+1. **Unified API**
+A single method lets you access your environment variables, so you don't have to deal with multiple getters to retrieve your variables.
+
+2. **Environment variable validation**
+Define validation schemes for your environment variables. You can specify the expected data type (`string`, `number`, `boolean`, etc..), as well as additional rules (for example, checking whether a number is an integer or a double).
+
+3. **Error management**
+The package includes a robust error reporting system. If an environment variable does not comply with the defined rules, the package generates detailed errors, making debugging easier.
+
+4. **Flexibility**
+Designed to be extensible, you can add custom rules to meet specific needs, such as value transformation or enumeration validation.
+
+5. **Support for `.env` files**
+The package supports `.env` files, allowing you to load environment variables from local configuration files. It also manages the priority of environment-specific files (`.env`, `.env.production`...).
+
+---
+
+## Environment management in Dart
+
+Following the example of the Javascript environment, the package introduces an environment variable named `DART_ENV` which will have the same role as `NODE_ENV` present in Node applications.
+
+This environment variable can be supplied using your application's startup command.
+
+```bash [Bash]
+dart run --define=DART_ENV=development bin/entrypoint.dart
+```
+
+Within your Dart application, you will need to write code similar to this.
+
+```dart [main.dart]
+void main() {
+  final dartEnv = String.fromEnvironment('DART_ENV');
+  print(dartEnv); // development;
+}
+```
+
+When you want to use a variable from the environment, you will have to pass them via command parameters. 
+
+It is your responsibility to **type** your variables correctly when retrieving them, by changing the primitive used to access your variable.
+
+```dart [main.dart]
+final value = String.fromEnvironment('STRING_VARIABLE');
+final value = bool.fromEnvironment('BOOLEAN_VARIABLE');
+final value = int.fromEnvironment('INT_VARIABLE');
+```
+
+An exception is thrown if the primitive type doesn't match the environment variable type prefix.
+
+If an environment variable is not set, it defaults to the null value.
+
+More details on [official documentation](https://dart.dev/libraries/core/environment-declarations).
+
+---
+
+## User friendly
+
+While the environment variable has not been retrieved yet by the primitive function call (`fromEnvironment`), there is no validation of the types, nor if the environment variable exists.
+
+The `env_guard` package solves this problem by providing a builder that allows you to contractually declare your environment variables, ensuring that they are present (or not) but also ensuring their type.
+
+Let's look at our environment variables in a `.env` file at the root of our project, or injected directly by Kubernetes or another technology.
+
+```dotenv [.env]
+HOST=127.0.0.1
+PORT=3333
+DEBUG=true
+```
+
+To validate our environment, we'll use the `define()` method, which performs two actions :
+::::step-group
+  :::step{title="Load and parse the environment variables"}
+    ```dart [main.dart]
+    import 'package:env_guard/env_guard.dart';
+    
+    void main() {
+      env.define({
+        'HOST': env.string(),
+        'PORT': env.number().integer(),
+        'DEBUG': env.boolean(),
+      });
+    }
+    ```
+  :::
+
+  :::step{title="Validate it and persists the types"}
+    ```dart [main.dart]
+    final port = env.get('PORT');
+    print(port); // int cast from defined schema
+    ```
+  :::
+::::
+
+In the background, the first step is to load the environment variables from the `Platform.environment` source (with the option of ignoring them) and/or from an environment file on disk if one exists.
+
+As explained above, the package introduces a new `DART_ENV` variable which will tell us the environment in which our application will be running.
+
+For example, when our environment is production, the package will automatically look at your project to find the `.env.production` file. If this does not exist, the `.env` file will be used instead.  
+
+> If the `DART_ENV` variable is not defined, it will be assumed as the `development` value.
+
+Secondly, we will validate our previously extracted data using our validation schemas in order to obtain an error in the event of non-compliance.
+
+We can now retrieve our variables using our environment key.
+
+```dart [main.dart]
+final host = env.get('HOST');
+print(host); // 127.0.0.1
+```
+
+### Existence security
+
+In our previous example, we declared a string as a key in our validation scheme and then used another string to retrieve our value from our environment using the `env.get(key)` method.
+
+To make the existence of our environment keys contractual, the package provides an abstract class called `DefineEnvironment` which you can implement in one of your classes.
+
+Consider the following environment.
+
+```dotenv [.env]
+PORT=8080
+HOST=localhost
+URI={HOST}:{PORT}
+```
+
+Let's define our environment using the abstract class `DefineEnvironment`.
+
+```dart [env.dart]
+final class Env implements DefineEnvironment {
+  static final String host = 'HOST';
+  static final String port = 'PORT';
+  static final String uri = 'URI';
+
+  @override
+  final Map<String, EnvSchema> schema = {
+    host: env.string().optional(),
+    port: env.number().integer(),
+    uri: env.string(),
+  };
+}
+```
+
+We can now use our class to define our environment.
+
+```dart [main.dart]
+void main() {
+  env.defineOf(Env.new);
+  expect(env.get(Env.uri), 'localhost:8080');
+}
+```
+
+It is important to note that the result of the `get` method is an `dynamic` type, however this type is persisted during the validation of your environment variables, so its type is defined before accessing it.
+
+So when you perform a `get` passing the `PORT` key, the return type will already be `integer` thanks to the prior validation process.
+
+```dart [main.dart]
+final port = env.get('PORT');
+print(port.runtimeType); // integer
+```
+
+---
+
+## Error handling
+When your application starts and your environment does not meet the defined requirements by the validator, an `EnvGuardException` is thrown on the following format.
+
+```dotenv [.env]
+HOST=127.0.0.1
+PORT=8080
+LOG_LEVEL=trace
+```
+
+:::codegroup
+```dart [enum.dart]
+enum MyEnum implements Enumerable<String> {
+  info('info'),
+  error('error'),
+  debug('debug');
+
+  @override
+  final String value;
+
+  const MyEnum(this.value);
+}
+```
+```dart [env.dart]
+env.define({
+  'HOST': env.string(),
+  'PORT': env.number().integer(),
+  'LOG_LEVEL': env.enumerable(MyEnum.values)
+});
+```
+:::
+
+Since the value of our `LOG_LEVEL` key is not included in our enumerable, an error is raised.
+
+```json [error.json]
+{
+  "errors": [
+    {
+      "message": "The value must match one of the expected enum values [info, error, debug]",
+      "rule": "enum",
+      "key": "LOG_LEVEL"
+    }
+  ]
+}
+```
+
+:::callout
+This package (https://pub.dev/packages/env_guard) is available on the Dart Pub registry
+:::

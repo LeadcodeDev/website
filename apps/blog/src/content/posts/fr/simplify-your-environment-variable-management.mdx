@@ -1,0 +1,233 @@
+---
+title: Simplifiez la gestion de vos variables d'environnement
+description: La gestion des variables d'environnement est un point critique dans toute application ; apprenez à les gérer correctement pour Dart.
+thumbnail:
+  title: Simplifiez la gestion de vos variables d'environnement
+  description: Apprenez à gérer vos variables d'environnement pour rendre vos applications robustes.
+  theme: default  # default | gradient | minimal
+date: 2026-03-13
+tags: [Security, Environment, Dart]
+status: published
+author: leadcode_dev
+---
+
+## Introduction
+
+La gestion de l'environnement est un problème extrêmement sensible mais presque systématique.
+
+Que vous travailliez sur une application web, mobile ou backend, les variables d'environnement vous permettent de configurer votre application en fonction de l'environnement dans lequel elle s'exécute (**développement**, **production**, etc...).
+
+Cependant, la gestion de ces variables peut rapidement devenir complexe, surtout lorsque vous devez valider leur format, leur type ou même leur présence.
+
+---
+
+## Fonctionnalités
+
+1. **API unifiée**
+Une seule méthode vous permet d'accéder à vos variables d'environnement, vous évitant ainsi de gérer plusieurs getters pour récupérer vos variables.
+
+2. **Validation des variables d'environnement**
+Définissez des schémas de validation pour vos variables d'environnement. Vous pouvez spécifier le type de données attendu (`string`, `number`, `boolean`, etc..), ainsi que des règles supplémentaires (par exemple, vérifier si un nombre est un entier ou un double).
+
+3. **Gestion des erreurs**
+Le package inclut un système de reporting d'erreurs robuste. Si une variable d'environnement ne respecte pas les règles définies, le package génère des erreurs détaillées, facilitant le débogage.
+
+4. **Flexibilité**
+Conçu pour être extensible, vous pouvez ajouter des règles personnalisées pour répondre à des besoins spécifiques, tels que la transformation de valeurs ou la validation par énumération.
+
+5. **Support des fichiers `.env`**
+Le package supporte les fichiers `.env`, vous permettant de charger des variables d'environnement depuis des fichiers de configuration locaux. Il gère également la priorité des fichiers spécifiques à l'environnement (`.env`, `.env.production`...).
+
+---
+
+## Gestion de l'environnement en Dart
+
+À l'image de l'environnement Javascript, le package introduit une variable d'environnement nommée `DART_ENV` qui aura le même rôle que `NODE_ENV` présent dans les applications Node.
+
+Cette variable d'environnement peut être fournie via la commande de démarrage de votre application.
+
+```bash [Bash]
+dart run --define=DART_ENV=development bin/entrypoint.dart
+```
+
+Dans votre application Dart, vous devrez écrire un code similaire à celui-ci.
+
+```dart [main.dart]
+void main() {
+  final dartEnv = String.fromEnvironment('DART_ENV');
+  print(dartEnv); // development;
+}
+```
+
+Lorsque vous souhaitez utiliser une variable de l'environnement, vous devrez les passer via des paramètres de commande.
+
+Il vous incombe de **typer** correctement vos variables lors de leur récupération, en changeant la primitive utilisée pour accéder à votre variable.
+
+```dart [main.dart]
+final value = String.fromEnvironment('STRING_VARIABLE');
+final value = bool.fromEnvironment('BOOLEAN_VARIABLE');
+final value = int.fromEnvironment('INT_VARIABLE');
+```
+
+Une exception est levée si le type primitif ne correspond pas au préfixe de type de la variable d'environnement.
+
+Si une variable d'environnement n'est pas définie, elle prend par défaut la valeur null.
+
+Plus de détails dans la [documentation officielle](https://dart.dev/libraries/core/environment-declarations).
+
+---
+
+## Convivialité
+
+Tant que la variable d'environnement n'a pas encore été récupérée par l'appel de la fonction primitive (`fromEnvironment`), il n'y a aucune validation des types, ni vérification de l'existence de la variable d'environnement.
+
+Le package `env_guard` résout ce problème en fournissant un builder qui vous permet de déclarer contractuellement vos variables d'environnement, en garantissant leur présence (ou non) mais aussi leur type.
+
+Examinons nos variables d'environnement dans un fichier `.env` à la racine de notre projet, ou injectées directement par Kubernetes ou une autre technologie.
+
+```dotenv [.env]
+HOST=127.0.0.1
+PORT=3333
+DEBUG=true
+```
+
+Pour valider notre environnement, nous utiliserons la méthode `define()`, qui effectue deux actions :
+::::step-group
+  :::step{title="Charger et analyser les variables d'environnement"}
+    ```dart [main.dart]
+    import 'package:env_guard/env_guard.dart';
+    
+    void main() {
+      env.define({
+        'HOST': env.string(),
+        'PORT': env.number().integer(),
+        'DEBUG': env.boolean(),
+      });
+    }
+    ```
+  :::
+
+  :::step{title="Les valider et persister les types"}
+    ```dart [main.dart]
+    final port = env.get('PORT');
+    print(port); // int cast depuis le schéma défini
+    ```
+  :::
+::::
+
+En arrière-plan, la première étape consiste à charger les variables d'environnement depuis la source `Platform.environment` (avec la possibilité de les ignorer) et/ou depuis un fichier d'environnement sur le disque s'il en existe un.
+
+Comme expliqué ci-dessus, le package introduit une nouvelle variable `DART_ENV` qui nous indiquera l'environnement dans lequel notre application s'exécutera.
+
+Par exemple, lorsque notre environnement est en production, le package cherchera automatiquement dans votre projet le fichier `.env.production`. Si celui-ci n'existe pas, le fichier `.env` sera utilisé à la place.
+
+> Si la variable `DART_ENV` n'est pas définie, elle sera considérée comme ayant la valeur `development`.
+
+Ensuite, nous validerons nos données précédemment extraites à l'aide de nos schémas de validation afin d'obtenir une erreur en cas de non-conformité.
+
+Nous pouvons maintenant récupérer nos variables en utilisant notre clé d'environnement.
+
+```dart [main.dart]
+final host = env.get('HOST');
+print(host); // 127.0.0.1
+```
+
+### Sécurité d'existence
+
+Dans notre exemple précédent, nous avons déclaré une chaîne de caractères comme clé dans notre schéma de validation, puis utilisé une autre chaîne pour récupérer notre valeur depuis notre environnement avec la méthode `env.get(key)`.
+
+Pour rendre l'existence de nos clés d'environnement contractuelle, le package fournit une classe abstraite appelée `DefineEnvironment` que vous pouvez implémenter dans l'une de vos classes.
+
+Considérons l'environnement suivant.
+
+```dotenv [.env]
+PORT=8080
+HOST=localhost
+URI={HOST}:{PORT}
+```
+
+Définissons notre environnement en utilisant la classe abstraite `DefineEnvironment`.
+
+```dart [env.dart]
+final class Env implements DefineEnvironment {
+  static final String host = 'HOST';
+  static final String port = 'PORT';
+  static final String uri = 'URI';
+
+  @override
+  final Map<String, EnvSchema> schema = {
+    host: env.string().optional(),
+    port: env.number().integer(),
+    uri: env.string(),
+  };
+}
+```
+
+Nous pouvons maintenant utiliser notre classe pour définir notre environnement.
+
+```dart [main.dart]
+void main() {
+  env.defineOf(Env.new);
+  expect(env.get(Env.uri), 'localhost:8080');
+}
+```
+
+Il est important de noter que le résultat de la méthode `get` est de type `dynamic`, cependant ce type est persisté lors de la validation de vos variables d'environnement, donc son type est défini avant d'y accéder.
+
+Ainsi, lorsque vous effectuez un `get` en passant la clé `PORT`, le type de retour sera déjà `integer` grâce au processus de validation préalable.
+
+```dart [main.dart]
+final port = env.get('PORT');
+print(port.runtimeType); // integer
+```
+
+---
+
+## Gestion des erreurs
+Lorsque votre application démarre et que votre environnement ne satisfait pas les exigences définies par le validateur, une `EnvGuardException` est levée dans le format suivant.
+
+```dotenv [.env]
+HOST=127.0.0.1
+PORT=8080
+LOG_LEVEL=trace
+```
+
+:::codegroup
+```dart [enum.dart]
+enum MyEnum implements Enumerable<String> {
+  info('info'),
+  error('error'),
+  debug('debug');
+
+  @override
+  final String value;
+
+  const MyEnum(this.value);
+}
+```
+```dart [env.dart]
+env.define({
+  'HOST': env.string(),
+  'PORT': env.number().integer(),
+  'LOG_LEVEL': env.enumerable(MyEnum.values)
+});
+```
+:::
+
+La valeur de notre clé `LOG_LEVEL` n'étant pas incluse dans notre énumération, une erreur est levée.
+
+```json [error.json]
+{
+  "errors": [
+    {
+      "message": "The value must match one of the expected enum values [info, error, debug]",
+      "rule": "enum",
+      "key": "LOG_LEVEL"
+    }
+  ]
+}
+```
+
+:::callout
+Ce package (https://pub.dev/packages/env_guard) est disponible sur le registre Dart Pub
+:::
