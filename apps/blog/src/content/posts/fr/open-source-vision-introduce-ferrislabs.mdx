@@ -1,0 +1,312 @@
+---
+title: "Ma vision de open-source, le rôle décisif de FerrisLabs dans la conception des logiciels de demain"
+description: L'open-source n'est pas qu'un simple modèle de développement, c'est une philosophie. Dans cet article je vous partage ma vision sur certains sujets tels que les enjeux de notre souveraineté numérique et de quelle manière FerrisLabs s'inscrit dans cette démarche.
+thumbnail:
+  title: "Ma vision de open-source de demain"
+  description: L'open-source comme philosophie, la souveraineté numérique comme enjeu, FerrisLabs comme réponse.
+  theme: default
+date: 2026-04-18
+tags: [Open-source, Souveraineté, FerrisLabs]
+status: published
+author: leadcode_dev
+---
+
+## Préambule
+
+Dans cet article, je vais partager une vision de l'open-source, celle qui est la mienne, construite au fil des projets, des erreurs et des convictions formées avec l'expérience. Elle est subjective par définition donc à considérer avec des pincettes.
+
+Aujourd'hui, j'ai le profil d'un ingénieur logiciel porté vers l'architecture.
+Plus j'avance dans mon métier, plus je suis convaincu que la façon dont on construit les logiciels, le choix de nos outils ou encore les modèles que l'on adopte, les valeurs que l'on défend a des implications qui dépassent largement le simple cadre technique.
+
+Ce texte est écrit à mon échelle, avec mes compétences, depuis ma perspective. Il ne prétend pas à l'universalité. Mais certaines idées méritent d'être dites, même imparfaitement.
+
+---
+
+## Ma vision de l'Open-source
+
+> La désignation **open source**, ou code source ouvert, s'applique aux logiciels (et s'étend maintenant aux œuvres de l'esprit) dont la licence respecte des critères précisément établis par l'Open Source Initiative, c'est-à-dire les possibilités de libre redistribution, d'accès au code source et de création de travaux dérivés.
+> 
+> Source : https://fr.wikipedia.org/wiki/Open_source
+
+### Code ouvert, code commun
+
+Un projet open-source vit dans un écosystème social. Il y a des **issues** pour signaler les bugs et poser des questions. Des **pull requests** pour proposer des corrections ou des améliorations. Des **forks** quand une communauté veut emmener le projet dans une autre direction. Des **releases** documentées, des **changelogs**, des **discussions** dans des espaces publics.
+
+Ce modèle repose sur la **transparence**, en opposition aux solutions propriétaires dont le fonctionnement reste opaque.
+
+Un projet open-source peut être scruté, critiqué et amélioré par n'importe qui avec les compétences nécessaires. Linux, PostgreSQL ou Nginx le prouvent depuis des décennies : un code auditable en permanence est un code plus robuste.
+
+Cela ne signifie pas que tout projet open-source est de qualité. Il en existe des abandonnés, des mal maintenus, des vulnérables. L'ouverture du code est une condition nécessaire, pas suffisante.
+
+### Open-source n'est pas synonyme de gratuité
+
+C'est l'amalgame le plus répandu, et le plus dommageable pour l'écosystème.
+
+La licence d'un logiciel définit les droits d'utilisation, de modification et de redistribution du code source. Elle ne définit pas son prix. Ces deux dimensions sont indépendantes.
+
+Il existe deux grandes familles de licences open-source.
+
+:::::step-group
+  ::::step{title="Les licences copyleft"}
+    Cette famille de licence impose que toute modification ou distribution du code soit soumise aux mêmes conditions que la licence originale. 
+
+    - Si vous distribuez un logiciel basé sur du code GPL, vous devez rendre votre code source disponible sous GPL. 
+    
+    - L'AGPL va encore plus loin : elle s'applique même quand le logiciel est utilisé via un réseau, sans distribution directe. 
+    
+    :::callout
+      C'est d'ailleurs la raison pour laquelle MongoDB a abandonné l'AGPL au profit de la SSPL, une licence que l'Open Source Initiative ne reconnaît d'ailleurs pas comme open-source. [^1]
+    :::
+  ::::
+
+  ::::step{title="Les licences permissives"}
+    Nous y retrouvons notamment les licences MIT, BSD, Apache 2.0 qui autorisent une utilisation commerciale, une modification et une redistribution sans obligation de reversement. 
+    
+    C'est ce qui permet à des entreprises comme Apple ou Google d'intégrer des composants open-source dans des produits propriétaires.
+  ::::
+:::::
+
+:::callout{variant="warning"}
+**HashiCorp** a basculé en 2023 de la MPL (Mozilla Public License) vers la BSL (Business Source License) pour Terraform et Vault, une décision qui a choqué la communauté et entraîné la création d'OpenTofu, un fork communautaire de Terraform.
+
+C'est un rappel que les entreprises peuvent changer les règles du jeu, et que la santé d'un projet open-source dépend aussi de la solidité de ses engagements sur la gouvernance.
+:::
+
+La propriété intellectuelle est étoitement liée à la licence utilisée. 
+
+Publier du code sous une licence open-source **ne signifie pas** renoncer à ses droits d'auteur. Le copyright reste à l'auteur, qui choisit simplement sous quelles conditions son œuvre peut être utilisée, modifiée ou redistribuée.
+
+Certains projets demandent aux contributeurs de signer un CLA (Contributor License Agreement) pour s'assurer que l'organisation maintenant le projet conserve des droits suffisants pour, par exemple, changer de licence à l'avenir. 
+
+Rien n'est anodin : signer un CLA revient à transférer certains droits.
+
+---
+
+### Une porte ouverte vers l'emploi
+
+L'open-source est l'un des meilleurs portfolios qui soit s'il est utilisé convenablement et de manière réfléchi.
+
+
+#### Mon parcours
+
+Je vais être direct : Je n'ai aucune formation en informatique. 
+
+Mon cursus scolaire est assez atypique, j'ai passé près d'une dizaine d'année à me former autours des métiers du paysage ainsi que du végétal pout terminer sur un axe davantage commercial. 
+
+J'ai appris la programmation de manière totalement **autodicacte**, sur mon temps libre, en **lisant** de la documentation, en **essayant**, en **échouant**, en **recommençant**. 
+
+Je ne possède aucun diplôme de prêt ou de loin dans le domaine de l'informatique, aucun bootcamp, aucun réseau académique.
+
+Et pourtant, l'open-source m'a ouvert deux postes en CDI.
+
+Mon CV ne possédait aucune ligne pouvant être utilisée d'attestation de mes compétances en tant que développeur, cependant de projet en projet, d'échecs en réussites et grâce à du code public et consultable j'ai pu développer mon réseau, occuper des postes en entreprise à la place de certain profils intermédiaires voir senior pour certain.
+
+#### Des projets concrets 
+
+L'envergure de vos projets à une importance à ne surtout pas négliger.
+
+J'ai conçus de nombreux projets tels que [Mineral]() ou plus recement [FerrisKey](). Ce ne sont pas des clones de services existants, pas des tutoriels abandonnés après trois commits, mais des tentatives réelles de résoudre des problèmes réels, menées jusqu'à un état utilisable et documenté.
+
+> Un recruteur ou un CTO qui regarde vos, projets ne lit pas un résumé de vos compétences, il lit vos compétences dans un **contexte réel**.
+
+- La manière dont vous découpez un problème. 
+- Quelles abstractions mettez-vous en place, pourquoi ?
+- Comment vous gérez les cas limites. 
+- Comment vous répondez aux contributions extérieures.
+
+Durant des entretiens cela créé des discussions passionantes avec du fond, on ne m'a pas demandé de résoudre un algorithme de tri sur un tableau ou une feuille blanche (bon ok j'exagère, j'avais le droit à mon PC). 
+
+On m'a questionné sur des choix d'architecture dans mes projets, sur mes motivations à avoir structuré les choses de telle ou telle façon, pas des exercices déconnectés de la réalité.
+
+> "Faire de l'open-source" ne veut rien dire si c'est un clone de Twitter avec un autre nom. 
+
+Ce qui compte, c'est la démarche : identifier un problème, concevoir une solution, aller jusqu'au bout. C'est à cet instant que la différence entre un projet qui ouvre des portes et un projet qui ne vous apportera rien est défini.
+
+Vos projets publiques disponibles sur votre compte Git préféré sont la preuve de votre honnêteté qu'on ne trouve pas dans un CV.
+
+---
+
+## Souveraineté numérique
+
+### La dépendance structurelle aux entreprises américaines
+
+La quasi-totalité des infrastructures numériques mondiales est construite sur des briques américaines. Les systèmes d'exploitation des postes de travail (Windows, macOS), les suites bureautiques (Microsoft 365, Google Workspace), les plateformes cloud (AWS, Azure, GCP), les outils de collaboration (Slack, Teams, GitHub).
+
+Cette concentration n'est pas un hasard. Elle résulte de décennies d'investissements massifs, de stratégies commerciales agressives et d'une adoption progressive qui a créé des effets difficiles à briser. Le problème n'est aucunement l'origine géographique de ces entreprises mais plutôt la dépendance qu'elle crée sur plusieurs axes : financière et technologique bien sûr, mais surtout légale.
+
+### Le CLOUD Act et la propriété des données
+
+En 2018, les États-Unis ont adopté le **CLOUD Act** (Clarifying Lawful Overseas Use of Data Act). Cette loi permet aux autorités américaines de contraindre des entreprises ayant des activités aux États-Unis à fournir des données hébergées n'importe où dans le monde, y compris en Europe, y compris sur le sol français.
+
+Pour être clair : les données d'une entreprise française hébergées chez Microsoft Azure, dans un datacenter situé à Paris, peuvent légalement être accédées par des autorités américaines en vertu de cette loi. Le RGPD ne suffit pas à protéger contre ce type d'accès. Il y a un conflit de juridictions que les entreprises américaines ne peuvent pas résoudre en faveur de leurs clients européens sans enfreindre le droit américain.
+
+C'est la réalité juridique dans laquelle opèrent aujourd'hui la plupart des entreprises et institutions françaises qui utilisent des services cloud américains.
+
+### Les mouvements récents en France et en Europe
+
+La prise de conscience commence à se traduire en décisions concrètes.
+
+En France, la DINUM (Direction Interministérielle du Numérique) publie et maintient le **Socle Interministériel de Logiciels Libres (SILL)**, un catalogue de logiciels open-source recommandés pour l'usage des administrations. [^2] Plusieurs ministères ont engagé des migrations de postes de travail Windows vers Linux. La Gendarmerie nationale, pionnière dans ce domaine, avait déjà basculé sous Ubuntu dès la fin des années 2000, avec des résultats probants en termes de coûts et de maintenance.
+
+À l'échelle européenne, le règlement EUCS (EU Cloud Scheme) tente d'établir des critères de certification pour les fournisseurs cloud, en intégrant des exigences de résistance aux législations extraterritoriales. L'objectif est de créer un espace de confiance pour les données sensibles, hors d'atteinte du droit américain.
+
+### Les implications de la souveraineté
+
+La souveraineté numérique n'est pas gratuite. Les bénéfices sont réels, mais les coûts le sont aussi.
+
+#### Ce qu'on y gagne
+
+Le premier bénéfice est le contrôle. Quand vous utilisez un outil propriétaire, vous dépendez de décisions que vous ne prenez pas. 
+
+Par exemple Salesforce peut modifier son modèle de pricing du jour au lendemain. Microsoft peut retirer une fonctionnalité sur laquelle votre workflow entier repose. Adobe a migré de force vers un abonnement cloud en abandonnant les licences perpétuelles.
+
+> Avec un logiciel open-source, vous avez accès au code : vous pouvez le forker, le maintenir, le modifier selon vos besoins.
+> Le vendor lock-in disparaît.
+
+La résilience des compétences, c'est l'autre face. Un développeur formé sur des outils propriétaires accumule des compétences avec une date de péremption fixée par l'éditeur. Un développeur formé sur Linux, PostgreSQL ou Kubernetes accumule des compétences sur des outils dont il peut lire les sources et comprendre le fonctionnement profond. C'est une base bien plus solide, tant pour les individus que pour les organisations qui les emploient.
+
+Sur le plan légal, une entreprise française qui héberge ses données chez OVHcloud, Hetzner ou Scaleway opère dans un cadre cohérent avec le RGPD. Pas de conflit de juridictions, pas de risque latent lié au CLOUD Act. La conformité n'est plus une question de clauses contractuelles à négocier avec un acteur étranger : elle est intégrée à l'infrastructure elle-même.
+
+Un des enjeux non négligeable est l'auditabilité. Dans des secteurs comme la santé, la finance ou la défense, "faites-nous confiance" n'est pas une réponse acceptable. Un logiciel dont on ne peut pas lire le code est un logiciel dont on ne peut pas vérifier le comportement. L'open-source supprime ce point aveugle.
+
+#### Ce que ça coûte
+
+La migration est un investissement réel. Passer d'une suite Microsoft 365 à des équivalents open-source, ou migrer des postes de travail Windows vers Linux, ne se fait pas en un week-end. Cela implique des formations aux nouveaux outils, une résistance au changement à gérer et une période de transition où la productivité est susceptible de baisser significativement avant de revenir à la normal. C'est un coût qu'il faut budgéter et qui ne doit en aucun cas être minimisé.
+
+La maturité de certains outils reste inégale. C'est moins vrai qu'il y a dix ans, mais cela reste vrai dans certains domaines.
+
+Les alternatives aux outils de design comme Figma ou Sketch sont fonctionnelles, mais rarement à parité d'expérience utilisateur. Ce n'est pas une raison de ne pas les utiliser : c'est une raison de ne pas se raconter qu'il n'y a aucun compromis.
+
+Le support existe, mais son modèle est différent. L'absence d'un contrat avec un éditeur unique ne signifie pas l'absence de support. RedHat et Canonical vendent du support entreprise sur leurs distributions Linux. Des sociétés spécialisées existent pour Kubernetes, PostgreSQL et la plupart des outils critiques. Mais le support n'est pas inclus dans une licence : il se contractualise séparément, ce qui change le calcul des coûts totaux.
+
+Enfin, la maintenance s'internalise. Avec un SaaS propriétaire, les mises à jour, les patchs de sécurité et la gestion de l'infrastructure sont délégués à l'éditeur. 
+
+En self-hostant, cette responsabilité revient en interne. Certaines organisations préfèrent payer pour déléguer, d'autres préfèrent maîtriser. Ni l'un ni l'autre n'est universellement correct. Ce qui est incorrect, c'est de choisir le self-hosting sans se donner les moyens de le maintenir sérieusement.
+
+> Être souverain n'est pas synonyme de couper tous les ponts avec les secteurs propriétaires. 
+
+Le plus important est de ne plus dépendre d'acteurs sur lesquels nous n'avons aucun levier **technologique**, **juridique** ou **économique** et de devoir accepter par contrainte les responsabilités que cette indépendance implique.
+
+---
+
+## FerrisLabs
+
+C'est précisément dans ce contexte que **FerrisLabs** prend sens. 
+
+Non pas comme une réponse exhaustive à ces enjeux, mais comme une contribution concrète : construire des logiciels open-source, fiables, self-hostables, adaptés aux entreprises, des briques qui participent, à leur échelle, à réduire cette dépendance.
+
+### Introduction
+
+FerrisLabs est une organisation open-source que j'ai co-créée en collaboration avec [Nathaël Bonnal](https://www.linkedin.com/in/nathael-bonnal) et [Luis Daniel Rubiera Guzman
+](https://www.linkedin.com/in/luis-daniel-rubiera-guzman) avec un objectif précis.
+
+> Produire des logiciels open-source que l'on peut déployer en production, dans une entreprise réelle, avec simplicité et confiance.
+
+Il existe beaucoup d'organisations open-source. Peu produisent des logiciels vraiment utilisables en conditions réelles. Soit parce que les projets sont abandonnés au fil du temps. Soit parce qu'ils manquent de documentation, de tests, de rigueur dans la gestion des dépendances. Soit parce qu'ils sont trop expérimentaux pour un usage critique.
+
+Ce n'est pas un terrain d'expérimentation : c'est un travail d'ingénierie réfléchie et appliqué à des logiciels que des équipes peuvent réellement adopter.
+
+L'ambition à terme est de devenir une référence dans l'écosystème open-source. Des projets qui ont gagné la confiance de milliers d'entreprises par la qualité constante de leur exécution et non pas par des campagnes marketing.
+
+### Les valeurs qui nous animent
+
+Trois valeurs guident notre travail quotidien chez FerrisLabs.
+
+Ces valeurs ne sont pas des slogans. Elles se traduisent dans des choix concrets : on prend le temps de bien faire les choses plutôt que de publier vite.
+
+::::step-group
+  :::step{title="Fiabilité"}
+    Un logiciel qu'on peut déployer en production sans se ronger les ongles. Ça implique des tests, une gestion d'erreurs explicite, des comportements prévisibles. Pas de magie, pas de cas limites ignorés.
+  :::
+
+  :::step{title="Maintenabilité"}
+    Le code est lu bien plus souvent qu'il n'est écrit. Un projet maintenable, c'est un projet où un nouveau contributeur comprend ce qui se passe sans avoir à déchiffrer des abstractions accumulées. Documentation, conventions claires, architecture explicite.
+  :::
+  
+  :::step{title="Professionnalisme"}
+    La qualité n'est pas un bonus qu'on ajoute à la fin. Elle est intégrée dès le début, dans chaque décision de conception, chaque review, chaque release. Des versionings sémantiques respectés, des changelogs écrits pour les utilisateurs, pas pour les développeurs.
+  :::
+::::
+
+### La Ferris Suite
+
+La Ferris Suite est l'ensemble de logiciels développés sous FerrisLabs. Elle s'articule autour d'un composant central : **FerrisKey**.
+
+#### Pourquoi et pour qui ?
+
+L'objectif est clair, nous souhaitons proposer des alternatives open-source, self-hostables et adaptées aux entreprises, aux solutions propriétaires et fermées qui dominent aujourd'hui le marché.
+
+Prenons l'authentification. Les solutions dominantes sont soit propriétaires (Okta, Auth0), soit open-source mais complexes à opérer (Keycloak). 
+
+**FerrisKey** s'inscrit dans cet espace, nous avons conçu une solution d'authentification et de gestion des identités qui n'impose pas de négocier un contrat avec un SaaS américain, mais qui ne requiert pas non plus une équipe dédiée pour être maintenue grâce à sa simplicité documentée.
+
+La suite est conçue pour des entreprises de toute taille, de la startup de cinq personnes à la PME de deux cents. Aucune feature tiering agressif, pas de pricing opaque. Une suite de logiciel que l'on installe, que l'on configure, et qui fonctionnent en une unité vous permettant de démarrer vos business se manière sereine.
+
+#### Une architecture modulaire
+
+Chaque brique de la suite est utilisable indépendamment. Vous pouvez adopter FerrisKey sans utiliser le reste. Mais les logiciels de la suite sont conçus pour s'intégrer naturellement entre eux : partage d'identités, tokens cohérents, APIs compatibles.
+
+L'intégration est possible mais aucunement pas obligatoire. Notre objectif au travers de cette sute de logiciel est de simplifier la vie de vos équipes qui adoptent plusieurs briques, sans créer une dépendance artificielle entre elles.
+
+::::card-group{cols=2}
+  :::card{label="Open-source" icon="lucide:github"}
+    Code accessible, contributions bienvenues. Aucune boîte noire, aucune fonctionnalité cachée derrière un tier payant.
+  :::
+  :::card{label="Self-hostable" icon="lucide:server"}
+    Zéro dépendance à une infrastructure tierce. Vos données restent là où vous les mettez.
+  :::
+  :::card{label="Simple à déployer" icon="lucide:rocket"}
+    Pensée pour les équipes sans ops dédiée. Des charts Helm maintenus, une documentation d'installation claire.
+  :::
+  :::card{label="Adaptée aux entreprises" icon="lucide:building-2"}
+    De la startup à la PME : robustesse, support communautaire, et des décisions d'architecture pensées pour la production.
+  :::
+::::
+
+### Stack technique
+
+Chaque choix technologique chez FerrisLabs est délibéré.
+
+#### Rust
+
+Rust est notre langage principal, et ce n'est pas un choix esthétique. Les erreurs de gestion mémoire — use-after-free, buffer overflow, null pointer dereferences, data races — représentent, selon la NSA et la CISA, entre 60 et 70 % des vulnérabilités critiques dans les logiciels écrits en C et C++. [^3] Ce ne sont pas des statistiques abstraites : ce sont les types de failles qui alimentent une large part des CVE critiques dans des logiciels comme le noyau Linux, les navigateurs web ou les bibliothèques cryptographiques.
+
+Des travaux récents en analyse de code, notamment ceux de Claude Mythos, ont mis en évidence de nouvelles failles mémoire dans des bases de code que l'on croyait robustes. [^4] En Rust, cette catégorie entière d'erreurs est éliminée par le compilateur, pas par la discipline du développeur.
+
+:::callout{variant="info"}
+Le modèle de propriété (ownership) de Rust garantit à la compilation qu'aucune référence invalide ne peut exister à l'exécution. Ce n'est pas un linter ni une convention : c'est une propriété du langage, vérifiée statiquement.
+:::
+
+Rust est aussi fortement typé : les erreurs de type sont des erreurs de compilation, pas des bugs en production. Son empreinte en ressources est comparable au C, loin devant des langages comme Java ou Go pour des workloads critiques.
+
+Développé à l'origine par la Mozilla Foundation, qui œuvre pour un web ouvert et décentralisé, Rust porte des valeurs compatibles avec les nôtres. La fondation a depuis transféré la gouvernance du langage à la Rust Foundation, une organisation indépendante soutenue par Microsoft, Google, Amazon et d'autres.
+
+#### Kubernetes
+
+Nous utilisons Kubernetes, et ce n'est pas un effet de mode : nous pensons que c'est l'avenir du déploiement à l'échelle.
+
+K8s impose une standardisation qui simplifie les opérations. Les déploiements sont déclaratifs, versionnés, reproductibles. Les charts Helm permettent de distribuer des configurations prêtes à l'emploi. Les opérateurs permettent d'encapsuler la logique opérationnelle complexe — failover, backups, scaling automatique — directement dans le cluster.
+
+Pour des logiciels destinés à des entreprises, proposer des manifestes K8s maintenus n'est pas un luxe, c'est une attente. Les équipes qui opèrent des clusters Kubernetes veulent des logiciels qui s'intègrent dans leur workflow existant, pas qui les obligent à reconfigurer toute leur infrastructure.
+
+Oui, Kubernetes est complexe. Mais c'est une complexité qui se paie une fois et qui bénéficie à tout l'écosystème. Les alternatives plus simples ont tendance à montrer leurs limites précisément au moment où on en a le moins besoin.
+
+#### React
+
+Pour les interfaces web, nous utilisons React. C'est un choix pragmatique.
+
+React est le standard de fait pour les interfaces complexes. Il est maîtrisé par une très large communauté de développeurs, ce qui facilite les contributions extérieures. Sa maturité signifie que les patterns sont documentés, les pièges connus, les toolings stables.
+
+Nous nous appuyons spécifiquement sur l'écosystème **Tanstack** : TanStack Query pour la gestion du state serveur (synchronisation, cache, revalidation), TanStack Router pour le routing typesafe. Ces outils partagent une philosophie qu'on apprécie : des primitives puissantes, sans opinions excessives sur la façon dont on les compose.
+
+---
+
+FerrisLabs est un pari sur trois idées : que l'open-source peut être professionnel, que la souveraineté numérique est un choix technique autant que politique, et que Rust est le bon langage pour construire des logiciels fiables sur le long terme.
+
+La suite au prochain article.
+
+---
+
+[^1]: Voir [choosealicense.com](https://choosealicense.com) pour un comparatif des licences open-source courantes, et l'[Open Source Definition](https://opensource.org/osd) de l'OSI.
+[^2]: Le SILL est consultable sur [code.gouv.fr/sill](https://code.gouv.fr/sill).
+[^3]: NSA, *The Case for Memory Safe Roadmaps* (2023) ; CISA, *The Urgent Need for Memory Safety in Software Products* (2023).
