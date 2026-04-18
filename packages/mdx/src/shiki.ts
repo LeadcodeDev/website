@@ -1,13 +1,13 @@
+import {
+    transformerMetaHighlight,
+    transformerNotationDiff,
+    transformerNotationErrorLevel,
+    transformerNotationFocus,
+    transformerNotationHighlight,
+    transformerNotationWordHighlight,
+} from '@shikijs/transformers'
 import type { ShikiConfig } from 'astro'
 import type { ShikiTransformer } from 'shiki'
-import {
-  transformerMetaHighlight,
-  transformerNotationDiff,
-  transformerNotationErrorLevel,
-  transformerNotationFocus,
-  transformerNotationHighlight,
-  transformerNotationWordHighlight,
-} from '@shikijs/transformers'
 
 function transformerMetaLabel(): ShikiTransformer {
   return {
@@ -34,7 +34,7 @@ export const shikiConfig: ShikiConfig = {
     light: 'github-light',
     dark: 'github-dark',
   },
-  wrap: true,
+  wrap: false,
   transformers: [
     transformerNotationDiff(),
     transformerNotationHighlight(),
