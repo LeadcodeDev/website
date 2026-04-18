@@ -1,9 +1,9 @@
 'use client'
 
 import { Icon } from '@iconify/react'
+import type { AppLink } from '../lib/app-links'
 import { cn } from '../lib/utils'
 import type { NavbarLink } from './navbar'
-import type { AppLink } from '../lib/app-links'
 
 interface MobileNavLinksProps {
   links: NavbarLink[]
@@ -40,7 +40,7 @@ export function MobileNavLinks({ links, appLinks, activePath, onNavigate }: Mobi
         <>
           <div className="my-2 border-t" />
           <span className="px-3 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Explainer
+            Navigation
           </span>
           {appLinks.map((link) => (
             <a
