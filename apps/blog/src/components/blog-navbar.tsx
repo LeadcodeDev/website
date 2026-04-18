@@ -32,7 +32,7 @@ export function BlogNavbar({ activePath, appUrlOverrides, locale: initialLocale,
         document.querySelectorAll<HTMLElement>('[data-locale]').forEach((el) => {
           el.style.display = el.dataset.locale === newLocale ? '' : 'none'
         })
-        document.dispatchEvent(new Event('tags:filter'))
+        window.dispatchEvent(new CustomEvent('locale:change', { detail: { locale: newLocale } }))
       }
     : undefined
 

@@ -41,7 +41,8 @@ function writeURL(selectedTags: string[], query: string) {
   window.history.replaceState(null, '', url)
 }
 
-export function TagFilter({ tags, initialTags = [], locale = 'en' }: TagFilterProps) {
+export function TagFilter({ tags, initialTags = [], locale: initialLocale = 'en' }: TagFilterProps) {
+  const [locale, setLocale] = useState(initialLocale)
   const t = useTranslations(locale)
   const [selectedTags, setSelectedTags] = useState<string[]>(initialTags)
   const [query, setQuery] = useState<string>('')
@@ -50,6 +51,15 @@ export function TagFilter({ tags, initialTags = [], locale = 'en' }: TagFilterPr
     const { tags: urlTags, q } = readURL()
     if (urlTags.length > 0) setSelectedTags(urlTags)
     if (q) setQuery(q)
+
+    const preDetected = (window as any).__detectedLocale
+    if (preDetected && preDetected !== initialLocale) setLocale(preDetected)
+
+    const handleLocaleChange = (e: Event) => {
+      setLocale((e as CustomEvent<{ locale: string }>).detail.locale)
+    }
+    window.addEventListener('locale:change', handleLocaleChange)
+    return () => window.removeEventListener('locale:change', handleLocaleChange)
   }, [])
 
   function toggleTag(tag: string) {
@@ -84,7 +94,7 @@ export function TagFilter({ tags, initialTags = [], locale = 'en' }: TagFilterPr
     setVisibleCount(count)
     writeURL(selectedTags, query)
     window.dispatchEvent(new Event('tags:filter'))
-  }, [selectedTags, query])
+  }, [selectedTags, query, locale])
 
   return (
     <>
