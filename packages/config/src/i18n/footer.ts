@@ -7,7 +7,7 @@ export const i18n: Record<string, I18nMessages> = {
     'footer.columns.documentation': 'Documentation',
     'footer.columns.resources': 'Resources',
     'footer.columns.community': 'Community',
-    'footer.copyright': '© {year} Explainer. All rights reserved.',
+    'footer.copyright': '© {year} Baptiste Parmantier. All rights reserved.',
     'footer.builtWith': 'Built with {icon} using Explainer',
     'footer.links.gettingStarted': 'Getting Started',
     'footer.links.mdxComponents': 'MDX Components',
