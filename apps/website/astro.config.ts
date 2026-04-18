@@ -8,19 +8,19 @@ export default defineConfig({
   integrations: [
     react(),
     thumbnailIntegration({
-      appName: 'Explainer',
+      appName: 'Baptiste Parmantier',
       content: {
         type: 'static',
         pages: [
           {
             path: '/',
-            title: 'Explainer v2',
-            description: 'Documentation boilerplate for developers.',
+            title: 'Baptiste Parmantier',
+            description: 'Software Architect & IAM Expert. Co-founder of FerrisKey.',
           },
           {
             path: '/thumbnails/fr',
-            title: 'Explainer v2',
-            description: 'Boilerplate de documentation pour les développeurs.',
+            title: 'Baptiste Parmantier',
+            description: 'Architecte logiciel & expert IAM. Co-fondateur de FerrisKey.',
           },
         ],
       },
