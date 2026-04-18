@@ -1,4 +1,4 @@
-import { defaultConfig, resolveHref, t, type SiteConfig } from '@explainer/config'
+import { defaultConfig, t, type SiteConfig } from '@explainer/config'
 import { Icon } from '@iconify/react'
 import * as React from 'react'
 
@@ -49,7 +49,7 @@ export function Footer({ config = defaultConfig, locale: localeProp, appUrlOverr
           </p>
         </div>
 
-        <div>
+        {/*<div>
           <h4 className="text-sm font-semibold text-foreground mb-3">{t(locale, footer.columns.documentation)}</h4>
           <ul className="space-y-2">
             {footer.links.documentation.map((link) => (
@@ -60,7 +60,7 @@ export function Footer({ config = defaultConfig, locale: localeProp, appUrlOverr
               </li>
             ))}
           </ul>
-        </div>
+        </div>*/}
 
         <div className="grid grid-cols-2 gap-8">
           <div>
@@ -84,7 +84,7 @@ export function Footer({ config = defaultConfig, locale: localeProp, appUrlOverr
             </ul>
           </div>
 
-          <div>
+          {/*<div>
             <h4 className="text-sm font-semibold text-foreground mb-3">{t(locale, footer.columns.community)}</h4>
             <ul className="space-y-2">
               {footer.links.community.map((link) => (
@@ -100,7 +100,7 @@ export function Footer({ config = defaultConfig, locale: localeProp, appUrlOverr
                 </li>
               ))}
             </ul>
-          </div>
+          </div>*/}
         </div>
       </div>
 
