@@ -35,7 +35,7 @@ export const ui = {
     'ferriskey.proof2.title': 'Distributed',
     'ferriskey.proof2.description': 'Multiple services on Kubernetes. Event-driven coordination, eventual consistency, and horizontal scalability by design.',
     'ferriskey.proof3.title': 'Production',
-    'ferriskey.proof3.description': 'GitHub Actions CI/CD, Prometheus + Loki for observability. Maintained with SLO discipline — shipped and kept alive.',
+    'ferriskey.proof3.description': 'GitHub Actions CI/CD, Prometheus + Loki for observability. Maintained with SLO discipline, maintained in operational condition.',
     'ferriskey.cta.website': 'Visit ferriskey.rs',
     'ferriskey.cta.github': 'View on GitHub',
 
@@ -171,7 +171,7 @@ export const ui = {
     'ferriskey.proof2.title': 'Distribué',
     'ferriskey.proof2.description': 'Plusieurs services sur Kubernetes. Coordination événementielle, consistance éventuelle et scalabilité horizontale par conception.',
     'ferriskey.proof3.title': 'Production',
-    'ferriskey.proof3.description': "CI/CD GitHub Actions, Prometheus + Loki pour l'observabilité. Maintenu avec une discipline SLO — livré et maintenu en vie.",
+    'ferriskey.proof3.description': "CI/CD GitHub Actions, Prometheus + Loki pour l'observabilité. Maintenu avec une discipline SLO, maintenu en condition opérationnelle.",
     'ferriskey.cta.website': 'Visiter ferriskey.rs',
     'ferriskey.cta.github': 'Voir sur GitHub',
 
