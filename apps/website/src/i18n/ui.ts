@@ -84,7 +84,7 @@ export const ui = {
     'projects.seameet.title': 'Seameet',
     'projects.seameet.description': 'A core engine for real-time video communication, designed as a composable system with pluggable transport layers. Built in Rust for predictable latency.',
     'projects.explainer.title': 'Explainer',
-    'projects.explainer.description': 'A boilerplate for building complete documentation systems. MDX content, TypeScript logic, and Astro for static generation — opinionated structure for maintainable docs.',
+    'projects.explainer.description': 'A boilerplate for building complete documentation systems. MDX content, TypeScript logic, and Astro for static generation.',
     'projects.sqlxgen.title': 'sqlx_gen',
     'projects.sqlxgen.description': 'Generate Rust structs and CRUD repositories from your database schema — correct types, derives, and sqlx annotations. Supports PostgreSQL, MySQL, SQLite.',
     'projects.more.title': 'And many more...',
