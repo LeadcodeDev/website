@@ -16,11 +16,11 @@ export const ui = {
     // Hero
     'hero.badge': 'Rust, IAM and distributed systems',
     'hero.title': 'Baptiste Parmantier,',
-    'hero.headline': 'architect for systems that stay alive',
+    'hero.headline': 'architect for robust and scalable systems',
     'hero.description': 'I build IAM primitives, distributed architectures and production systems. From the first API contract to the last alert resolved.',
     'hero.primaryAction': 'View my projects',
     'hero.secondaryAction': 'GitHub',
-    'hero.tag1': 'Rust backend',
+    'hero.tag1': 'Rust',
     'hero.tag2': 'IAM and security',
     'hero.tag3': 'Open source lead',
     'hero.currentlyAt': 'Currently at',
@@ -152,7 +152,7 @@ export const ui = {
     // Hero
     'hero.badge': 'Rust, IAM et systèmes distribués',
     'hero.title': 'Baptiste Parmantier,',
-    'hero.headline': 'architecte de systèmes qui restent en vie',
+    'hero.headline': 'architecte de systèmes robustes et scalables',
     'hero.description': "Je conçois des primitives IAM, des architectures distribuées et des systèmes production. Du premier contrat d'API jusqu'à la dernière alerte résolue.",
     'hero.primaryAction': 'Voir mes projets',
     'hero.secondaryAction': 'GitHub',
