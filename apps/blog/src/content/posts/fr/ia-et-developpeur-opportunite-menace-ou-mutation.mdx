@@ -1,0 +1,332 @@
+---
+title: "IA et développeur : opportunité, menace ou mutation ?"
+description: L'IA générative transforme le métier de développeur à une vitesse sans précédent. Mon regard sans concession sur les opportunités réelles, les dangers que l'on tait trop souvent, et ce que tout ça implique pour l'avenir de notre profession.
+thumbnail:
+  title: "IA et développeur, opportunité, menace ou mutation"
+  description: L'IA comme accélérateur, la dépendance cognitive comme piège, l'avenir du métier pour les dix prochaines années.
+  theme: default
+date: 2026-04-25
+tags: [IA, Souveraineté]
+status: published
+author: leadcode_dev
+---
+
+## Préambule
+
+Dans cet article je ne vais pas vous prédire la mort du développeur, ni convaincre qui que ce soit que l'IA résout tout nos problèmes, cela reviendrait à mentir par omission.
+
+Cet article reflète ce que j'ai observé durant mon quotidien : dans mes propres projets, dans les équipes que je côtoie, dans les décisions que je vois prendre. 
+
+Le secteur du développement et plus particulièrement de l'IA évolue très vite, il est tout a fait possible que certains dire de cet article soient rendu caduc au moment de votre lecture.  
+
+Par ailleurs nous aborderons le sujet de l'intelligence artificielle générative.
+
+> L'intelligence artificielle générative ou IA générative est un type de système d'intelligence artificielle (IA) capable de générer du texte, des images, des vidéos ou d'autres médias en réponse à des requêtes (aussi appelées invites, ou en anglais prompts).
+>
+> Source [wikipedia](https://fr.wikipedia.org/wiki/Intelligence_artificielle_g%C3%A9n%C3%A9rative)
+
+---
+
+## L'IA en entreprise est un accélérateur indispensable
+
+Posons une situation simple, nous onsidérons deux entreprises concurrentes agissnt sur un même secteur, même taille et même produit à construire.
+
+::::card-group{cols=2}
+  :::card{label="L'entreprise A" icon="lucide:x-circle"}
+    Elle n'utilise pas l'IA. Ses développeurs font du pair-programming classique, de la revue de code manuelle, de la veille tech sur leur temps libre. C'est une équipe compétente.
+  :::
+  :::card{label="L'entreprise B" icon="lucide:alert-triangle"}
+    Elle a intégré l'IA à chaque étape : **génération de code**, revue **automatisée**, **tests**, **documentation**, rédaction de **specs**.
+    Ses développeurs ne sont pas plus talentueux. Mais ils livrent deux à trois fois plus vite.
+  :::
+::::
+
+En quelque semaines, l'entreprise B a sorti 10 nouvelles fonctionnalités. L'entreprise A en est encore à terminer la quatrième. 
+
+Les clients de l'entreprise A ont commencé à migrer vers l'entreprise B. L'entreprise A subit une pression commerciale qu'elle ne comprend pas encore bien.
+
+Ce scénario n'est pas hypothétique. Il se joue en ce moment dans des dizaines de marchés. Refuser l'IA par principe, c'est prendre un risque commercial réel.
+
+> L'IA a changé ma façon de tester une idée, je peux créer un prototype en quelques heures à peine plutôt qu'en quelques jours. 
+
+Ce n'est pas parce que je travaille moins sérieusement mais plutôt parce que la friction entre l'idée et le code fonctionnel a très fortement diminué.
+
+Un POC rapide permet de **valider** ou d'**invalider** une idée ou hypothèse avant d'y investir du temps d'ingénierie. Pour une startup ou une équipe produit sous pression, c'est une différence qui compte.
+
+### Créer sans tout connaître
+
+En tant que développeur nous greffions notre activité sur un contexte métier pouvant largement varier d'un projet à un autre; comptabilité, paysagisme… ainsi il nous est impossible de connaitre sur le bout des doigts chaque spécificité de chaque métier.
+
+Cependant il m'arrive très souvent d'imaginer des produits, flux de donnée, paradigmes malgré ma méconnaissance de chaque spécificité.
+
+Dernièrement j'ai eu besoin de créer [Seameet](https://github.com/LeadcodeDev/seameet), un système de visioconférence encrypté end-to-end sur de la vidéo, audio et contenu textuel à destination de [Ferriscord](https://github.com/ferrislabs/ferriscord) une alternative open-source à Discord développé sous la banière de [FerrisLabs](https://ferrislabs.fr).
+
+Je connaissais la théorie derrière le procédé d'encryption mais ne l'avais encore jamais testé réellement en situation réelle.
+De la même manière je ne connaissais pas non plus les différentes librairies disponibles en Rust ou même les cas limites cryptographiques.
+ 
+L'IA m'a permis de combler cet écart et ainsi de réaliser ce projet mais surtout : d'apprendre.
+
+Ça ouvre des portes à ceux qui ont la rigueur de comprendre ce qu'ils font, pas seulement de copier.
+
+### Le problème dont personne ne parle
+
+> L'IA ment avec confiance, non pas par malveillance mais par construction. 
+
+Un modèle de langage génère du texte probable, pas du texte vérifié. Quand il ne sait pas, il ne dit pas "je ne sais pas". Il produit quelque chose qui ressemble à une réponse juste.
+
+J'ai vu bon nombre de développeurs copier du code généré par l'IA qui inventait des librairies inexistantes ou des APIs qui n'existent pas, des migrations de base de données incomplètes ou encore des failles de sécurité présentées comme des bonnes pratiques.
+
+Je ne ferai jamais confiance à l'IA, c'est à l'heure actuelle un outil qui se trompe par nécéssité et qui est incapable d'admettre qu'il "ne sait pas".
+
+:::callout{variant="warning"}
+Ne jamais utiliser du code généré par une IA sans le comprendre. Si vous ne pouvez pas expliquer ce que fait le code, vous n'avez pas terminé votre travail.
+:::
+
+---
+
+## La délégation cognitive est un piège silencieux
+
+### Poser une question n'est pas la même chose que chercher une réponse
+
+L'IA n'a rien de magique, elle répond bien aux questions qui sont bien formulées, le problème est qu'elle se limite à ce qu'on lui demande :
+- elle répond bêtement
+- elle ne vous questionne pas
+- elle ne vous suggère pas que votre problème est peut-être mal posé
+- elle ne vous expose pas dix approches différentes, elle vous en donne deux ou trois, souvent les plus communes.
+
+Le paradoxe est qu'une bonne question formulée à l'IA nécéssite de comprendre suffisamment le domaine pour savoir quoi demander.
+Plus votre connaissance d'un sujet est faible, moins votre question sera précise, et moins la réponse sera utile. 
+
+> L'IA amplifie ce que vous savez déjà. Elle ne comble pas ce que vous ignorez sans le savoir.
+
+La recherche autonome fonctionne différemment. En lisant de la documentation, un article technique ou en parcourant un dépôt, vous tombez sur des choses que vous ne cherchiez pas. Un pattern que vous ne connaissiez pas, une approche alternative dans un commentaire, une discussion dans une issue GitHub qui recadre entièrement votre compréhension d'un problème. C'est cette forme de sérendipité qui construit une expertise large et concrête.
+
+Quand l'IA répond directement, tout cet apprentissage disparaît. Vous avez la réponse mais n'avez jamais suivit le cheminement qui vous permis de résoudre votre problème, vous ignorez ce que vous avez raté.
+Si vous vous arrêtez à ses propositions, vous passez à côté d'une partie du champ des possibles.
+
+Ce n'est pas un défaut de l'outil : c'est sa nature. L'outil répond, il ne pense pas.
+
+### Utiliser l'IA vous attrophie
+
+Utiliser l'IA comme un levier ou une béquille, ce n'est pas pareil, et la frontière entre les deux est plus floue qu'elle n'y paraît.
+
+Déléguer la génération de tests unitaires répétitifs à l'IA est un levier, cependant déléguer le debug de vos erreurs sans jamais essayer de les comprendre est une béquille, une résolution temporaire mais aucunement l'apport d'une solution pérenne. La distinction est dans ce que vous choisissez de ne plus faire vous-même, et pourquoi.
+
+L'analogie avec le GPS est éclairante. Avant le GPS nous apprenions le nom des routes, nous développions un sens de l'orientation, une représentation mentale de la géographie d'un lieu. 
+Aujourd'hui, la majorité des personnes sont incapables de retrouver leur chemin sans leur téléphone dans un lieu qu'ils visitent régulièrement. 
+
+> Ce n'est pas de la paresse mais de l'**atrophie par délégation**.
+
+Le GPS est utile, mais il a **remplacé une compétence**.
+
+La même mécanique s'applique au code. Lorsque vous cherchez par vous-même dans une documentation, dans un code source ou encore dans des articles techniques vous construisez une carte mentale d'un domaine, des réflexes. La capacité à naviguer dans l'incertitude sans assistance.
+
+Quand vous interrogez l'IA à chaque friction, vous obtenez la réponse sans le cheminement de pensée permettant le rôle de l'apprentissage. Malgré la dopamine qu'apporte la réponse, c'est le chemin qui participe à la  formation.
+
+Sur du long terme, l'habitude de recherche s'érode, la tolérance à la friction diminue. Ce n'est pas que vous devenez paresseux, vous perdez progressivement la capacité à raisonner seul sur des problèmes difficiles parce que vous ne l'exercez plus.
+
+La nuance ici est que ce n'est pas un argument contre l'IA, c'est un argument pour choisir consciemment ce qu'on lui délègue. Utiliser l'IA pour générer du boilerplate, reformuler un texte, explorer une librairie inconnue cela préserve votre capacité intellectuelle. Lui déléguer la compréhension et le diagnostic, ça l'érode.
+
+### L'implication pour les juniors
+
+Un junior qui utilise l'IA sans fondation concrête va plus vite, c'est un fait. Cependant ce n'est pas tout, il saute les étapes qui lui auraient permis de comprendre pourquoi les choses fonctionnent. Il ne développe pas les réflexes qui permettent, plus tard, de diagnostiquer ce qui ne marche plus.
+
+::::card-group{cols=2}
+  :::card{label="Ce que l'on saute" icon="lucide:x-circle"}
+    Les **fondamentaux** du langage, les **erreurs** incompréhensibles qui **forcent à lire la doc**, les **bugs** impossibles qui enseignent la **rigueur**, l'**esprit critique** face à une solution qui "marche mais on sait pas trop pourquoi".
+  :::
+  :::card{label="Ce que l'on rate" icon="lucide:alert-triangle"}
+    La **maintenabilité** du code produit, la **détection** des failles de sécurité, la **compréhension** des implications de chaque dépendance, l'**autonomie** réelle quand l'outil tombe en panne.
+  :::
+::::
+
+Un junior qui code avec l'IA produit vite, mais produit souvent du code truffé de failles de sécurité, difficile à maintenir parce qu'il n'a pas la cohérence architecturale qui vient de la compréhension profonde. Il a construit sans avoir appris à construire.
+
+A mon sens le pire est qu'il ne peut pas s'en rendre compte parce que ce qu'il a devant les yeux fonctionne, les tests passent (mais sont-ils cohérents ?) mais que son IA préféré ne lui a pas dit que son code était bancal.
+
+---
+
+## Le piège de la forte vélocité de conception
+
+L'IA accélère drastiquement plusieurs phases du cycle de développement.
+
+:::::step-group
+  ::::step{title="Setup de projet"}
+    Phase indispensable mais chronophage qui pouvait largement occuper une demi-journée de travail; scaffolding, configuration des outils, mise en place de la CI/CD, premiers tests.
+    Toutes ces étapes peuvent se faire en moins d'une heure avec les bons prompts. 
+    
+    C'est une économie réelle et palpable.
+  ::::
+
+  ::::step{title="POC et exploration"}
+    Tester une hypothèse technique, explorer une librairie inconnue, prototyper une interface : l'IA comprime le temps d'expérimentation.
+  ::::
+
+  ::::step{title="Tâches répétitives"}
+    Génération "bête et méchante" de types à partir d'un schéma, migration de code, écriture de tests unitaires basiques sont des tâches où l'IA délivre bien et libère du temps pour des problèmes plus complexes.
+  ::::
+:::::
+
+Un sujet pour lequel je vois souvent des équipes se tirer une balle dans le pied, c'est dans leur rapport à l'architecture logicielle adoptée au moment du setup.
+
+L'IA va monter un projet rapidement. Tellement rapidement que l'on est tentés de sauter les étapes de conception. Et c'est à cette étape que le coût de la vitesse apparaît.
+Deux mois plus tard, la structure est incohérente, les responsabilités sont mal délimitées, les dépendances s'enchevêtrent.
+
+Ma position est simple il faut accepter de "perdre du temps" sur les fondamentaux avant de laisser l'IA accélérer les développements futurs :
+- Quels paradigmes ? 
+- Quelle organisation des dossiers et des fichiers ? 
+- Quel rôle pour chaque couche ? 
+- Quelles abstractions introduire dès le départ ? 
+- Quelles dépendances accepter ou refuser ?
+
+Ce temps investi en dans l'architecture logicielle de votre projet n'est en aucun cas perdu. Cette étape rend durable votre vélocité sur la durée de vie complète du projet, rien n'est gaspillé : le temps est simplement dépensé, investit au moment où il est le plus indispensable.
+
+:::callout{variant="info"}
+Une base propre dès le départ est le meilleur accélérateur à long terme. L'IA peut aller vite sur une structure solide. Sur une structure bancale, elle va aussi vite, mais dans n'importe quelle direction, y compris dans le mur.
+:::
+
+---
+
+## Le développeur de demain
+
+Avant de commencer cette partie, je souhaite rappeler que ce que vous lisez reflête ce que je pense et non une vérité absolue.
+
+Le rôle développeur a toujours été d'être un résolveur de problèmes.
+Les débats autour de l'IA ont tendance à faire oublier un sujet fondamental : 
+- un développeur, c'est avant tout quelqu'un qui résout des problèmes.
+- le code est un moyen d'y parvenir
+- un framework est un outil de standardisation
+- Un langage est un mode d'expression
+- l'IA est un outil de productivité.
+
+Ce qui compte est qu'aucun de ces outils n'est le coeur du métier, nous avons la capacité à prendre un problème "flou", à le décomposer, à concevoir une solution, à l'implémenter de façon maintenable et à anticiper les cas limites.
+
+### Le métier évolue mais ne disparaîtra pas
+
+Le développeur de 2026 ne travaille pas comme celui de 2010, ses outils ont changé, les paradigmes ont évolué. Le cloud a tout rebattu et la philosophie devOps a redéfini les frontières et enfin, l'ingénierie logicielle évolue avec chaque vague technologique.
+
+L'IA est la prochaine vague mais probablement pas la dernière.
+
+### Ce que l'IA ne remplacera pas, et ce qu'elle remplacera
+
+L'intelligence artificielle **accélère** la mise en place de fonctionnalités. Elle **automatise** des tâches à **faible valeur**. Elle peut réduire la charge cognitive sur les tâches répétitives, gérer des relances automatiques, de la planification, de la reformulation.
+
+Elle ne remplace pas et ne doit jamais remplacer les décisions d'architecture qui demandent du recul, celui d'un humain qui comprend le produit et les besoins ayant menés à la créaction d'un projet. Elle ne remplace pas le jugement sur les compromis techniques. Elle ne remplace non plus l'expérience de l'échec ni la connaissance des patterns qui ne tiennent pas à l'échelle.
+
+En revanche, elle risque de remplacer les juniors. Dans un avenir proche (si ce n'est pas déjà d'actualité), l'intelligence artificielle sera aussi efficace qu'un junior voir même qu'un senior sur beaucoup de tâches, à un coût marginal. L'un des problème structurel que nous allons rencontrer est que si nous ne formons plus aucun juniors, nous n'aurons plus de seniors dans une dizaine d'années.
+
+C'est le paradoxe auquel notre secteur devra répondre, est une question collective, pas individuelle.
+
+---
+
+## Les coûts réels de l'IA
+
+### Ce que les abonnements masquent
+
+Ce qui me dérange dans l'usage actuel de l'IA, c'est le décalage entre le coût perçu et le coût réel.
+
+Deux manières de consommer de l'IA coexistent aujourd'hui.
+
+::::card-group{cols=2}
+  :::card{label="Abonnement fixe" icon="lucide:credit-card"}
+    Un forfait mensuel (Claude Code, GitHub Copilot) qui donne un accès quasi-illimité. Le coût semble prévisible. Mais l'éditeur absorbe la différence, et ce modèle ne tient que le temps de la phase de croissance.
+  :::
+  :::card{label="Pay as you go" icon="lucide:trending-up"}
+    La facturation au token reflète plus fidèlement le coût réel d'inférence. L'usage intensif pour coder coûte cher, bien plus que ce que les abonnements laissent croire.
+  :::
+::::
+
+Prenons Claude Code Max à 100 $/mois. C'est le plan proposé par Anthropic pour un usage intensif en développement. 100 $ par mois, c'est moins de 3,50 $ par jour. Pour un outil qui tourne en continu sur votre machine, qui lit vos fichiers, qui génère du code, qui maintient un contexte de plusieurs milliers de lignes.
+
+Maintenant regardons l'autre côté. Claude Sonnet, le modèle utilisé derrière Claude Code, se facture en API à environ 3 $ par million de tokens en entrée et 15 $ en sortie. Un développeur qui l'utilise sérieusement dans sa journée, sessions longues, contexte chargé, allers-retours fréquents, consomme facilement plusieurs millions de tokens quotidiennement. On arrive sans forcer à plusieurs centaines de dollars de coût réel par mois, par utilisateur.
+
+La différence entre ce que vous payez et ce que ça coûte réellement à Anthropic pour vous servir, c'est de la subvention pure. Anthropic l'assume aujourd'hui parce que l'objectif est l'acquisition d'utilisateurs, pas la rentabilité immédiate. Mais c'est de l'argent qui sort.
+
+Ce n'est pas une critique : c'est la réalité économique de toute phase de croissance. Le problème, c'est qu'on construit des habitudes de travail sur un prix qui n'a rien à voir avec le coût réel du service.
+
+### L'IA sans masque
+
+OpenAI, Anthropic, Google subventionnent massivement l'accès à leurs modèles. C'est une stratégie d'acquisition. Les valorisations sont astronomiques, les coûts d'infrastructure aussi.
+
+Aujourd'hui, un abonnement à 100$ chez Anthropic pour utiliser Claude Code (Opus 4.6 ou 4.7) peut couter en réalité plus de 1000$ à l'entreprise.
+
+**Que se passe-t-il quand ces entreprises ne peuvent plus se permettre de subventionner l'accès ?**
+
+Les développeurs qui ont délégué leur capacité cognitive à l'IA sont dans une position fragile :
+- soit ils paient le vrai coût d'inférence, et ce coût est élevé
+- soit ils perdent un outil sur lequel ils ont construit toute leur productivité.
+
+J'étais très rétissent à utiliser l'IA comme Claude Code ou Codex parce que j'ai le sentiment que trop déléguer mon processus de création habituel à une IA revient à me priver d'un apprentissage, d'une expertise tout en me rendant dépendant d'un outil qui évolue très régulièrement et qui se trouve aujourd'hui "peu cher" mais qui est propriétaire et donc sujet des changements drastiques et ce, à tout moment.  
+
+---
+
+## Ma vision de l'IA générative dans le futur
+
+### L'évolution logique d'un produit
+
+L'IA n'échappe pas à la trajectoire classique de tout produit technologique. Chaque technologie disruptive suit le même cycle, et l'IA générative ne fait pas exception.
+
+::::::step-group
+  :::::step{title="Phase 1 — POC et recherche"}
+    Les laboratoires publient des modèles expérimentaux. Les démonstrations impressionnent. Les investisseurs s'enflamment. Les coûts sont colossaux, les revenus quasi nuls. On finance l'exploration.
+
+    C'est la phase où GPT-2, puis GPT-3, puis les premiers modèles d'image ont émergé. Personne ne savait encore très bien à quoi ça allait servir concrètement.
+  :::::
+
+  :::::step{title="Phase 2 — Croissance et adoption"}
+    Les modèles deviennent utilisables. Les interfaces grand public arrivent (ChatGPT, Claude, Gemini). Les prix d'accès sont maintenus artificiellement bas pour maximiser l'adoption. Les entreprises intègrent l'IA dans leurs workflows. Les développeurs construisent des habitudes.
+
+    **Nous sommes encore là aujourd'hui.** Les modèles s'améliorent vite, les abonnements sont bradés, la base d'utilisateurs explose. C'est une stratégie d'acquisition massive financée par le capital-risque, pas un modèle économique stable.
+  :::::
+
+  :::::step{title="Phase 3 — Optimisation et rentabilité"}
+    Le capital-risque ne finance pas indéfiniment. À un moment, les entreprises devront dégager des marges. Ça passe par des hausses de prix, une réduction des offres subventionnées ou les deux.
+
+    Mais l'optimisation ne se joue pas uniquement côté pricing. Une part significative de l'effort porte sur la réduction des coûts d'exploitation : optimisation de l'inférence, réduction de l'empreinte mémoire des modèles, quantification, distillation, amélioration des architectures matérielles. L'objectif est de faire tourner des modèles toujours plus performants pour un coût toujours plus bas.
+
+    C'est d'ailleurs ce qui explique l'émergence de modèles comme DeepSeek ou Mistral : des équipes qui ont montré qu'on pouvait atteindre des niveaux de performance comparables avec beaucoup moins de ressources. La course n'est plus seulement sur la puissance brute, elle est aussi sur l'efficience.
+
+    Nous n'y sommes pas encore pleinement, mais les signaux sont là. Aucun produit ne reste en phase de croissance indéfiniment.
+  :::::
+::::::
+
+Ce cycle n'est pas une théorie : c'est ce qu'on a observé avec le cloud dans les années 2010, avec les plateformes de streaming, avec la quasi-totalité des SaaS qui ont connu une adoption massive. L'IA suivra le même chemin.
+
+### LLMs locaux et open-source
+
+Ce qui m'intéresse à moyen terme ce sont les modèles locaux et open-source.
+
+Ne plus dépendre des grands modèles propriétaires, c'est retrouver de la souveraineté sur son outil de travail. Même logique que pour les logiciels : l'open-source permet l'audit, le contrôle, la continuité.
+
+Choisir d'utiliser des modèles open-source sans dépendre d'un cloud revient aujourd'hui à suivre les étapes décrites ci-dessous :
+
+:::::step-group
+  ::::step{title="Coût initial élevé"}
+    Un setup capable de faire tourner un modèle de qualité suffisante pour de la génération de code demande du hardware sérieux. GPU avec VRAM suffisante, RAM, stockage rapide. L'investissement se compte en centaines à milliers d'euros selon les ambitions.
+  ::::
+
+  ::::step{title="Usage gratuit ensuite"}
+    Une fois le hardware en place, l'usage est illimité, sans abonnement, sans restriction, sans dépendance à une API externe. La courbe de coût s'inverse rapidement pour un usage intensif.
+  ::::
+
+  ::::step{title="Performance dépendante du matériel"}
+    La qualité et la vitesse d'inférence dépendent directement du hardware. Les meilleurs modèles open-source ne rivalisent pas encore avec les meilleurs modèles propriétaires sur toutes les tâches, mais l'écart se réduit.
+  ::::
+:::::
+
+Des modèles comme Mistral, Llama, Qwen ou DeepSeek atteignent des niveaux de performance sérieux sur des tâches de programmation. Ils sont open-source, auditables, et tournent en local. La parité n'est pas encore là, mais la trajectoire est claire.
+
+J'attends avec impatience de voir des modèles de la trempe de `Opus 4.6` (à sa sortie) sortir sous la forme de LLMs open-source avec une consommation à l'usage ne nécéssitant plus un investissement massif en hardware.
+
+Je suis persuadé que l'IA du futur sera locale.
+
+---
+
+## Conclusion
+
+Je pense que l'IA est un outil merveilleux mais il implique un regard critique pour ne pas perdre en cognitivité et ne pas en devenir dépendant, ce sont pour moi les deux problèmes les plus improtant à combatre.
+Cet outil implique rigueur et esprit critique, il accélère drastiquement le travail (en bien ou en mal).
+
+En tant que développeur, je pense que les profils ayant déjà des bases robustes et une large expérience seront ceux à qui profiteront le plus l'intelligence artificielle générative car ils disposent déjà des reflexes, connaissent une grande partie de l'éventail des possibilités et sont capables d'analyzer rationnellement des situations.
+
+L'avenir du métier de développeur n'est pas menacé par l'IA, il évolue.

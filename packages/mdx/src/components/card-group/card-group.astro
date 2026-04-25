@@ -21,6 +21,6 @@ interface Props {
 const { cols = 2 } = Astro.props as Props;
 const colClass = gridCols[cols as keyof typeof gridCols];
 ---
-<div class:list={["grid gap-5 sm:grid-cols-1", colClass]}>
+<div class:list={["grid gap-5 sm:grid-cols-1 py-5", colClass]}>
   <slot />
 </div>

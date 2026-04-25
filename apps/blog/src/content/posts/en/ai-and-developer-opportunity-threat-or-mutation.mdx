@@ -1,0 +1,323 @@
+---
+title: "AI and developers: opportunity, threat, or mutation?"
+description: Generative AI is transforming software development at an unprecedented pace. My unfiltered take on the real opportunities, the dangers nobody talks about enough, and what it all means for the future of our profession.
+thumbnail:
+  title: "AI and developers: opportunity, threat, or mutation"
+  description: AI as an accelerator, cognitive dependency as a trap, the future of the craft as an open question.
+  theme: default
+date: 2026-04-25
+tags: [AI, Development, Opinion, Career]
+status: published
+author: leadcode_dev
+---
+
+## Foreword
+
+I'm not going to predict the death of the developer, or convince anyone that AI solves all our problems that would be lying by omission in both directions.
+
+This article reflects what I've observed day to day: in my own projects, in the teams I work with, in decisions I've watched being made. The development sector, and AI in particular, moves fast. Some of what I write here may already be outdated by the time you read it.
+
+A quick note: throughout this article, I'm specifically talking about generative artificial intelligence.
+
+> Generative artificial intelligence, or generative AI, refers to AI systems capable of generating text, images, video, or other media in response to prompts.
+>
+> Source: [Wikipedia](https://en.wikipedia.org/wiki/Generative_AI)
+
+---
+
+## AI in business: an indispensable accelerator
+
+Let's set up a simple scenario. Two competing companies, same sector, same size, same product to build.
+
+::::card-group{cols=2}
+  :::card{label="Company A" icon="lucide:x-circle"}
+    Doesn't use AI. Developers rely on classic pair-programming, manual code reviews, and personal tech watch on their own time. A competent team.
+  :::
+  :::card{label="Company B" icon="lucide:alert-triangle"}
+    Has integrated AI at every stage: **code generation**, **automated** reviews, **testing**, **documentation**, **spec** writing.
+    Developers are no more talented. But they ship two to three times faster.
+  :::
+::::
+
+Within a few weeks, Company B has shipped 10 new features. Company A is still finishing its fourth.
+
+Company A's customers have started migrating to Company B. Company A is feeling commercial pressure it doesn't fully understand yet.
+
+This scenario isn't hypothetical. It's playing out right now across dozens of markets. Refusing AI on principle is a real business risk.
+
+> AI has changed how I test an idea. I can build a working prototype in a few hours instead of a few days.
+
+Not because I'm working less seriously, but because the friction between an idea and working code has dropped dramatically.
+
+A fast POC lets you **validate** or **invalidate** an idea before committing engineering time to it. For a startup or a product team under pressure, that difference matters.
+
+### Building without knowing everything
+
+As developers, we graft our work onto business contexts that vary enormously from one project to the next accounting, landscaping, healthcare. It's impossible to know the ins and outs of every domain.
+
+Yet I often find myself designing products, data flows, and architectural patterns in areas I'm not deeply familiar with.
+
+Recently, I needed to build [Seameet](https://github.com/LeadcodeDev/seameet) an end-to-end encrypted video conferencing system covering video, audio, and text, for [Ferriscord](https://github.com/ferrislabs/ferriscord), an open-source Discord alternative developed under [FerrisLabs](https://ferrislabs.fr).
+
+I understood the theory behind encryption but had never implemented it for real. I also didn't know the available Rust libraries, or the cryptographic edge cases.
+
+AI helped me bridge that gap and ship the project but more importantly, it helped me learn.
+
+It opens doors for those who have the discipline to actually understand what they're doing, not just copy it.
+
+### The problem nobody talks about enough
+
+> AI lies with confidence not out of malice, but by design.
+
+A language model generates statistically likely text, not verified text. When it doesn't know something, it doesn't say "I don't know." It produces something that looks like a correct answer.
+
+I've seen developers copy AI-generated code that compiled perfectly and did exactly the wrong thing. Invented libraries. APIs that don't exist. Incomplete database migrations. Security vulnerabilities presented as best practices.
+
+I don't blindly trust AI. Right now, it's a tool that gets things wrong by necessity, and that is incapable of admitting it "doesn't know."
+
+:::callout{variant="warning"}
+Never use AI-generated code without understanding it. If you can't explain what the code does, you haven't finished your job.
+:::
+
+---
+
+## Cognitive delegation: the silent trap
+
+### Asking a question is not the same as searching for an answer
+
+AI is good at answering well-formed questions. The problem is that it only goes as far as what you ask:
+- it answers mechanically
+- it doesn't question you
+- it doesn't suggest your problem might be poorly framed
+- it doesn't lay out ten different approaches it gives you two or three, usually the most common ones
+
+The paradox is that asking a good question requires already understanding the domain well enough to know what to ask. The weaker your knowledge of a subject, the less precise your question, and the less useful the answer.
+
+> AI amplifies what you already know. It doesn't fill in what you don't know you're missing.
+
+Searching on your own works differently. Reading documentation, a technical article, or browsing a repository, you stumble onto things you weren't looking for. A pattern you didn't know existed, an alternative approach in a comment, a GitHub issue discussion that completely reframes your understanding of a problem. That kind of serendipity is what builds broad, concrete expertise.
+
+When AI answers directly, all that learning disappears. You have the answer but never walked the path that produced it. You don't know what you missed. If you stop at its suggestions, you walk past a big chunk of the solution space.
+
+That's not a flaw in the tool it's its nature. The tool responds. It doesn't think.
+
+### Using AI for everything atrophies you
+
+Using AI as leverage versus using it as a crutch these are not the same thing, and the line between them is blurrier than it looks.
+
+Delegating repetitive unit test generation to AI: leverage. Delegating the debugging of your errors without ever trying to understand them: a crutch a temporary fix, not a durable solution. The distinction lies in what you choose to stop doing yourself, and why.
+
+The GPS analogy is useful here. Before GPS, we learned street names, developed a sense of direction, built a mental map of a place. Today, most people can't find their way around without their phone in a city they visit regularly.
+
+> That's not laziness it's **atrophy through delegation**.
+
+GPS is useful. But it **replaced a skill**.
+
+The same mechanism applies to code. When you search on your own in documentation, source code, technical articles you build a mental map of a domain. Reflexes. The ability to navigate uncertainty without assistance.
+
+When you ask AI at every point of friction, you get the answer without the thinking that makes learning stick. Despite the dopamine hit of an instant answer, it's the path that forms you.
+
+Over time, the habit of searching erodes, and your tolerance for friction drops. You don't become lazy you gradually lose the ability to reason through hard problems alone because you've stopped exercising it.
+
+The nuance: this isn't an argument against AI. It's an argument for consciously choosing what to delegate. Using AI to generate boilerplate, reword text, explore an unfamiliar library that preserves your intellectual capacity. Delegating comprehension and diagnosis to it erodes that capacity.
+
+### What this means for juniors
+
+A junior who uses AI without a solid foundation moves faster that's a fact. But they also skip the steps that would have helped them understand *why* things work. They don't build the reflexes that let you, later, diagnose what breaks.
+
+::::card-group{cols=2}
+  :::card{label="What gets skipped" icon="lucide:x-circle"}
+    Language **fundamentals**, incomprehensible **errors** that force you to read the docs, impossible **bugs** that teach rigour, the **critical thinking** that comes from a solution that "works but nobody knows why."
+  :::
+  :::card{label="What gets missed" icon="lucide:alert-triangle"}
+    **Maintainability** of the produced code, **detection** of security flaws, **understanding** the implications of each dependency, real **autonomy** when the tool breaks down.
+  :::
+::::
+
+A junior coding with AI ships fast, but often ships code riddled with security issues, hard to maintain, lacking the architectural coherence that comes from deep understanding. They built without learning to build.
+
+In my view, the worst part is they may not realize it. What they see in front of them works, the tests pass (but are they meaningful?), and their favourite AI never told them the code was shaky.
+
+---
+
+## The velocity trap
+
+AI dramatically accelerates several phases of the development cycle.
+
+:::::step-group
+  ::::step{title="Project setup"}
+    An essential but time-consuming phase that could easily eat half a day scaffolding, tool configuration, CI/CD setup, first tests.
+    All of that can now be done in under an hour with the right prompts.
+
+    That's a real, tangible saving.
+  ::::
+
+  ::::step{title="POC and exploration"}
+    Testing a technical hypothesis, exploring an unfamiliar library, prototyping an interface: AI compresses experimentation time.
+  ::::
+
+  ::::step{title="Repetitive tasks"}
+    Generating types from a schema, migrating code, writing basic unit tests tasks where AI delivers well and frees up time for more complex problems.
+  ::::
+:::::
+
+Where I see teams shooting themselves in the foot is their relationship with software architecture at setup time.
+
+AI will scaffold a project fast. So fast that you're tempted to skip the design steps. And that's where the real cost of speed shows up. Two months later, the structure is incoherent, responsibilities are poorly defined, dependencies are tangled.
+
+My position is simple: you have to accept "wasting time" on fundamentals before letting AI accelerate future development:
+- Which paradigms?
+- How should folders and files be organized?
+- What role does each layer play?
+- Which abstractions should be introduced upfront?
+- Which dependencies to accept or reject?
+
+That time invested in software architecture is never wasted. It's what makes velocity sustainable over the full lifetime of a project. Nothing is lost the time is simply spent where it matters most.
+
+:::callout{variant="info"}
+A clean foundation from day one is the best long-term accelerator. AI can move fast on a solid structure. On a shaky structure, it moves just as fast in any direction, including straight into a wall.
+:::
+
+---
+
+## The developer of tomorrow
+
+Before I get into this section, I want to be clear: what you're reading reflects what I think, not absolute truth.
+
+The developer's role has always been to solve problems. The debates around AI tend to lose sight of something fundamental:
+- a developer is first and foremost someone who solves problems
+- code is just the means to do it
+- a framework is a standardisation tool
+- a language is a mode of expression
+- AI is a productivity tool
+
+What matters is that none of these tools is the core of the craft. What counts is the ability to take a fuzzy problem, break it down, design a solution, implement it in a maintainable way, and anticipate edge cases.
+
+### The craft evolves, it doesn't disappear
+
+The developer of 2026 doesn't work like the developer of 2010. Tools have changed, paradigms have shifted. Cloud computing reshuffled everything. The DevOps philosophy redrew the boundaries. Software engineering evolves with every technological wave.
+
+AI is the next wave but probably not the last.
+
+### What AI won't replace, and what it will
+
+AI **accelerates** feature delivery. It **automates** low-value tasks. It can reduce cognitive load on repetitive work automated follow-ups, scheduling, reformulation.
+
+It doesn't replace, and should never replace, architectural decisions that require the kind of judgement that comes from actually understanding the product and the needs that brought a project into existence. It doesn't replace technical trade-off judgement. It doesn't replace the experience of failure, or the knowledge of patterns that don't hold at scale.
+
+That said it will likely replace juniors. Not developers, but juniors. In the near future (if it's not already happening), AI will be as effective as a junior, and sometimes a senior, on many tasks, at marginal cost. The structural problem our sector will face: if we stop training juniors, we'll have no seniors in ten years.
+
+That's the paradox our industry needs to answer. It's a collective question, not an individual one.
+
+---
+
+## The real cost of AI
+
+### What subscriptions hide
+
+What bothers me about current AI usage is the gap between perceived cost and real cost.
+
+Two ways of consuming AI coexist today.
+
+::::card-group{cols=2}
+  :::card{label="Fixed subscription" icon="lucide:credit-card"}
+    A monthly flat rate (Claude Code, GitHub Copilot) giving near-unlimited access. The cost seems predictable. But the provider absorbs the difference and this model only holds during the growth phase.
+  :::
+  :::card{label="Pay as you go" icon="lucide:trending-up"}
+    Per-token billing more accurately reflects the real cost of inference. Intensive coding use is expensive, far more than subscriptions suggest.
+  :::
+::::
+
+Take Claude Code Max at $100/month. That's the plan Anthropic offers for intensive development use. $100 a month is less than $3.50 a day. For a tool running continuously on your machine, reading your files, generating code, maintaining context across thousands of lines.
+
+Now look at the other side. Claude Sonnet, the model behind Claude Code, bills via API at around $3 per million input tokens and $15 per million output tokens. A developer using it seriously throughout their day long sessions, heavy context, frequent back-and-forth can easily burn through several million tokens daily. That adds up to several hundred dollars of real monthly cost, per user.
+
+The gap between what you pay and what it actually costs Anthropic to serve you is pure subsidy. Anthropic absorbs it today because the goal is user acquisition, not immediate profitability. But it's money going out the door.
+
+### AI unmasked
+
+OpenAI, Anthropic, Google are heavily subsidising access to their models. It's an acquisition strategy. The valuations are astronomical, so are the infrastructure costs.
+
+Today, a $100 Claude Code subscription (using Opus 4.6 or beyond) likely costs Anthropic well over $1,000 to provide.
+
+**What happens when these companies can no longer afford to subsidise access?**
+
+Developers who have delegated their cognitive capacity to AI are in a fragile position:
+- either they pay the real cost of inference and that cost is high
+- or they lose a tool their entire productivity was built on
+
+I was very reluctant to adopt tools like Claude Code or Codex, because I felt that over-delegating my creative process to AI meant depriving myself of learning and expertise, while becoming dependent on a tool that evolves constantly, is currently "cheap" but is proprietary and therefore subject to drastic changes at any moment.
+
+---
+
+## My vision of generative AI in the future
+
+### The logical evolution of a product
+
+AI isn't immune to the classic trajectory of any technology product. Every disruptive technology follows the same cycle, and generative AI is no exception.
+
+::::::step-group
+  :::::step{title="Phase 1 POC and research"}
+    Labs publish experimental models. Demos impress. Investors go wild. Costs are enormous, revenue near zero. We're funding exploration.
+
+    This is the phase where GPT-2, then GPT-3, then the first image models emerged. Nobody quite knew what any of it would concretely be used for.
+  :::::
+
+  :::::step{title="Phase 2 Growth and adoption"}
+    Models become usable. Consumer interfaces arrive (ChatGPT, Claude, Gemini). Access pricing is kept artificially low to maximise adoption. Companies integrate AI into their workflows. Developers build habits around it.
+
+    **We're still here today.** Models are improving fast, subscriptions are subsidised, the user base is exploding. This is a massive acquisition strategy funded by venture capital not a stable business model.
+  :::::
+
+  :::::step{title="Phase 3 Optimisation and profitability"}
+    Venture capital doesn't fund indefinitely. At some point, companies will need margins. That means price increases, reduced subsidised offerings, or both.
+
+    But optimisation isn't just about pricing. A significant part of the effort goes toward reducing operating costs: inference optimisation, reducing model memory footprint, quantisation, distillation, hardware architecture improvements. The goal is to run increasingly powerful models at increasingly lower costs.
+
+    This is exactly what explains the emergence of models like DeepSeek or Mistral teams that showed you can reach comparable performance levels with far fewer resources. The race is no longer just about raw power, it's also about efficiency.
+
+    We're not fully there yet, but the signals are clear. No product stays in the growth phase indefinitely.
+  :::::
+::::::
+
+This cycle isn't theory it's what we saw with cloud computing in the 2010s, with streaming platforms, with virtually every SaaS that went through massive adoption. AI will follow the same path.
+
+### Local and open-source LLMs
+
+What interests me most at medium term is local and open-source models.
+
+Breaking free from proprietary cloud models means reclaiming sovereignty over your tools. Same logic as with software: open-source enables auditing, control, and continuity.
+
+Choosing to use open-source models without cloud dependency looks like this today:
+
+:::::step-group
+  ::::step{title="High upfront cost"}
+    A setup capable of running a model good enough for code generation requires serious hardware. A GPU with sufficient VRAM, RAM, fast storage. Depending on ambition, you're looking at hundreds to thousands of euros.
+  ::::
+
+  ::::step{title="Free usage after that"}
+    Once the hardware is in place, usage is unlimited no subscription, no restrictions, no dependence on an external API. The cost curve reverses quickly for intensive use.
+  ::::
+
+  ::::step{title="Performance tied to hardware"}
+    Response quality and inference speed depend directly on your hardware. The best open-source models today don't yet match the best proprietary ones across all tasks but the gap is narrowing.
+  ::::
+:::::
+
+Models like Mistral, Llama, Qwen, or DeepSeek reach serious performance levels on programming tasks. They're open-source, auditable, and run locally. Full parity isn't here yet, but the trajectory is clear.
+
+I'm looking forward to seeing models of the calibre of `Opus 4.6` released as open-source LLMs with hardware requirements that no longer demand a massive investment.
+
+I'm convinced the AI of the future will be local.
+
+---
+
+## Conclusion
+
+I think AI is a remarkable tool but it demands critical thinking to avoid losing cognitive capacity and becoming dependent on it. Those are, to me, the two most important problems to fight against.
+
+This tool demands rigour and critical thinking. It dramatically accelerates work, for better or worse.
+
+As a developer, I believe the profiles who will benefit most from generative AI are those who already have solid foundations and broad experience. They have the reflexes, know the range of possibilities, and can rationally analyse situations.
+
+The future of the developer is not threatened by AI. It's evolving.
