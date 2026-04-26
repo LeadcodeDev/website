@@ -10,8 +10,8 @@ export const ui = {
     'index.noResults': 'No articles match your search.',
 
     // RSS
-    'rss.title': 'Explainer Blog',
-    'rss.description': 'Latest articles from the Explainer blog',
+    'rss.title': 'Baptiste Parmantier Blog',
+    'rss.description': 'Latest articles from the blog',
 
     // Footer
     'footer.text': 'Built with Explainer v2',
@@ -55,11 +55,11 @@ export const ui = {
     'index.noResults': 'Aucun article ne correspond à votre recherche.',
 
     // RSS
-    'rss.title': 'Blog Explainer',
-    'rss.description': 'Les derniers articles du blog Explainer',
+    'rss.title': 'Baptiste Parmantier Explainer',
+    'rss.description': 'Les derniers articles du blog',
 
     // Footer
-    'footer.text': 'Construit avec Explainer v2',
+    'footer.text': 'Construit avec Explainer',
 
     // Post layout
     'post.back': "Retour aux articles",

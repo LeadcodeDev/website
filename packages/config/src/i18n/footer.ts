@@ -2,7 +2,7 @@ import type { I18nMessages } from '../contracts'
 
 export const i18n: Record<string, I18nMessages> = {
   en: {
-    'description': 'Documentation boilerplate for developers.',
+    'description': 'Software Architect and IAM expert with 10+ years of experience. Co-founder of FerrisKey. Designing scalable distributed systems.',
     'footer.description': 'A modern documentation framework built with Astro. Create beautiful, fast, and accessible docs with ease.',
     'footer.columns.documentation': 'Documentation',
     'footer.columns.resources': 'Resources',
