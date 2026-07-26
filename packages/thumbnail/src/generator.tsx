@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { resolve, dirname } from 'node:path'
 import satori from 'satori'
+import * as culori from 'culori'
 import { resolveColor } from './colors'
 
 export type ThumbnailTheme = 'default' | 'gradient' | 'minimal'
@@ -18,6 +19,7 @@ export interface ThumbnailOptions {
   description?: string
   primaryColor?: string
   theme?: ThumbnailTheme
+  scheme?: 'light' | 'dark'
 }
 
 const fonts = [
@@ -74,41 +76,107 @@ function TextContent({
   )
 }
 
-function DefaultTheme({ headline, title, description, primaryColor }: Required<Pick<ThumbnailOptions, 'primaryColor'>> & Omit<ThumbnailOptions, 'primaryColor' | 'theme'>) {
-  return (
-    <div tw="w-full h-full flex flex-col justify-center bg-[#020420]">
-      <svg
-        tw="absolute right-0 top-0"
-        width="629"
-        height="593"
-        viewBox="0 0 629 593"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g filter="url(#filter0_f_199_94966)">
-          <path
-            d="M628.5 -578L639.334 -94.4223L806.598 -548.281L659.827 -87.387L965.396 -462.344L676.925 -74.0787L1087.69 -329.501L688.776 -55.9396L1160.22 -164.149L694.095 -34.9354L1175.13 15.7948L692.306 -13.3422L1130.8 190.83L683.602 6.50012L1032.04 341.989L668.927 22.4412L889.557 452.891L649.872 32.7537L718.78 511.519L628.5 36.32L538.22 511.519L607.128 32.7537L367.443 452.891L588.073 22.4412L224.955 341.989L573.398 6.50012L126.198 190.83L564.694 -13.3422L81.8734 15.7948L562.905 -34.9354L96.7839 -164.149L568.224 -55.9396L169.314 -329.501L580.075 -74.0787L291.604 -462.344L597.173 -87.387L450.402 -548.281L617.666 -94.4223L628.5 -578Z"
-            fill={primaryColor}
-          />
-        </g>
-        <defs>
-          <filter
-            id="filter0_f_199_94966"
-            x="0.873535"
-            y="-659"
-            width="1255.25"
-            height="1251.52"
-            filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
-          >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
-            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-            <feGaussianBlur stdDeviation="80" result="effect1_foregroundBlur_199_94966" />
-          </filter>
-        </defs>
-      </svg>
+const GRID = 60
 
-      <TextContent headline={headline} title={title} description={description} primaryColor={primaryColor} />
+// [col, row, widthCells, heightCells, tintIndex]
+const SQUARE_CELLS: [number, number, number, number, number][] = [
+  [4, 0, 1, 1, 0], [7, 0, 1, 1, 3], [12, 0, 1, 2, 1], [2, 1, 1, 1, 5], [9, 1, 1, 1, 2], [14, 0, 2, 1, 3],
+  [0, 2, 1, 2, 0], [5, 3, 1, 1, 3], [11, 2, 1, 1, 4], [15, 3, 1, 1, 0], [2, 4, 1, 1, 2], [13, 4, 1, 1, 5],
+  [8, 4, 1, 1, 1], [3, 6, 1, 1, 3], [10, 6, 1, 2, 0], [6, 7, 1, 1, 4], [14, 6, 1, 1, 2], [1, 7, 1, 1, 3],
+  [12, 7, 2, 1, 1], [7, 5, 1, 1, 5],
+]
+
+function toRgba(hex: string, alpha: number): string {
+  const rgb = culori.rgb(culori.parse(hex) ?? { mode: 'rgb', r: 0, g: 0, b: 0 })
+  const r = Math.round((rgb.r ?? 0) * 255)
+  const g = Math.round((rgb.g ?? 0) * 255)
+  const b = Math.round((rgb.b ?? 0) * 255)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+function DefaultTheme({
+  headline,
+  title,
+  description,
+  primaryColor,
+  scheme,
+}: Required<Pick<ThumbnailOptions, 'primaryColor'>> & Omit<ThumbnailOptions, 'primaryColor' | 'theme'> & { scheme: 'light' | 'dark' }) {
+  const isDark = scheme === 'dark'
+  const bg = isDark ? '#0d1117' : '#FBF9F6'
+  const titleColor = isDark ? '#F4F4F5' : '#18181b'
+  const descColor = isDark ? '#9CA3AF' : '#6b7280'
+  const a = isDark ? [0.5, 0.34, 0.22, 0.13] : [0.42, 0.28, 0.18, 0.1]
+  const tints = [
+    toRgba(primaryColor, a[0]),
+    toRgba(primaryColor, a[1]),
+    toRgba(primaryColor, a[2]),
+    toRgba(primaryColor, a[3]),
+    isDark ? 'rgba(160, 170, 190, 0.1)' : 'rgba(120, 130, 150, 0.14)',
+    isDark ? 'rgba(200, 180, 155, 0.09)' : 'rgba(205, 180, 150, 0.2)',
+  ]
+
+  return (
+    <div tw="w-full h-full flex flex-col justify-center" style={{ backgroundColor: bg, position: 'relative' }}>
+      {SQUARE_CELLS.map(([c, r, w, h, ci], i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            left: c * GRID,
+            top: r * GRID,
+            width: w * GRID,
+            height: h * GRID,
+            backgroundColor: tints[ci],
+          }}
+        />
+      ))}
+
+      <div tw="flex flex-col pl-[96px]" style={{ position: 'relative', width: 820 }}>
+        {headline && (
+          <p tw="uppercase text-[24px] mb-[20px]" style={{ color: primaryColor, fontWeight: 700, letterSpacing: 3 }}>
+            {headline}
+          </p>
+        )}
+        <h1
+          tw="m-0 text-[66px]"
+          style={{
+            display: 'block',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            color: titleColor,
+            fontWeight: 700,
+            letterSpacing: -1.5,
+            lineHeight: 1.05,
+            maxWidth: 760,
+          }}
+        >
+          {title}
+        </h1>
+        {description && (
+          <p
+            tw="text-[27px] mt-[26px]"
+            style={{
+              display: 'block',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              color: descColor,
+              lineHeight: 1.3,
+              maxWidth: 640,
+            }}
+          >
+            {description}
+          </p>
+        )}
+      </div>
+
+      <svg style={{ position: 'absolute', left: 70, bottom: 96 }} width="34" height="34">
+        <circle cx="17" cy="17" r="15" fill="none" stroke={primaryColor} strokeWidth="2" strokeDasharray="4 4" opacity="0.6" />
+      </svg>
+      <svg style={{ position: 'absolute', left: 64, bottom: 44 }} width="40" height="34">
+        <path d="M20 4 L37 30 L3 30 Z" fill="none" stroke={primaryColor} strokeWidth="2" opacity="0.55" />
+      </svg>
     </div>
   )
 }
@@ -145,7 +213,7 @@ function MinimalTheme({ headline, title, description, primaryColor }: Required<P
 }
 
 export async function generateThumbnail(options: ThumbnailOptions): Promise<string> {
-  const { headline, title, description, theme = 'default' } = options
+  const { headline, title, description, theme = 'default', scheme = 'light' } = options
   const primaryColor = resolveColor(options.primaryColor)
 
   const props = { headline, title, description, primaryColor }
@@ -153,7 +221,7 @@ export async function generateThumbnail(options: ThumbnailOptions): Promise<stri
   const themeElement =
     theme === 'gradient' ? <GradientTheme {...props} /> :
     theme === 'minimal' ? <MinimalTheme {...props} /> :
-    <DefaultTheme {...props} />
+    <DefaultTheme {...props} scheme={scheme} />
 
   return satori(themeElement, {
     width: 960,

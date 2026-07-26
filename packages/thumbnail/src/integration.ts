@@ -114,17 +114,22 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
                 name: '@explainer/thumbnail-dev',
                 configureServer(server) {
                   server.middlewares.use(async (req, res, next) => {
-                    if (!req.url?.endsWith('/thumbnail.png')) {
+                    const isThumb =
+                      req.url?.endsWith('/thumbnail.png') || req.url?.endsWith('/thumbnail-dark.png')
+                    if (!isThumb) {
                       return next()
                     }
+
+                    const scheme = req.url!.endsWith('/thumbnail-dark.png') ? 'dark' : 'light'
 
                     // Always rebuild content index in dev for live frontmatter changes
                     contentIndex = null
 
                     try {
+                      const metaUrl = req.url!.replace('/thumbnail-dark.png', '/thumbnail.png')
                       const { headline, title, description, color, theme } = resolvePageMeta(
                         config,
-                        req.url,
+                        metaUrl,
                         await getContentIndex(),
                       )
 
@@ -134,6 +139,7 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
                         description,
                         primaryColor: color ?? config.primaryColor,
                         theme,
+                        scheme,
                       })
 
                       const png = await renderThumbnail(svg)
@@ -161,14 +167,20 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
         if (config.content.type === 'static') {
           for (const page of config.content.pages) {
             try {
-              const svg = await generateThumbnail({
+              const base = {
                 title: page.title,
                 description: page.description,
                 primaryColor: config.primaryColor,
-              })
+              }
               const pagePath = page.path === '/' ? '' : page.path.replace(/^\//, '')
-              const outputPath = join(outputDir, pagePath, 'thumbnail.png')
-              await renderThumbnailToFile(svg, outputPath)
+              await renderThumbnailToFile(
+                await generateThumbnail({ ...base, scheme: 'light' }),
+                join(outputDir, pagePath, 'thumbnail.png'),
+              )
+              await renderThumbnailToFile(
+                await generateThumbnail({ ...base, scheme: 'dark' }),
+                join(outputDir, pagePath, 'thumbnail-dark.png'),
+              )
               logger.info(`Thumbnail generated for ${page.path}`)
             } catch (error) {
               logger.warn(`Failed to generate thumbnail for ${page.path}: ${error}`)
@@ -189,16 +201,21 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
               config.appName,
             )
 
-            const svg = await generateThumbnail({
+            const base = {
               headline,
               title,
               description,
               primaryColor: color ?? config.primaryColor,
               theme,
-            })
-
-            const outputPath = join(outputDir, pathname, 'thumbnail.png')
-            await renderThumbnailToFile(svg, outputPath)
+            }
+            await renderThumbnailToFile(
+              await generateThumbnail({ ...base, scheme: 'light' }),
+              join(outputDir, pathname, 'thumbnail.png'),
+            )
+            await renderThumbnailToFile(
+              await generateThumbnail({ ...base, scheme: 'dark' }),
+              join(outputDir, pathname, 'thumbnail-dark.png'),
+            )
             logger.info(`Thumbnail generated for ${pathname}`)
           } catch (error) {
             logger.warn(`Failed to generate thumbnail for ${pathname}: ${error}`)
