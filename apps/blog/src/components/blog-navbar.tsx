@@ -54,6 +54,8 @@ export function BlogNavbar({ activePath, appUrlOverrides, locale: initialLocale,
       currentApp="blog"
       appUrlOverrides={appUrlOverrides}
       brandHref={appUrlOverrides?.website ?? '/'}
+      brandBadge
+      variant="segmented"
       links={blogLinks}
       activePath={activePath}
       leftSlot={
@@ -67,6 +69,7 @@ export function BlogNavbar({ activePath, appUrlOverrides, locale: initialLocale,
       }
       rightSlot={
         <LocaleSwitcher
+          elevated
           locales={locales}
           currentLocale={locale}
           switchUrls={isListing ? {} : localeSwitchUrls}

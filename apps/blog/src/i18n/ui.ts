@@ -30,6 +30,7 @@ export const ui = {
 
     // Tag filter
     'tagFilter.placeholder': 'Search articles...',
+    'tagFilter.all': 'All',
 
     // Table of contents
     'toc.title': 'On this page',
@@ -75,6 +76,7 @@ export const ui = {
 
     // Tag filter
     'tagFilter.placeholder': 'Rechercher un article...',
+    'tagFilter.all': 'Tous',
 
     // Table of contents
     'toc.title': 'Sur cette page',

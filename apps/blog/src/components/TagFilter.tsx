@@ -1,19 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from '../i18n/utils';
+import { getTagLabel } from '../lib/tags';
 
 interface TagFilterProps {
   tags: { name: string; count: number }[]
   initialTags?: string[]
   locale?: string
-}
-
-function TagIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
-      <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
-    </svg>
-  )
 }
 
 function SearchIcon({ className }: { className?: string }) {
@@ -98,19 +90,30 @@ export function TagFilter({ tags, initialTags = [], locale: initialLocale = 'en'
 
   return (
     <>
-      <div className="mb-10 space-y-4">
-        <div className="relative">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+      <div className="mb-10 space-y-5">
+        <div className="relative max-w-md">
+          <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('tagFilter.placeholder')}
-            className="w-full rounded-md border border-border bg-transparent pl-10 pr-4 py-2 max-w-sm text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-primary/50"
+            className="w-full rounded-[3px] border border-border bg-background pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-primary/50 focus:ring-2 focus:ring-primary/15"
           />
         </div>
 
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setSelectedTags([])}
+            className={`cursor-pointer rounded-[3px] border px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] transition-colors ${
+              selectedTags.length === 0
+                ? 'border-primary bg-primary text-white'
+                : 'border-border text-muted-foreground hover:border-primary/35 hover:bg-primary/5 hover:text-foreground'
+            }`}
+          >
+            {t('tagFilter.all')}
+          </button>
           {tags.map((tag) => {
             const active = selectedTags.includes(tag.name)
             return (
@@ -118,14 +121,13 @@ export function TagFilter({ tags, initialTags = [], locale: initialLocale = 'en'
                 key={tag.name}
                 type="button"
                 onClick={() => toggleTag(tag.name)}
-                className={`flex items-center gap-1.5 rounded-md border px-4 py-1.5 text-sm transition-colors cursor-pointer border-dashed ${
+                className={`cursor-pointer rounded-[3px] border px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] transition-colors ${
                   active
-                    ? 'border-primary/50 bg-primary/5 text-primary font-medium'
-                    : 'border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground'
+                    ? 'border-primary bg-primary text-white'
+                    : 'border-border text-muted-foreground hover:border-primary/35 hover:bg-primary/5 hover:text-foreground'
                 }`}
               >
-                <TagIcon className="size-3.5" />
-                {tag.name}
+                {getTagLabel(tag.name, locale)}
               </button>
             )
           })}
@@ -133,7 +135,7 @@ export function TagFilter({ tags, initialTags = [], locale: initialLocale = 'en'
       </div>
 
       {hasActiveFilter && visibleCount === 0 && (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-border py-20">
+        <div className="flex flex-col items-center justify-center gap-4 rounded-[4px] border border-dashed border-border py-20">
           <svg className="size-10 text-muted-foreground/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.3-4.3" />

@@ -19,6 +19,7 @@ const t = useTranslations(locale)
 <Base title={t('index.title')} locale={locale} locales={locales}>
   <!-- Page header -->
   <section class="mb-8">
+    <p class="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-primary">// Journal</p>
     <h1 class="text-4xl md:text-5xl font-bold tracking-tight">
       <span data-i18n="index.heading.prefix">{t('index.heading.prefix')}</span>{' '}
       <span class="text-primary" data-i18n="index.heading.highlight">{t('index.heading.highlight')}</span>
@@ -30,17 +31,17 @@ const t = useTranslations(locale)
 
   <!-- Articles grid -->
   {posts.length > 0 && (
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {posts.map((post) => (
-        <div data-tags={JSON.stringify(post.data.tags)} data-title={post.data.title} data-description={post.data.description ?? ''} data-locale={getPostLocale(post)}>
+        <div class="h-full" data-tags={JSON.stringify(post.data.tags)} data-title={post.data.title} data-description={post.data.description ?? ''} data-locale={getPostLocale(post)}>
           <PostCard
             title={post.data.title}
             description={post.data.description}
             date={post.data.date}
             tags={post.data.tags}
-            cover={post.data.cover ?? `${getPostHref(post)}/thumbnail.png`}
+            cover={post.data.cover}
             href={getPostHref(post)}
-            locale={locale}
+            locale={getPostLocale(post)}
             readingTime={getReadingTime(post.body ?? '')}
             author={post.data.author ? getAuthor(post.data.author) : undefined}
           />

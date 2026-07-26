@@ -1,6 +1,7 @@
 ---
 import Base from './base.astro'
 import { formatDate } from '../lib/posts'
+import { getTagLabel } from '../lib/tags'
 import { TableOfContents } from '../components/TableOfContents'
 import { ShareButtons } from '../components/ShareButtons'
 import { useTranslations } from '../i18n/utils'
@@ -58,9 +59,9 @@ const t = useTranslations(locale)
           {tags.map((tag) => (
             <a
               href={`/?tags=${encodeURIComponent(tag)}`}
-              class="rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground hover:text-primary hover:border-primary transition-colors"
+              class="rounded-[3px] border border-border px-2.5 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
             >
-              {tag}
+              {getTagLabel(tag, locale)}
             </a>
           ))}
         </div>

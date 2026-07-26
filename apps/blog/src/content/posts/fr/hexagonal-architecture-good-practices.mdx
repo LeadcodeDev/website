@@ -1,0 +1,822 @@
+---
+title: "L'architecture hexagonale : fondamentaux et bonnes pratiques"
+description: Le domaine métier ne doit jamais dépendre d'un framework. Découvrez l'usage des ports et adapters, principes SOLID, dispatch statique et séparation stricte des couches pour une base de code testable et durable.
+thumbnail:
+  title: "Architecture hexagonale en Rust : ports, adapters et SOLID"
+  description: Le framework n'est qu'un détail. Comment isoler le métier, abstraire la persistance et rendre chaque couche testable, avec Rust et Axum.
+  theme: default
+date: 2026-05-26
+tags: [architecture, backend, rust]
+status: published
+author: leadcode_dev
+---
+
+## Introduction
+
+La plupart des applications ne meurent pas par manque de fonctionnalités. Elles meurent parce qu'on n'a jamais pris le temps d'y poser une architecture, et que le couplage finit par tout étouffer.
+
+Au départ, tout va vite. On câble un handler HTTP directement sur une requête SQL, on sérialise l'entité de la base telle quelle, et la première version part en production en quelques jours. Puis l'ORM change, le framework web sort une version majeure incompatible, on veut remplacer PostgreSQL par un service externe, ajouter une queue de messages, exposer la même logique métier en gRPC… et l'on s'aperçoit que la logique métier est éparpillée dans les *handlers*, mêlée au routing, aux désérialisations et aux appels d'infrastructure. Chaque changement technique devient un chantier qui touche le cœur du produit.
+
+L'**architecture hexagonale**, aussi appelée **ports et adapters**, répond précisément à ce problème. L'idée tient en une phrase : *le domaine métier ne doit dépendre d'aucun détail technique*. Le framework web, la base de données, le broker de messages ne sont pas le centre de l'application, ce sont des périphériques interchangeables qu'on branche autour du domaine.
+
+Cet article reprend les fondamentaux, les rattache aux principes SOLID, puis montre comment les traduire concrètement en Rust avec Axum. Le fil rouge : un petit domaine d'inscription et de récupération d'utilisateurs.
+
+---
+
+## Les origines du pattern ports et adapters
+
+Le terme a été introduit par [Alistair Cockburn](https://en.wikipedia.org/wiki/Alistair_Cockburn) au début des années 2000 sous le nom de *Ports and Adapters*. L'« hexagone » n'a rien de mathématique : Cockburn voulait simplement une figure à plusieurs côtés pour suggérer qu'une application a *plusieurs* points d'entrée et de sortie, et non un dessus (l'UI) et un dessous (la base), comme le suggère l'empilement classique en couches horizontales.
+
+On distingue deux familles de connexions :
+
+- Les **ports entrant** sont les points par lesquels le monde extérieur *pilote* l'application : une API REST, une commande CLI, un consommateur de messages. Leurs adapters *appellent* le domaine.
+- Les **ports sortant** sont les besoins que le domaine exprime vers l'extérieur : persister un utilisateur, envoyer un e-mail, publier un événement. Le domaine *définit l'interface* et l'extérieur la *satisfait*.
+
+La distinction compte parce qu'elle détermine **le sens des dépendances**. Un adapter entrant dépend du domaine. Un adapter sortant en dépend aussi, puisqu'il *implémente* une interface que le domaine possède. Dans les deux cas, la flèche pointe vers l'intérieur. C'est la *Dependency Rule* : le domaine ne connaît rien de ce qui l'entoure.
+
+```
+        ┌──────────── adapters entrants (driving) ────────────┐
+        │   HTTP (Axum) · CLI · consumer Kafka · gRPC         │
+        └────────────────────────┬────────────────────────────┘
+                                 │ appellent
+                          ┌──────▼──────┐
+                          │   DOMAINE   │   ← entités, value objects,
+                          │  + services │      règles métier, ports
+                          └──────┬──────┘
+                                 │ définit des ports, implémentés par
+        ┌────────────────────────▼─────────────────────────────┐
+        │  Postgres · SMTP · S3 · service externe · cache      │
+        └────────────── adapters sortants (driven) ────────────┘
+```
+
+---
+
+## Les principes SOLID
+
+L'architecture hexagonale ne sort pas de nulle part : elle applique de façon cohérente les cinq principes regroupés sous l'acronyme **SOLID**.
+
+::::card-group{cols=1}
+  :::card{label="Single Responsibility Principle" icon="lucide:rocket"}
+    Une unité de code ne devrait avoir qu'une seule raison de changer. Un module qui mélange parsing HTTP, règle métier et requête SQL a trois raisons de changer ; il sera modifié trois fois plus souvent, et cassera trois fois plus.
+  :::
+  :::card{label="Open/Closed Principle" icon="lucide:shield"}
+    Le code doit être ouvert à l'extension, fermé à la modification. Ajouter un nouvel adapter (passer de SMTP à un service tiers d'envoi d'e-mails) ne doit pas obliger à toucher le domaine.
+  :::
+  :::card{label="Liskov Substitution Principle" icon="lucide:replace-all"}
+    Toute implémentation d'un port doit être substituable à une autre sans casser le comportement attendu.
+  :::
+  :::card{label="Interface Segregation Principle" icon="lucide:shield"}
+    Mieux vaut plusieurs ports fins qu'un port obèse. Ils permettent de séparer les rôles et de rendre le code plus maintenable et composable.
+  :::
+  :::card{label="Dependency Inversion Principle" icon="lucide:network"}
+    Les modules de haut niveau ne doivent pas dépendre des modules de bas niveau ; les deux doivent dépendre d'abstractions.
+  :::
+::::
+
+Les deux grands principes utilisés par l'architecture hexagonale sont **SRP** (Single Responsibility Principle) et **DIP** (Dependency Inversion Principle). 
+
+**SRP** explique *pourquoi* on sépare les couches, **DIP** explique *comment* on rend cette séparation possible sans que le domaine ait à connaître l'extérieur.
+
+---
+
+## SRP en pratique, une responsabilité par couche
+
+Reprenons le chemin d'une requête et nommons la responsabilité unique de chaque étape :
+
+| Couche | Responsabilité unique | Raison de changer |
+|---|---|---|
+| Routing / middleware | Acheminer, authentifier, limiter le débit d'entrée | Évolution du protocole / sécurité transport |
+| Handler | Traduire HTTP ⇄ domaine (DTO, codes statut) | Changement de contrat d'API |
+| Service du domaine | Orchestrer l'opération (lire/écrire via les ports, enchaîner) | Changement de règle d'orchestration |
+| Entité / value object | Porter l'invariant métier pur | Changement de la règle elle-même |
+| Repository (port) | Décrire un besoin de persistance | (n'évolue presque jamais) |
+| Adapter de persistance | Parler à la base concrète | Changement de techno de stockage |
+
+Chaque ligne a *une* raison de changer. C'est ce découpage qui rend chaque couche testable isolément, et c'est l'objet de la suite.
+
+---
+
+## Le framework n'est qu'un détail de présentation
+
+L'une des erreurs les plus fréquentes, et les plus coûteuses à rattraper, consiste à traiter le framework web comme le centre nevralgique de l'application. 
+
+Prenons par exemple le cas de Axum, une excellente librairie HTTP, performant, ergonomique et intégré à la perfection à Tokio. Mais au sein d'une architecture hexagonale, il n'occupe qu'**un seul côté de l'hexagone** et n'est en réalité qu'un simple adapter d'entrée. Son rôle se limite à :
+
+- le **routing** : associer une requête entrante à une méthode et un chemin HTTP à une fonction
+- les **middlewares / extractors** : authentification, journalisation, *rate limiting*, désérialisation du corps de requête
+- la **traduction** : transformer une requête HTTP en appel d'un service du domaine, puis un résultat de service en réponse HTTP
+
+Tout ça reste *remplaçable*. Si demain on veut exposer la même logique sous le protocole gRPC via la librairie `tonic`, ou en consommer une partie via un invité de commande CLI, le domaine ne doit en aucun cas être modifié ne serait-ce que d'une seule ligne. 
+
+Un bon test de validité est de se poser la question suivante : **peut-on retirer l'outil X ou Y sans toucher au métier ?** Si la réponse est non, le couplage est trop profond et présent là où il ne devrait pas.
+
+Concrètement, aucun type d'Axum (`State`, `Json`, `StatusCode`, `Request`…) ne doit apparaître dans le domaine ni dans ses services. Ces types vivent et meurent dans le crate de présentation.
+
+---
+
+## Anatomie d'une requête HTTP
+
+Suivons le trajet complet d'une inscription utilisateur :
+
+::::step-group
+  :::step{title="Consommateur HTTP"}
+  Requête entrante `POST /users`
+    ```json
+    { 
+      "email": "...",
+      "password": "..."
+    }
+    ```
+  :::
+  :::step{title="Routing et middlewares"}
+    Durant cette étape, la requête est routée vers le handler approprié et les middlewares (rate-limiting, authentication, logs…) sont appliqués avant d'arriver à ce dernier.
+  :::
+  :::step{title="Handler"}
+    Actuellement, le handler est une simple fonction qui reçoit une requête en entrée et renvoie une réponse en sortie.
+    Durant cette étape, un DTO est créé à partir de la requête, puis une commande de domaine est exécutée pour créer l'utilisateur.
+    
+    En cas d'erreur, une réponse d'erreur est renvoyée au consommateur HTTP avec le code de statut approprié et le message d'erreur.
+  :::
+  :::step{title="Utilisation des services"}
+    Un service issue de la couche `domain` est utilisé pour exécuter une chaine d'instruction dépendant des règles métier de celui-ci.
+    Il n'a aucune connaissance du contexte, ni quel protocole de communication a été utilisé.
+  :::
+  :::step{title="Actions sur une base de données"}
+    Le service utilise un repository pour sauvegarder l'utilisateur dans la base de données, cependant il ne connaît pas le détail d'implémentation de la base de données utilisée; il n'a connaissance que des méthodes exposées publiquement par le contrat que doivent respecter chaque repository.
+  :::
+  :::step{title="Adapter PostgreSQL"}
+    L'adapter PostgreSQL est une implémentation concrète du port (trait) `UserRepository` défini dans la couche `domain`. Il utilise la bibliothèque `sqlx` pour exécuter des requêtes SQL sur une base de données PostgreSQL.
+  :::
+::::
+
+Le point intéressant se joue à l'avant-dernière marche. Le service n'appelle jamais PostgreSQL directement : il appelle une méthode contractuelle et définie dans le **port**, un trait défini *dans le domaine*. L'implémentation concrète n'est branchée qu'au démarrage, dans la *composition root*.
+
+---
+
+## Modéliser le domaine en Rust
+
+Rust a un atout assez rare pour le DDD : son système de types permet de **rendre les états illégaux non représentables**. Plutôt que de promener des `String` partout, on encapsule les invariants dans des *value objects*. La validation se fait une fois, à la construction. Ensuite, le reste du code peut faire confiance au type.
+
+
+Dans cet exemple, `EmailAddress` est un *value object* représentant un e-mail valide vivant au sein d'une crate `domain`.
+
+:::code-group
+```rs [user.rs]
+/// Entité du domaine. 
+/// Le hash est déjà calculé, le domaine ne voit jamais le mot de passe en clair.
+#[derive(Debug, Clone)]
+pub struct User {
+    pub id: UserId,
+    pub email: EmailAddress,
+    pub password_hash: PasswordHash,
+    pub created_at: time::OffsetDateTime,
+}
+
+#[derive(Debug, Clone)]
+pub struct PasswordHash(String);
+
+impl PasswordHash {
+    pub fn from_raw(raw: String) -> Self {
+        Self(raw)
+    }
+    pub fn expose(&self) -> &str {
+        &self.0
+    }
+}
+```
+
+```rs [email_address.rs]
+use std::fmt;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct EmailAddress(String);
+
+impl EmailAddress {
+    pub fn parse(raw: impl Into<String>) -> Result<Self, DomainError> {
+        let raw = raw.into();
+        // Validation volontairement minimale pour l'exemple.
+        if raw.contains('@') && raw.len() <= 254 {
+            Ok(Self(raw.to_lowercase()))
+        } else {
+            Err(DomainError::InvalidEmail(raw))
+        }
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+```
+
+```rs [user_id.rs]
+/// Identifiant fortement typé
+/// On ne confondra jamais un UserId avec un autre Uuid.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct UserId(uuid::Uuid);
+
+impl UserId {
+    pub fn new() -> Self {
+        Self(uuid::Uuid::new_v4())
+    }
+    pub fn from_uuid(id: uuid::Uuid) -> Self {
+        Self(id)
+    }
+    pub fn as_uuid(&self) -> uuid::Uuid {
+        self.0
+    }
+}
+```
+:::
+
+Remarquez l'absence volontaire de `impl fmt::Display` sur `PasswordHash` : on évite qu'un hash atterrisse par mégarde dans les logs. C'est délibéré.
+
+Les **erreurs du domaine** sont elles aussi des types du domaine, sans la moindre référence à HTTP ou SQL :
+
+```rust
+#[derive(Debug, thiserror::Error)]
+pub enum DomainError {
+    #[error("adresse e-mail invalide : {0}")]
+    InvalidEmail(String),
+
+    #[error("un utilisateur existe déjà pour cet e-mail")]
+    EmailAlreadyTaken,
+
+    #[error("utilisateur introuvable")]
+    UserNotFound,
+}
+```
+
+---
+
+## Les ports contractuels définis par le domaine
+
+Un **port** est une **interface**. En Rust, il se traduit par un `trait` et c'est tout l'enjeu de l'inversion de dépendances : **ce trait vit dans le domaine**, pas dans l'infrastructure. 
+
+> Le domaine déclare ce dont il a besoin ; l'infrastructure le fournit.
+
+Dans l'exemple suivant, nous n'avons toujours aucune dépendance technique.
+
+:::code-group
+```rs [domain/ports/user_repository.rs]
+use std::future::Future;
+
+pub trait UserRepository: Send + Sync {
+    fn save(&self, user: &User)
+        -> impl Future<Output = Result<(), RepositoryError>> + Send;
+
+    fn find_by_email(&self, email: &EmailAddress)
+        -> impl Future<Output = Result<Option<User>, RepositoryError>> + Send;
+
+    fn find_by_id(&self, id: UserId)
+        -> impl Future<Output = Result<Option<User>, RepositoryError>> + Send;
+}
+```
+```rs [domain/user_repository_error.rs]
+/// Erreur d'infrastructure, opaque : le domaine sait qu'« il y a eu un souci de stockage »,
+/// mais pas qu'il s'agit d'un timeout sqlx ou d'une violation de contrainte.
+#[derive(Debug, thiserror::Error)]
+pub enum RepositoryError {
+    #[error("conflit de persistance")]
+    Conflict,
+    
+    #[error("erreur de stockage : {0}")]
+    Storage(String),
+}
+```
+:::
+
+En Rust il existe plusieurs manières de déclarer une fonction comme étant asynchrone dans un trait et la façon dont on écrit l'asynchronisme d'un port n'est pas un détail cosmétique : elle décide de la **prédictibilité mémoire** de toute la chaîne d'appel.
+
+La solution historique, la crate `async-trait`, réécrit chaque `async fn` en `fn(...) -> Box<dyn Future<Output = T> + Send>`. 
+
+Autrement dit : **une allocation sur la heap à chaque appel**, plus un dispatch dynamique sur le futur lui-même. Le coût unitaire est faible devant une requête SQL, mais il est *invisible dans la signature* et *non maîtrisé*, nous ne décidons ni où, ni quand, l'allocation se produit. Pour une base de code qui vise la prévisibilité, c'est typiquement le genre de coût caché qu'on préfère éviter.
+
+> Depuis Rust 1.75, on peut écrire l'asynchronisme nativement dans un trait, sous deux formes.
+> :::code-group
+> ```rs [Forme explicite]
+> fn save(&self, user: &User) -> impl Future<Output = Result<(), RepositoryError>> + Send;
+> ```
+> ```rs [Async fn natif]
+> async fn save(&self, user: &User) -> Result<(), RepositoryError>;
+> ```
+> :::
+
+Les deux compilent l'action asynchrone comme un **type concret monomorphisé, sans box ni allocation** : c'est *zero-cost*, et la consommation mémoire devient prévisible. 
+
+:::callout{variant="warning"}
+La forme native ne permet pas d'exprimer le `+ Send` sur le futur retourné. 
+:::
+
+Sur un runtime Tokio multi-thread, un repository partagé entre *workers* **doit** produire des futurs `Send`, sous peine d'erreur de compilation chez l'appelant. La forme explicite redonne ce contrôle.
+
+D'où la règle pratique : **déclarer le port en `-> impl Future<Output = T> + Send`, et l'implémenter avec un simple `async fn`** dans le bloc `impl` de l'adapter. Le compilateur vérifie alors que le futur produit satisfait bien la borne `Send`.
+
+Pour rendre la comparaison concrète, voici le **même port, la même implémentation et le même point d'appel**, écrits dans les deux styles. D'un côté, le confort syntaxique ; de l'autre, la prédictibilité.
+
+:::code-group
+```rs [Explicite]
+// Déclaration du port
+pub trait UserRepository: Send + Sync {
+  fn save(&self, user: &User) -> impl Future<Output = Result<(), RepositoryError>> + Send;
+}
+
+// Implémentation
+impl UserRepository for PgUserRepository {
+  async fn save(&self, user: &User) -> Result<(), RepositoryError> { /* ... */ }
+}
+
+// Injection : générique, la verbosité se propage dans les signatures
+pub struct UserService<R: UserRepository> {
+  repository: R, // ← paramètre de type à porter partout
+}
+
+// State Axum : State<Arc<UserService<PgUserRepository, Argon2Hasher>>>
+//  → neutralisé par un alias : type AppUserService = UserService<...>;
+```
+
+```rs [Async natif]
+async fn save(&self, user: &User) -> Result<(), RepositoryError>;
+
+// Déclaration du port
+#[async_trait::async_trait]
+pub trait UserRepository: Send + Sync {
+  async fn save(&self, user: &User) -> Result<(), RepositoryError>;
+}
+// → désucré par la macro en : fn save(&self, ...) -> Box<dyn Future<...> + Send>
+// → chaque appel alloue le futur sur le tas, en dispatch dynamique.
+
+// Implémentation (macro obligatoire sur le bloc)
+#[async_trait::async_trait]
+impl UserRepository for PgUserRepository {
+  async fn save(&self, user: &User) -> Result<(), RepositoryError> { /* ... */ }
+}
+
+// Injection : trait object, câblage très court
+pub struct UserService {
+  repository: Arc<dyn UserRepository>,   // ← un seul type, aucun paramètre générique
+}
+
+// State Axum : State<Arc<UserService>>
+```
+:::
+
+Le constat est assez net : le bloc d'**implémentation est rigoureusement identique** dans les deux cas (`async fn save`). Toute la verbosité supplémentaire apportée par l'aspect explicite de la déclaration se concentre à deux endroits : la **déclaration du port** (le `-> impl Future<...> + Send` au lieu d'`async fn`) et la **propagation du paramètre générique** jusqu'au `State` d'Axum. En échange, on supprime une allocation heap par appel et l'empreinte mémoire devient entièrement déterministe. Quelques caractères de typage en plus, concentrés et neutralisables par un alias, contre une garantie de performance sur *tout* le chemin chaud : pour un cœur métier appelé des milliers de fois par seconde, l'arbitrage est plutôt favorable.
+
+La contrepartie, un trait écrit ainsi **n'est pas *dyn-compatible***. On renonce donc à `Arc<dyn UserRepository>` au profit du **dispatch statique par génériques**. 
+
+C'est le prix à payer pour la prédictibilité : zéro allocation cachée, contre un peu de verbosité de typage qu'un alias suffit à absorber.
+
+### Dynamique vs générique
+
+Deux stratégies d'injection coexistent en Rust :
+
+- **Dispatch statique** via génériques : `struct UserService<R: UserRepository> { repo: R }`. Aucune indirection, monomorphisation par le compilateur, performances et empreinte mémoire prévisibles. C'est la stratégie **imposée** par le choix précédent (`impl Future + Send` n'est pas *dyn-compatible*). L'inconvénient : les paramètres de type se propagent dans les signatures, notamment côté Axum où l'état partagé devient générique.
+- **Dispatch dynamique** via trait objects : `repo: Arc<dyn UserRepository>`. Une indirection de pointeur par appel et, en asynchrone, une allocation par appel via `async-trait`. Code plus court à câbler, mais coûts mémoire moins maîtrisés.
+
+Pour un cœur métier qu'on veut prévisible et sans allocation cachée, le **dispatch statique est le bon choix**. La verbosité des paramètres de type se traite efficacement avec un alias dans la *composition root*. 
+
+---
+
+## Le service du domaine : orchestration
+
+C'est la couche qui répond à la question : *« quelle opération métier résoud mon application ?* ». Plutôt qu'une couche « use case » séparée (un objet par cas d'usage, comme le préconise la *Clean Architecture*), je retiens ici une approche plus directe, moins verbeuse et tout aussi compatible avec une approche hexagonale : **un service vit dans le domaine métier, à côté des entités et des ports  que le handler appelra directement.** C'est l'approche dite *service layer*, qu'on utilise pour offire un point d'entrée commun à la couche de présentation.
+
+Le service *orchestre* : il enchaîne des appels, gère la cohérence transactionnelle, mais délègue. Les **invariants purs** (validité d'un e-mail, politique de mot de passe) restent dans les entités et les value objects ; la **persistance** part vers les ports. Le service ne contient donc aucun détail technique ni aucune règle auto-suffisante, il se contente de *coordonner*.
+
+> Au sens strict du [DDD](https://en.wikipedia.org/wiki/Domain-driven_design) (Domain Driven Design), un service qui a des effets de bord (lecture/écriture via les ports) relève de la couche *applicative*, le « domain service » canonique étant censé être pur.
+
+```rs [domain/service.rs]
+// Le service vit dans le domaine, aux côtés des entités et des ports.
+// Aucune dépendance à Axum ni à sqlx.
+
+use crate::{
+    DomainError, EmailAddress, PasswordHash, User, UserId, UserRepository,
+};
+
+pub struct RegisterUserData {
+    pub email: String,
+    pub password: String,
+}
+
+/// Port secondaire pour le hashage : encore une abstraction, pas une dépendance directe à argon2.
+/// Synchrone ici (le hashage est CPU-bound), donc pas besoin d'asynchronisme.
+pub trait PasswordHasher: Send + Sync {
+    fn hash(&self, raw: &str) -> Result<PasswordHash, DomainError>;
+}
+
+/// Génériques plutôt que `Arc<dyn ...>` : dispatch statique, aucune allocation cachée.
+pub struct UserService<R, H> {
+    repository: R,
+    hasher: H,
+}
+
+impl<R, H> UserService<R, H>
+where
+    R: UserRepository,
+    H: PasswordHasher,
+{
+    pub fn new(repository: R, hasher: H) -> Self {
+        Self { repo, hasher }
+    }
+
+    pub async fn register(&self, cmd: RegisterUserData) -> Result<User, DomainError> {
+        let email = EmailAddress::parse(cmd.email)?;
+
+        if self.repository.find_by_email(&email).await
+          .map_err(DomainError::from)?
+          .is_some()
+        {
+          return Err(DomainError::EmailAlreadyTaken);
+        }
+
+        let password_hash = self.hasher.hash(&cmd.password)?;
+
+        self.repository
+          .save(&User {
+              id: UserId::new(),
+              email,
+              password_hash,
+              created_at: time::OffsetDateTime::now_utc(),
+          })
+          .await
+          .map_err(DomainError::from)?
+    }
+}
+```
+
+Le service ne sait pas qu'il existe une requête HTTP, ni que la base de données utilisée est PostgreSQL. Il manipule uniquement des abstractions. Nous pouvons le tester sans serveur ni base de données, cette approche permet donc d'obtenir une capacité de testabilité optimale.
+
+### Les frontières transactionnelles
+
+C'est le point le plus délicat de l'architecture hexagonale, souvent passé sous silence. Où placer le `BEGIN`/`COMMIT` quand une méthode de service appelle plusieurs méthodes de repository qui doivent être atomiques ?
+
+Trois approches pragmatiques :
+
+1. **Une méthode de repository = une transaction.** Simple, mais insuffisant dès qu'une opération doit composer plusieurs écritures atomiquement.
+2. **Pattern *Unit of Work*.** On expose un port `UnitOfWork` qui ouvre une transaction et fournit des repositories liés à celle-ci. Le service pilote `begin`/`commit` via l'abstraction, sans connaître `sqlx::Transaction`.
+3. **Closure transactionnelle dans l'adapter.** Le service passe une fonction à un port `transaction(|tx_repos| async { ... })`, et l'adapter gère l'ouverture/fermeture. C'est souvent le compromis le plus propre en Rust.
+
+Aucune n'est parfaite ; à choisir selon la complexité réelle du domaine. L'important : ne jamais laisser `sqlx::Transaction` traverser la frontière du domaine.
+
+---
+
+## L'adapter sortant, le cas de PostgreSQL
+
+L'adapter vit dans le crate d'`infrastructure`. C'est *lui* qui dépend de `sqlx`, jamais l'inverse. Son travail est de traduire entre le modèle de persistance et les entités du domaine.
+
+:::code-group
+```rs [user_repository.rs]
+use domain::{EmailAddress, PasswordHash, RepositoryError, User, UserId, UserRepository};
+use sqlx::PgPool;
+
+pub struct PgUserRepository {
+    pool: PgPool,
+}
+
+impl PgUserRepository {
+    pub fn new(pool: PgPool) -> Self {
+        Self { pool }
+    }
+}
+
+// Aucune macro : on satisfait le port `-> impl Future + Send` avec de simples `async fn`.
+// Le compilateur vérifie que chaque futur produit est bien `Send`.
+impl UserRepository for PgUserRepository {
+  async fn save(&self, user: &User) -> Result<User, RepositoryError> {
+    sqlx::query!(
+        r#"
+          INSERT INTO users (id, email, password_hash, created_at)
+          VALUES ($1, $2, $3, $4)
+        "#,
+        user.id.as_uuid(),
+        user.email.as_str(),
+        user.password_hash.expose(),
+        user.created_at,
+    )
+    .execute(&self.pool)
+    .await
+    .map_err(map_sqlx_error)
+    .map(User::try_from)?;
+    
+    Ok(())
+  }
+
+  async fn find_by_email(&self, email: &EmailAddress) -> Result<Option<User>, RepositoryError> {
+      // Colonnes listées explicitement : la macro vérifie noms ET types à la compilation.
+      let row = sqlx::query_as!(
+          UserRow,
+          r#"
+            SELECT id, email, password_hash, created_at
+            FROM users
+            WHERE email = $1
+          "#,
+          email.as_str(),
+      )
+      .fetch_optional(&self.pool)
+      .await
+      .map_err(map_sqlx_error)?
+      .map(User::try_from)
+      .transpose()
+  }
+
+  async fn find_by_id(&self, id: UserId) -> Result<Option<User>, RepositoryError> {
+      let row = sqlx::query_as!(
+          UserRow,
+          r#"
+            SELECT id, email, password_hash, created_at
+            FROM users
+            WHERE id = $1
+          "#,
+          id.as_uuid(),
+      )
+      .fetch_optional(&self.pool)
+      .await
+      .map_err(map_sqlx_error)?
+      .map(User::try_from)
+      .transpose()
+  }
+}
+```
+
+```rs [entities/user.rs]
+/// Modèle de PERSISTANCE, distinct de l'entité de domaine. Le mapping est explicite.
+#[derive(sqlx::FromRow)]
+struct UserRow {
+    id: uuid::Uuid,
+    email: String,
+    password_hash: String,
+    created_at: time::OffsetDateTime,
+}
+
+impl TryFrom<UserRow> for User {
+  type Error = RepositoryError;
+
+  fn try_from(row: UserRow) -> Result<Self, Self::Error> {
+    Ok(User {
+        id: UserId::from_uuid(row.id),
+        email: EmailAddress::parse(row.email)
+            .map_err(|e| RepositoryError::Storage(e.to_string()))?,
+        password_hash: PasswordHash::from_raw(row.password_hash),
+        created_at: row.created_at,
+    })
+  }
+}
+```
+
+```rs [user_errors.rs]
+/// Traduction d'une erreur sqlx en erreur de domaine — le détail technique s'arrête ici.
+fn map_sqlx_error(e: sqlx::Error) -> RepositoryError {
+  match &e {
+    sqlx::Error::Database(db) if db.is_unique_violation() => RepositoryError::Conflict,
+    _ => RepositoryError::Storage(e.to_string()),
+  }
+}
+```
+:::
+
+Deux bonnes pratiques apparaissent ici. D'abord, le `UserRow` est **distinct** de l'entité `User` .
+
+En effet, le modèle provenant de la base de données et le modèle issue du domaine ont le droit de diverger car la représentation d'une donnée au sein d'une base de données n'est pas nécessairement la même que celle utilisée dans le domaine métier de votre application. Ensuite, `map_sqlx_error` joue le rôle de **frontière étanche** : aucune `sqlx::Error` ne franchit cette ligne. Le domaine ne saura jamais qu'il existe un `sqlx`.
+
+---
+
+## L'adapter entrant, la couche de présentation avec Axum
+
+On arrive enfin à la couche de présentation. jusqu'à présent, nous n'avons pas encore abordé l'usage d'un quelconque framework ou librairie HTTP pour notre projet.
+Il est maintenant temps de rendre En effet, l'ensemble du projet ne nécéssitait aucune dépendence le handler fait trois choses, et trois seulement : désérialiser un DTO, appeler le service du domaine, traduire le résultat en réponse HTTP.
+
+```rs
+use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+
+use domain::{DomainError, RegisterUserCommand, UserService};
+use infrastructure::{Argon2Hasher, PgUserRepository};
+
+/// Alias qui fige le type générique concret en un seul endroit.
+/// Toute la verbosité du dispatch statique est ainsi neutralisée ici.
+pub type AppUserService = UserService<PgUserRepository, Argon2Hasher>;
+
+/// DTO d'entrée : c'est le contrat d'API, PAS l'entité de domaine.
+/// On ne dérive jamais Serialize/Deserialize sur les entités du domaine.
+#[derive(Deserialize)]
+pub struct RegisterRequest {
+    email: String,
+    password: String,
+}
+
+#[derive(Serialize)]
+pub struct RegisterResponse {
+    id: String,
+}
+
+pub async fn register_handler(
+    State(user_service): State<Arc<AppUserService>>,
+    Json(body): Json<RegisterRequest>,
+) -> Result<(StatusCode, Json<RegisterResponse>), ApiError> {
+    let cmd = RegisterUserCommand {
+        email: body.email,
+        password: body.password,
+    };
+
+    let id = user_service.register(cmd).await?;
+
+    Ok((
+        StatusCode::CREATED,
+        Json(RegisterResponse {
+            id: id.as_uuid().to_string(),
+        }),
+    ))
+}
+
+/// Traduction erreur de domaine → erreur HTTP. La frontière inverse de map_sqlx_error.
+pub struct ApiError(DomainError);
+
+impl From<DomainError> for ApiError {
+    fn from(e: DomainError) -> Self {
+        ApiError(e)
+    }
+}
+
+impl IntoResponse for ApiError {
+    fn into_response(self) -> axum::response::Response {
+        let (status, message) = match self.0 {
+            DomainError::InvalidEmail(_) => (StatusCode::BAD_REQUEST, self.0.to_string()),
+            DomainError::EmailAlreadyTaken => (StatusCode::CONFLICT, self.0.to_string()),
+            DomainError::UserNotFound => (StatusCode::NOT_FOUND, self.0.to_string()),
+        };
+        (status, Json(serde_json::json!({ "error": message }))).into_response()
+    }
+}
+```
+
+Le `IntoResponse` est le pendant exact de `map_sqlx_error` : c'est la frontière où le vocabulaire du domaine (`EmailAlreadyTaken`) devient vocabulaire HTTP (`409 Conflict`). Le domaine ignore qu'un code 409 existe, et c'est très bien comme ça : c'est à la présentation de le savoir.
+
+---
+
+## 11. La composition root : où tout se branche
+
+Le câblage des implémentations concrètes sur les ports n'a lieu qu'à **un seul endroit** : le point d'entrée du programme. C'est ce qu'on appelle la *composition root*. Rust n'a pas besoin de framework d'injection de dépendances : le câblage est explicite, vérifié par le compilateur, et lisible directement.
+
+```rust
+// crate: api — main.rs
+
+use axum::{routing::post, Router};
+use std::sync::Arc;
+use sqlx::postgres::PgPoolOptions;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    // 1. Adapters secondaires concrets.
+    let pool = PgPoolOptions::new()
+        .connect(&std::env::var("DATABASE_URL")?)
+        .await?;
+    let repo = infrastructure::PgUserRepository::new(pool);
+    let hasher = infrastructure::Argon2Hasher::new();
+
+    // 2. Service du domaine générique câblé sur les implémentations concrètes (dispatch statique).
+    //    Le type résultant est `UserService<PgUserRepository, Argon2Hasher>` = AppUserService.
+    //    On l'enveloppe dans un Arc une seule fois, pour le partager entre workers Tokio.
+    let user_service = Arc::new(domain::UserService::new(repo, hasher));
+
+    // 3. Adapter primaire : routing Axum + injection via State.
+    let app = Router::new()
+        .route("/users", post(api::register_handler))
+        .with_state(user_service);
+        // ... ici viennent les middlewares : tower::TraceLayer, auth, rate limit, CORS.
+
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
+    axum::serve(listener, app).await?;
+    Ok(())
+}
+```
+
+C'est la seule fonction de tout le projet où PostgreSQL, Argon2 et Axum coexistent. Changer de base de données revient à remplacer une ligne ici, sans toucher au domaine ni à ses services.
+
+---
+
+## 12. La testabilité, couche par couche
+
+C'est le bénéfice le plus tangible. Comme chaque couche dépend d'abstractions, on peut la tester en isolant tout le reste.
+
+### Tester le service du domaine sans base ni serveur
+
+On fournit un dépôt **en mémoire** qui honore le même contrat que celui de PostgreSQL (principe de substitution de Liskov). Les tests deviennent instantanés et déterministes.
+
+```rust
+// Test du service du domaine — pas de réseau, pas de base, pas d'Axum.
+
+use std::sync::Mutex;
+use std::collections::HashMap;
+
+struct InMemoryUserRepo {
+    users: Mutex<HashMap<uuid::Uuid, User>>,
+}
+
+// Même contrat que PgUserRepository, implémenté avec de simples `async fn`.
+impl UserRepository for InMemoryUserRepo {
+    async fn save(&self, user: &User) -> Result<(), RepositoryError> {
+        self.users.lock().unwrap().insert(user.id.as_uuid(), user.clone());
+        Ok(())
+    }
+    async fn find_by_email(&self, email: &EmailAddress) -> Result<Option<User>, RepositoryError> {
+        Ok(self.users.lock().unwrap().values().find(|u| &u.email == email).cloned())
+    }
+    async fn find_by_id(&self, id: UserId) -> Result<Option<User>, RepositoryError> {
+        Ok(self.users.lock().unwrap().get(&id.as_uuid()).cloned())
+    }
+}
+
+#[tokio::test]
+async fn rejette_un_email_deja_pris() {
+    // Dispatch statique : le service est monomorphisé sur les doubles de test.
+    let repo = InMemoryUserRepo { users: Mutex::new(HashMap::new()) };
+    let hasher = NoopHasher; // implémentation de test triviale
+    let service = UserService::new(repo, hasher);
+
+    service.register(RegisterUserCommand {
+        email: "a@b.fr".into(), password: "secret123".into(),
+    }).await.unwrap();
+
+    let err = service.register(RegisterUserCommand {
+        email: "a@b.fr".into(), password: "autre".into(),
+    }).await.unwrap_err();
+
+    assert!(matches!(err, DomainError::EmailAlreadyTaken));
+}
+```
+
+On peut aussi générer ces doubles avec `mockall` plutôt qu'à la main. Peu importe la méthode : **le service se teste sans aucune infrastructure**.
+
+### Tester les value objects et entités
+
+Le domaine pur se teste avec de simples tests unitaires synchrones : `EmailAddress::parse("invalide")` doit échouer, la politique de mot de passe doit refuser un mot trop court, etc. Pas d'`async`, pas de `tokio`.
+
+### Tester l'adapter PostgreSQL
+
+L'adapter, lui, mérite un **test d'intégration** réel contre une vraie base, idéalement une base éphémère via `testcontainers`. On vérifie que le mapping `UserRow ⇄ User` et que `map_sqlx_error` se comportent comme prévu (par exemple qu'une violation d'unicité devient bien `RepositoryError::Conflict`). Ces tests sont plus lents, mais peu nombreux : on ne teste là que la couche technique, pas la règle métier.
+
+Cette pyramide (beaucoup de tests de domaine et de services rapides, peu de tests d'intégration lents) tombe naturellement de l'architecture hexagonale, sans qu'on ait à forcer.
+
+---
+
+## 13. Le compilateur, garant de la règle de dépendance
+
+Voici un atout propre à Rust, rarement mis en avant. Dans la plupart des langages, rien n'empêche techniquement le domaine d'`import`er une classe de l'infrastructure : seule la discipline de l'équipe tient la ligne. En Rust, on peut faire respecter la *Dependency Rule* **par le compilateur**, grâce à un workspace Cargo en plusieurs crates :
+
+```
+mon-app/
+├── Cargo.toml                  # [workspace]
+├── domain/
+│   └── Cargo.toml              # entités, value objects, ports ET services. AUCUNE dépendance technique.
+├── infrastructure/
+│   └── Cargo.toml              # dependencies: domain, sqlx, argon2
+└── api/
+    └── Cargo.toml              # dependencies: domain, infrastructure, axum
+```
+
+`domain` ne déclare pas `sqlx` ni `axum` dans son `Cargo.toml`. Du coup, si quelqu'un tente d'écrire `use sqlx::...` dans le domaine, **le projet ne compile tout simplement pas**. La règle de dépendance n'est plus une convention qu'on espère respectée : c'est une contrainte vérifiée à chaque `cargo build`. À mes yeux, c'est l'une des meilleures raisons de faire de l'hexagonal *en Rust* spécifiquement.
+
+Comme les services orchestrateurs vivent dans le crate `domain` (et non dans un crate `application` séparé), tout le cœur (entités, value objects, ports, services) se trouve protégé d'un seul coup par cette barrière de compilation. Le découpage en trois crates suffit. On n'introduit un quatrième crate que si l'on choisit un jour d'extraire une couche applicative distincte.
+
+(Le choix de `-> impl Future<Output = T> + Send` pour les ports paie ici une seconde fois : le trait n'a besoin que de `std::future::Future`, présent dans la bibliothèque standard. Le crate `domain` reste donc dépourvu de toute dépendance, pas même un runtime asynchrone comme `tokio`. C'est `async-trait` qui aurait, à l'inverse, imposé une dépendance externe au domaine. La pureté du domaine et la prédictibilité mémoire vont, une fois de plus, dans le même sens.)
+
+---
+
+## 14. Pièges et anti-patterns
+
+Quelques erreurs reviennent souvent, même chez des équipes convaincues par la démarche :
+
+**Le domaine anémique.** Des entités réduites à des sacs de getters/setters, toute la logique étant dans les services. On retombe alors dans une architecture procédurale déguisée. Les invariants doivent vivre *dans* les entités et value objects (d'où le `EmailAddress::parse`).
+
+**L'abstraction qui fuit.** Un port `UserRepository` qui exposerait un type `sqlx::Row` ou un `QueryBuilder` n'abstrait rien du tout : le détail technique a traversé la frontière. Le test à se poser : peut-on implémenter ce port avec un `HashMap` en mémoire ? Si non, l'abstraction fuit.
+
+**Exposer les entités du domaine via `serde`.** Dériver `Serialize` directement sur `User`, c'est coupler le contrat d'API à la structure interne. Le moindre renommage de champ casse l'API. D'où la séparation systématique DTO ⇄ entité.
+
+**Le port obèse.** Une interface `UserRepository` de quinze méthodes viole l'ISP. Mieux vaut des ports fins, éventuellement séparés en lecture/écriture (un pas vers CQRS si la complexité le justifie).
+
+**La sur-ingénierie.** Tout projet ne mérite pas cinq crates et trois couches d'abstraction. Un petit service CRUD sans logique métier complexe paiera l'hexagonal en cérémonie sans en récolter les bénéfices. L'architecture hexagonale prend tout son sens quand le domaine a une *vraie* valeur à protéger et une longévité attendue.
+
+---
+
+## 15. Quand l'utiliser, et quand s'en passer
+
+L'architecture hexagonale a un coût initial : plus de fichiers, plus de mapping, plus de traits. Ce coût se rentabilise quand :
+
+- le domaine porte des règles métier non triviales et appelées à évoluer ;
+- l'application a une durée de vie longue et plusieurs développeurs ;
+- on anticipe des changements d'infrastructure (base, broker, fournisseur tiers) ;
+- on veut plusieurs points d'entrée (HTTP + CLI + workers) sur le même cœur ;
+- la testabilité rapide et fiable est une exigence.
+
+À l'inverse, pour un prototype jetable, un script d'intégration, ou un micro-service qui n'est qu'un passe-plat sans logique, appliquer l'hexagonal à la lettre sera contre-productif. La maturité consiste à doser : on peut très bien commencer par une séparation légère (handlers / services / repositories sans découpage en crates) et formaliser l'hexagone le jour où la complexité l'exige.
+
+---
+
+## Conclusion
+
+L'architecture hexagonale n'est ni une mode ni un dogme. C'est l'application disciplinée de deux principes SOLID : **SRP** pour séparer les responsabilités, **DIP** pour inverser les dépendances et libérer le domaine de tout détail technique. Le framework, ici Axum, retrouve sa juste place : un adapter primaire, une couche de présentation interchangeable, et non le centre du système.
+
+Rust se prête particulièrement bien à cet exercice. Son système de types rend les états illégaux non représentables, ses traits expriment naturellement les ports, et son organisation en workspace transforme la règle de dépendance en contrainte vérifiée par le compilateur. La séparation des couches qui en résulte n'a rien d'un fardeau : elle se rembourse à chaque test rapide, à chaque migration technique indolore, à chaque règle métier qu'on peut faire évoluer sans craindre de casser le routing HTTP.
+
+La question à se poser, encore et toujours : *si je retire le framework, mon métier tient-il debout tout seul ?* Tant que la réponse est oui, l'architecture fait son boulot.
