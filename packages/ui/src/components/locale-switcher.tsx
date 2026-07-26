@@ -10,6 +10,8 @@ export interface LocaleSwitcherProps {
   currentLocale: string
   switchUrls?: Record<string, string>
   dropUp?: boolean
+  /** Raised "button" treatment (rounded pill + shadow) to match an elevated navbar */
+  elevated?: boolean
   onLocaleChange?: (locale: string) => void
 }
 
@@ -27,14 +29,19 @@ const localeNames: Record<string, string> = {
 }
 
 
-export function LocaleSwitcher({ locales, currentLocale, switchUrls = {}, dropUp, onLocaleChange }: LocaleSwitcherProps) {
+export function LocaleSwitcher({ locales, currentLocale, switchUrls = {}, dropUp, elevated, onLocaleChange }: LocaleSwitcherProps) {
   const [open, setOpen] = React.useState(false)
 
   return (
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-accent transition-colors"
+        className={cn(
+          'flex items-center gap-2 px-3 text-sm font-medium transition-colors',
+          elevated
+            ? 'h-9 rounded-[3px] border border-border bg-background shadow-sm hover:bg-secondary/60'
+            : 'rounded-md border py-1.5 hover:bg-accent',
+        )}
       >
         <Icon icon="lucide:globe" className="size-4" />
         {currentLocale.toUpperCase()}
