@@ -24,6 +24,13 @@ export const ui = {
     'hero.tag2': 'IAM and security',
     'hero.tag3': 'Open source lead',
     'hero.currentlyAt': 'Currently at',
+    'hero.index': 'Profile',
+    'hero.spec.k1': 'Stack',
+    'hero.spec.v1': 'Rust · IAM · Kubernetes · OIDC',
+    'hero.spec.k2': 'Scope',
+    'hero.spec.v2': 'Distributed systems & security',
+    'hero.spec.k3': 'Ref',
+    'hero.spec.v3': 'FerrisKey · co-founder',
 
     // FerrisKey Spotlight
     'ferriskey.label': 'Flagship Product',
@@ -42,7 +49,7 @@ export const ui = {
     // Pillars (replaces Principles)
     'pillars.label': 'What I Do',
     'pillars.title': "Three things I'm built for",
-    'pillars.description': 'Not a list of frameworks. What I actually deliver, end to end.',
+    'pillars.description': 'Not a list of frameworks. What I actually deliver, end to end: designing systems right, distributing them at scale, and keeping them running in production.',
     'pillars.card1.title': 'Identity & Architecture',
     'pillars.card1.description': "I design systems at the domain level — defining service boundaries, API contracts, and data ownership before touching a framework. My IAM expertise (OIDC, policies, multi-tenancy) comes from building FerrisKey: an identity platform where correctness isn't optional.",
     'pillars.card2.title': 'Distributed Systems',
@@ -160,6 +167,13 @@ export const ui = {
     'hero.tag2': 'IAM et sécurité',
     'hero.tag3': 'Open source lead',
     'hero.currentlyAt': 'Actuellement chez',
+    'hero.index': 'Profil',
+    'hero.spec.k1': 'Stack',
+    'hero.spec.v1': 'Rust · IAM · Kubernetes · OIDC',
+    'hero.spec.k2': 'Périmètre',
+    'hero.spec.v2': 'Systèmes distribués & sécurité',
+    'hero.spec.k3': 'Réf',
+    'hero.spec.v3': 'FerrisKey · co-fondateur',
 
     // FerrisKey Spotlight
     'ferriskey.label': 'Produit phare',
@@ -178,7 +192,7 @@ export const ui = {
     // Pillars (replaces Principles)
     'pillars.label': 'Ce que je fais',
     'pillars.title': 'Trois axes, du premier commit au dernier incident',
-    'pillars.description': 'Pas une liste de frameworks. Ce que je livre concrètement, de bout en bout.',
+    'pillars.description': 'Pas une liste de frameworks. Ce que je livre concrètement, de bout en bout : concevoir des systèmes justes, les distribuer à l’échelle, et les garder debout en production.',
     'pillars.card1.title': 'Identité & Architecture',
     'pillars.card1.description': "Je conçois les systèmes au niveau du domaine — en définissant les frontières de services, les contrats d'API et la propriété des données avant de toucher un framework. Mon expertise IAM (OIDC, politiques, multi-tenancy) vient de la construction de FerrisKey : une plateforme d'identité où l'exactitude n'est pas optionnelle.",
     'pillars.card2.title': 'Systèmes distribués',

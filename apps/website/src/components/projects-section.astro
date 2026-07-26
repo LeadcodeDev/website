@@ -1,14 +1,5 @@
 ---
-import { cn } from "@explainer/ui";
 import { Icon } from "@iconify/react";
-
-interface ProjectTw {
-  card: string;
-  logo: string;
-  icon: string;
-  arrowHover: string;
-  arrowIcon: string;
-}
 
 interface Project {
   titleKey: string;
@@ -18,8 +9,8 @@ interface Project {
   icon: string;
   tags: string[];
   href: string;
+  color?: string;
   isMore?: boolean;
-  tw?: ProjectTw;
 }
 
 const projects: Project[] = [
@@ -31,13 +22,7 @@ const projects: Project[] = [
     icon: "mdi:shield-key-outline",
     tags: ["Rust", "IAM", "OIDC", "Kubernetes"],
     href: "https://github.com/ferriskey/ferriskey",
-    tw: {
-      card: "border-orange-500/20 hover:border-orange-500/40",
-      logo: "bg-orange-500/10 border-orange-500/[15%]",
-      icon: "text-orange-400",
-      arrowHover: "group-hover:border-orange-400 group-hover:bg-orange-500/10",
-      arrowIcon: "group-hover:text-orange-400",
-    },
+    color: "#f97316",
   },
   {
     titleKey: "projects.ferriscord.title",
@@ -47,13 +32,7 @@ const projects: Project[] = [
     icon: "mdi:clipboard-check-outline",
     tags: ["Rust", "Realtime", "ScyllaDB", "Kafka"],
     href: "https://github.com/ferrislabs",
-    tw: {
-      card: "border-violet-500/20 hover:border-violet-500/40",
-      logo: "bg-violet-500/10 border-violet-500/[15%]",
-      icon: "text-violet-400",
-      arrowHover: "group-hover:border-violet-400 group-hover:bg-violet-500/10",
-      arrowIcon: "group-hover:text-violet-400",
-    },
+    color: "#8b5cf6",
   },
   {
     titleKey: "projects.mineral.title",
@@ -63,13 +42,7 @@ const projects: Project[] = [
     icon: "mdi:diamond-outline",
     tags: ["Dart", "Framework", "Plugin architecture"],
     href: "https://github.com/mineral-dart",
-    tw: {
-      card: "border-fuchsia-500/20 hover:border-fuchsia-500/40",
-      logo: "bg-fuchsia-500/10 border-fuchsia-500/[15%]",
-      icon: "text-fuchsia-400",
-      arrowHover: "group-hover:border-fuchsia-400 group-hover:bg-fuchsia-500/10",
-      arrowIcon: "group-hover:text-fuchsia-400",
-    },
+    color: "#d946ef",
   },
   {
     titleKey: "projects.seameet.title",
@@ -79,13 +52,7 @@ const projects: Project[] = [
     icon: "mdi:video-outline",
     tags: ["Rust", "WebRTC", "Realtime"],
     href: "https://github.com/LeadcodeDev/seameet",
-    tw: {
-      card: "border-teal-500/20 hover:border-teal-500/40",
-      logo: "bg-teal-500/10 border-teal-500/[15%]",
-      icon: "text-teal-400",
-      arrowHover: "group-hover:border-teal-400 group-hover:bg-teal-500/10",
-      arrowIcon: "group-hover:text-teal-400",
-    },
+    color: "#14b8a6",
   },
   {
     titleKey: "projects.rustmotion.title",
@@ -95,13 +62,7 @@ const projects: Project[] = [
     icon: "mdi:movie-open-outline",
     tags: ["Rust", "Rendering", "Zero-dependency"],
     href: "https://github.com/LeadcodeDev/rustmotion",
-    tw: {
-      card: "border-cyan-500/20 hover:border-cyan-500/40",
-      logo: "bg-cyan-500/10 border-cyan-500/[15%]",
-      icon: "text-cyan-400",
-      arrowHover: "group-hover:border-cyan-400 group-hover:bg-cyan-500/10",
-      arrowIcon: "group-hover:text-cyan-400",
-    },
+    color: "#06b6d4",
   },
   {
     titleKey: "projects.explainer.title",
@@ -111,13 +72,7 @@ const projects: Project[] = [
     icon: "mdi:book-open-page-variant-outline",
     tags: ["Astro", "MDX", "TypeScript"],
     href: "https://github.com/LeadcodeDev/explainer_v2",
-    tw: {
-      card: "border-amber-500/20 hover:border-amber-500/40",
-      logo: "bg-amber-500/10 border-amber-500/[15%]",
-      icon: "text-amber-400",
-      arrowHover: "group-hover:border-amber-400 group-hover:bg-amber-500/10",
-      arrowIcon: "group-hover:text-amber-400",
-    },
+    color: "#f59e0b",
   },
   {
     titleKey: "projects.sqlxgen.title",
@@ -127,13 +82,7 @@ const projects: Project[] = [
     icon: "mdi:database-cog-outline",
     tags: ["Rust", "SQLx", "Codegen"],
     href: "https://github.com/LeadcodeDev/sqlx_gen",
-    tw: {
-      card: "border-emerald-500/20 hover:border-emerald-500/40",
-      logo: "bg-emerald-500/10 border-emerald-500/[15%]",
-      icon: "text-emerald-400",
-      arrowHover: "group-hover:border-emerald-400 group-hover:bg-emerald-500/10",
-      arrowIcon: "group-hover:text-emerald-400",
-    },
+    color: "#10b981",
   },
   {
     titleKey: "projects.ferrisletter.title",
@@ -143,13 +92,7 @@ const projects: Project[] = [
     icon: "mdi:email-open-multiple-outline",
     tags: ["Postgres", "Architecture", "Open source"],
     href: "https://github.com/ferrislabs",
-    tw: {
-      card: "border-blue-500/20 hover:border-blue-500/40",
-      logo: "bg-blue-500/10 border-blue-500/[15%]",
-      icon: "text-blue-400",
-      arrowHover: "group-hover:border-blue-400 group-hover:bg-blue-500/10",
-      arrowIcon: "group-hover:text-blue-400",
-    },
+    color: "#3b82f6",
   },
   {
     titleKey: "projects.more.title",
@@ -162,6 +105,8 @@ const projects: Project[] = [
     isMore: true,
   },
 ];
+
+const TEXTURE = "background-image: linear-gradient(to right, var(--color-border) 1px, transparent 1px), linear-gradient(to bottom, var(--color-border) 1px, transparent 1px); background-size: 34px 34px; mask-image: radial-gradient(ellipse 70% 60% at 85% 0%, black, transparent 72%); -webkit-mask-image: radial-gradient(ellipse 70% 60% at 85% 0%, black, transparent 72%);";
 ---
 
 <section id="projects" class="relative py-24 sm:py-32">
@@ -179,28 +124,32 @@ const projects: Project[] = [
       </p>
     </div>
 
-    <!-- Project grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {projects.map((project, i) => (
+    <!-- Connected matrix, per-project accent -->
+    <div
+      class="grid grid-cols-1 gap-px overflow-hidden rounded-[4px] border border-border bg-border sm:grid-cols-2 lg:grid-cols-3"
+      data-reveal="fade-up"
+      data-reveal-delay="100"
+    >
+      {projects.map((project) => (
         project.isMore ? (
           <a
             href={project.href}
             target="_blank"
             rel="noopener noreferrer"
-            class="group rounded-2xl border border-dashed border-border/40 p-6 flex flex-col items-center justify-center text-center gap-3 transition-all duration-300 hover:border-border/70 hover:bg-card/30"
-            data-reveal="fade-scale"
-            data-reveal-delay={String(100 + i * 100)}
+            class="proj-more group relative flex items-center justify-center overflow-hidden bg-background p-6 text-center transition-colors duration-300 hover:bg-muted/30"
           >
-            <div class="flex items-center justify-center size-10 rounded-xl bg-muted/30">
-              <Icon icon={project.icon} className="size-5 text-muted-foreground/50" client:load />
-            </div>
-            <div>
-              <h3 class="text-base font-semibold text-muted-foreground" data-t={project.titleKey}>
-                {project.title}
-              </h3>
-              <p class="mt-1 text-sm text-muted-foreground/60" data-t={project.descKey}>
-                {project.description}
-              </p>
+            <div class="flex flex-col items-center gap-3">
+              <span class="flex size-10 items-center justify-center rounded-[3px] bg-muted/40 text-muted-foreground">
+                <Icon icon={project.icon} className="size-5" client:load />
+              </span>
+              <div>
+                <h3 class="text-base font-semibold text-muted-foreground" data-t={project.titleKey}>
+                  {project.title}
+                </h3>
+                <p class="mt-1 text-sm text-muted-foreground/60" data-t={project.descKey}>
+                  {project.description}
+                </p>
+              </div>
             </div>
           </a>
         ) : (
@@ -208,46 +157,64 @@ const projects: Project[] = [
             href={project.href}
             target="_blank"
             rel="noopener noreferrer"
-            class={cn(
-              'group rounded-2xl bg-card/50 backdrop-blur-sm border p-6 flex flex-col transition-all duration-300 hover:shadow-xl hover:shadow-primary/5',
-              project.tw!.card
-            )}
-            data-reveal="fade-scale"
-            data-reveal-delay={String(100 + i * 100)}
+            class="proj group relative flex overflow-hidden bg-background transition-colors duration-300"
+            style={`--accent: ${project.color};`}
           >
-            <div class="flex items-start justify-between">
-              <div class={`flex items-center justify-center size-12 rounded-xl border overflow-hidden transition-all duration-300 ${project.tw!.logo}`}>
-                <Icon icon={project.icon} className={`size-6 ${project.tw!.icon}`} client:load />
+            <div class="pointer-events-none absolute inset-0 z-0 opacity-50" style={TEXTURE} aria-hidden="true"></div>
+
+            <div class="relative z-[1] flex flex-1 flex-col p-6">
+              <div class="mb-5 flex items-start justify-between">
+                <span class="proj-chip flex size-10 items-center justify-center rounded-[3px]">
+                  <Icon icon={project.icon} className="size-5" client:load />
+                </span>
+                <span class="proj-arrow flex size-8 items-center justify-center rounded-[3px] border border-border text-muted-foreground">
+                  <Icon icon="lucide:arrow-up-right" className="size-4" client:load />
+                </span>
               </div>
-              <div class={cn(
-                'flex items-center justify-center size-9 rounded-lg border border-border/50 bg-card/50 shrink-0 transition-all duration-300 group-hover:rotate-45',
-                project.tw!.arrowHover
-              )}>
-                <Icon icon="lucide:arrow-up-right" className={cn(`size-4 text-muted-foreground transition-colors duration-300`, project.tw!.arrowIcon)} client:load />
-              </div>
+
+              <h3 class="text-lg font-semibold text-foreground" data-t={project.titleKey}>
+                {project.title}
+              </h3>
+              <p class="mt-2 text-sm leading-relaxed text-muted-foreground" data-t={project.descKey}>
+                {project.description}
+              </p>
+
+              {project.tags.length > 0 && (
+                <div class="mt-auto flex flex-wrap gap-1.5 pt-5">
+                  {project.tags.map((tag) => (
+                    <span class="proj-tag rounded-[2px] border px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-wide">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-
-            <div class="flex-1 min-h-8"></div>
-
-            <h3 class="text-lg font-semibold text-foreground" data-t={project.titleKey}>
-              {project.title}
-            </h3>
-            <p class="mt-2 text-sm text-muted-foreground leading-relaxed" data-t={project.descKey}>
-              {project.description}
-            </p>
-
-            {project.tags.length > 0 && (
-              <div class="flex items-center gap-2 flex-wrap mt-6">
-                {project.tags.map((tag) => (
-                  <span class="text-xs text-muted-foreground border border-border/50 rounded-lg px-2.5 py-1">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
           </a>
         )
       ))}
     </div>
   </div>
 </section>
+
+<style>
+  .proj:hover {
+    background: color-mix(in oklch, var(--accent) 5%, transparent);
+  }
+  .proj-chip {
+    background: color-mix(in oklch, var(--accent) 12%, transparent);
+    color: var(--accent);
+  }
+  .proj-tag {
+    color: var(--accent);
+    border-color: color-mix(in oklch, var(--accent) 30%, transparent);
+    background: color-mix(in oklch, var(--accent) 6%, transparent);
+  }
+  .proj-arrow {
+    transition: transform 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  .proj:hover .proj-arrow {
+    transform: rotate(45deg);
+    color: var(--accent);
+    border-color: color-mix(in oklch, var(--accent) 45%, transparent);
+  }
+</style>
