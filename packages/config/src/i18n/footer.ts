@@ -3,7 +3,7 @@ import type { I18nMessages } from '../contracts'
 export const i18n: Record<string, I18nMessages> = {
   en: {
     'description': 'Software Architect and IAM expert with 10+ years of experience. Co-founder of FerrisKey. Designing scalable distributed systems.',
-    'footer.description': 'A modern documentation framework built with Astro. Create beautiful, fast, and accessible docs with ease.',
+    'footer.description': 'Software architect and IAM expert, co-founder of FerrisKey. I design distributed systems and identity primitives in Rust from the first API contract to the last alert resolved.',
     'footer.columns.documentation': 'Documentation',
     'footer.columns.resources': 'Resources',
     'footer.columns.community': 'Community',
@@ -22,12 +22,12 @@ export const i18n: Record<string, I18nMessages> = {
   },
   fr: {
     'description': 'Boilerplate de documentation pour les développeurs.',
-    'footer.description': 'Un framework de documentation moderne construit avec Astro. Créez des docs belles, rapides et accessibles facilement.',
+    'footer.description': 'Architecte logiciel et expert IAM, co-fondateur de FerrisKey. Je conçois des systèmes distribués et des primitives d’identité en Rust du premier contrat d’API à la dernière alerte résolue.',
     'footer.columns.documentation': 'Documentation',
     'footer.columns.resources': 'Ressources',
     'footer.columns.community': 'Communauté',
-    'footer.copyright': '© {year} Explainer. Tous droits réservés.',
-    'footer.builtWith': 'Construit avec {icon} grâce à Astro',
+    'footer.copyright': '© {year} Baptiste Parmantier. Tous droits réservés.',
+    'footer.builtWith': 'Construit avec {icon} grâce à Explainer',
     'footer.links.gettingStarted': 'Premiers pas',
     'footer.links.mdxComponents': 'Composants MDX',
     'footer.links.customization': 'Personnalisation',
