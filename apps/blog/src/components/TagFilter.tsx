@@ -54,6 +54,19 @@ export function TagFilter({ tags, initialTags = [], locale: initialLocale = 'en'
     return () => window.removeEventListener('locale:change', handleLocaleChange)
   }, [])
 
+  // View-transition navigations update the URL without a full reload, so the
+  // mount effect alone can miss ?tags=. Re-sync the filter from the URL after
+  // every navigation (astro:page-load fires on initial load and each transition).
+  useEffect(() => {
+    const syncFromURL = () => {
+      const { tags: urlTags, q } = readURL()
+      setSelectedTags(urlTags)
+      setQuery(q)
+    }
+    document.addEventListener('astro:page-load', syncFromURL)
+    return () => document.removeEventListener('astro:page-load', syncFromURL)
+  }, [])
+
   function toggleTag(tag: string) {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
