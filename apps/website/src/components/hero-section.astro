@@ -1,7 +1,7 @@
 ---
 import { BackgroundAnimation } from './background-animation'
 import { Icon } from '@iconify/react'
-import { Button } from '@explainer/ui'
+import { buttonVariants } from '@explainer/ui'
 ---
 
 <style>
@@ -17,7 +17,7 @@ import { Button } from '@explainer/ui'
 
 <div class="relative flex flex-col pt-10 sm:pt-32 lg:pt-36 overflow-hidden">
   <div class="absolute inset-0 -z-20 w-full">
-    <BackgroundAnimation client:load />
+    <BackgroundAnimation client:only="react" />
   </div>
 
   <!-- Decorative grid -->
@@ -91,23 +91,19 @@ import { Button } from '@explainer/ui'
         </dl>
 
         <div class="h-in pt-8 flex flex-wrap gap-x-4 gap-y-3" style="animation-delay: 320ms;">
-          <Button size="lg" className="cursor-pointer rounded-[3px]" client:load>
-            <a href="#ferriskey" class="flex items-center gap-2">
-              <span data-t="hero.primaryAction">View my projects</span>
-              <Icon icon="mdi:arrow-right" aria-hidden="true" className="size-5" client:load />
-            </a>
-          </Button>
-          <Button variant="outline" size="lg" className="cursor-pointer rounded-[3px]" client:load>
-            <a
-              href="https://github.com/LeadcodeDev"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex items-center gap-2"
-            >
-              <Icon icon="mdi:github" aria-hidden="true" className="size-5" client:load />
-              <span data-t="hero.secondaryAction">GitHub</span>
-            </a>
-          </Button>
+          <a href="#projects" class={buttonVariants({ size: 'lg', className: 'cursor-pointer rounded-[3px]' })}>
+            <span data-t="hero.primaryAction">View my projects</span>
+            <Icon icon="mdi:arrow-right" aria-hidden="true" className="size-5" client:load />
+          </a>
+          <a
+            href="https://github.com/LeadcodeDev"
+            target="_blank"
+            rel="noopener noreferrer"
+            class={buttonVariants({ variant: 'outline', size: 'lg', className: 'cursor-pointer rounded-[3px]' })}
+          >
+            <Icon icon="mdi:github" aria-hidden="true" className="size-5" client:load />
+            <span data-t="hero.secondaryAction">GitHub</span>
+          </a>
         </div>
       </div>
 
@@ -123,8 +119,8 @@ import { Button } from '@explainer/ui'
             <div class="grid grid-cols-3 gap-px overflow-hidden rounded-[3px] border border-border bg-border">
               <!-- F1 -->
               <div class="col-start-1 row-start-1 aspect-square bg-background p-3 flex flex-col justify-between transition-colors hover:bg-primary/[0.03]">
-                <span class="inline-flex size-7 items-center justify-center rounded-[2px] bg-primary/10 text-primary">
-                  <Icon icon="mdi:language-rust" className="size-4" client:load />
+                <span class="inline-flex size-9 items-center justify-center rounded-[2px] bg-primary/10 text-primary">
+                  <Icon icon="mdi:language-rust" className="size-5" client:load />
                 </span>
                 <div>
                   <p class="font-mono text-sm font-semibold text-foreground leading-none">Rust</p>
@@ -144,8 +140,8 @@ import { Button } from '@explainer/ui'
 
               <!-- F2 -->
               <div class="col-start-1 row-start-2 aspect-square bg-background p-3 flex flex-col justify-between transition-colors hover:bg-primary/[0.03]">
-                <span class="inline-flex size-7 items-center justify-center rounded-[2px] bg-primary/10 text-primary">
-                  <Icon icon="mdi:shield-key-outline" className="size-4" client:load />
+                <span class="inline-flex size-9 items-center justify-center rounded-[2px] bg-primary/10 text-primary">
+                  <Icon icon="mdi:shield-key-outline" className="size-5" client:load />
                 </span>
                 <div>
                   <p class="font-mono text-sm font-semibold text-foreground leading-none">IAM</p>
@@ -155,8 +151,8 @@ import { Button } from '@explainer/ui'
 
               <!-- F3 -->
               <div class="col-start-1 row-start-3 aspect-square bg-background p-3 flex flex-col justify-between transition-colors hover:bg-primary/[0.03]">
-                <span class="inline-flex size-7 items-center justify-center rounded-[2px] bg-primary/10 text-primary">
-                  <Icon icon="mdi:kubernetes" className="size-4" client:load />
+                <span class="inline-flex size-9 items-center justify-center rounded-[2px] bg-primary/10 text-primary">
+                  <Icon icon="mdi:kubernetes" className="size-5" client:load />
                 </span>
                 <div>
                   <p class="font-mono text-sm font-semibold text-foreground leading-none">K8s</p>
@@ -166,8 +162,8 @@ import { Button } from '@explainer/ui'
 
               <!-- F4 -->
               <div class="col-start-2 row-start-3 aspect-square bg-background p-3 flex flex-col justify-between transition-colors hover:bg-primary/[0.03]">
-                <span class="inline-flex size-7 items-center justify-center rounded-[2px] bg-primary/10 text-primary">
-                  <Icon icon="mdi:file-lock-outline" className="size-4" client:load />
+                <span class="inline-flex size-9 items-center justify-center rounded-[2px] bg-primary/10 text-primary">
+                  <Icon icon="mdi:file-lock-outline" className="size-5" client:load />
                 </span>
                 <div>
                   <p class="font-mono text-sm font-semibold text-foreground leading-none">RBAC</p>
@@ -177,8 +173,8 @@ import { Button } from '@explainer/ui'
 
               <!-- F5 -->
               <div class="col-start-3 row-start-3 aspect-square bg-background p-3 flex flex-col justify-between transition-colors hover:bg-primary/[0.03]">
-                <span class="inline-flex size-7 items-center justify-center rounded-[2px] bg-primary/10 text-primary">
-                  <Icon icon="mdi:chart-timeline-variant" className="size-4" client:load />
+                <span class="inline-flex size-9 items-center justify-center rounded-[2px] bg-primary/10 text-primary">
+                  <Icon icon="mdi:chart-timeline-variant" className="size-5" client:load />
                 </span>
                 <div>
                   <p class="font-mono text-sm font-semibold text-foreground leading-none">Obs</p>

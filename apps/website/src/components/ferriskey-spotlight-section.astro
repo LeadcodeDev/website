@@ -107,7 +107,7 @@ const corners = [
       data-reveal-delay="120"
     >
       <div class="absolute inset-0 z-0 opacity-30">
-        <BackgroundAnimation client:load />
+        <BackgroundAnimation client:only="react" />
       </div>
       <div
         class="absolute inset-0 z-[1] pointer-events-none opacity-50"
@@ -141,8 +141,8 @@ const corners = [
                 class="pointer-events-none absolute inset-0"
                 style="background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.2) 50%, transparent 58%);"
               ></span>
-              <span class="relative z-[1] grid size-8 place-items-center rounded-[3px]" style="background: rgba(255,255,255,0.16);">
-                <Icon icon={proof.icon} className="size-4 text-white" client:load />
+              <span class="relative z-[1] grid size-10 place-items-center rounded-[3px]" style="background: rgba(255,255,255,0.16);">
+                <Icon icon={proof.icon} className="size-5 text-white" client:load />
               </span>
               <div class="relative z-[1]">
                 <span class="block font-mono text-sm font-bold uppercase tracking-wider" data-t={proof.titleKey}>
