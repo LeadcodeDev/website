@@ -15,12 +15,12 @@ export default defineConfig({
           {
             path: '/',
             title: 'Baptiste Parmantier',
-            description: 'Software Architect & IAM Expert. Co-founder of FerrisKey.',
+            description: 'Software Engineer specialized in designing robust, scalable products through thoughtful software architecture tailored to your product.',
           },
           {
             path: '/thumbnails/fr',
             title: 'Baptiste Parmantier',
-            description: 'Architecte logiciel & expert IAM. Co-fondateur de FerrisKey.',
+            description: 'Software Engineer spécialisé dans la conception de produits robustes et scalables grâce à une architecture logicielle réfléchie et adaptée à votre produit.',
           },
         ],
       },

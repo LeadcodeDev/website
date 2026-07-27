@@ -4,7 +4,7 @@ export const ui = {
   en: {
     // Page
     'page.title': 'Baptiste Parmantier',
-    'page.description': 'Software Architect and IAM expert with 10+ years of experience. Co-founder of FerrisKey. Designing scalable distributed systems.',
+    'page.description': 'Software Engineer specialized in designing robust, scalable products through thoughtful software architecture tailored to your product.',
     'footer.text': 'Built with Explainer v2',
 
     // Navbar
@@ -147,7 +147,7 @@ export const ui = {
   fr: {
     // Page
     'page.title': 'Baptiste Parmantier',
-    'page.description': "Architecte logiciel et expert IAM avec plus de 10 ans d'expérience. Co-fondateur de FerrisKey. Conception de systèmes distribués scalables.",
+    'page.description': "Software Engineer spécialisé dans la conception de produits robustes et scalables grâce à une architecture logicielle réfléchie et adaptée à votre produit.",
     'footer.text': 'Construit avec Explainer v2',
 
     // Navbar
