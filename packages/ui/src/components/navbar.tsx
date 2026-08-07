@@ -75,10 +75,10 @@ export function Navbar({
             {brandIcon &&
               (brandBadge ? (
                 <span className="flex size-8 items-center justify-center rounded-[4px] bg-primary/10 ring-1 ring-primary/15">
-                  <img src={brandIcon} alt="" className="size-5 dark:invert" />
+                  <img src={brandIcon} alt="" className="size-5" />
                 </span>
               ) : (
-                <img src={brandIcon} alt="" className="size-5 dark:invert" />
+                <img src={brandIcon} alt="" className="size-5" />
               ))}
             {brand}
           </a>
