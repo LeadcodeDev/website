@@ -7,6 +7,8 @@ export const languageIcons: Record<string, string> = {
   js: 'devicon:javascript',
   typescript: 'devicon:typescript',
   ts: 'devicon:typescript',
+  jsx: 'devicon:typescript',
+  tsx: 'devicon:typescript',
   python: 'devicon:python',
   py: 'devicon:python',
   dart: 'devicon:dart',
