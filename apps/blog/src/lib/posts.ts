@@ -11,16 +11,36 @@ const localeBcp47: Record<string, string> = {
   ja: 'ja-JP',
 }
 
+// During `astro dev` we want drafts to be rendered so they can be proofread in
+// place. Production builds must never expose them.
+export const isPreview = import.meta.env.DEV
+
+export function isDraft(post: Post): boolean {
+  return post.data.status !== 'published'
+}
+
+export function isPostVisible(post: Post): boolean {
+  return isPreview || !isDraft(post)
+}
+
+/** Strictly published posts — use for anything public (RSS, sitemaps). */
 export function getPublishedPosts(posts: Post[]): Post[] {
   return posts
-    .filter((post) => post.data.status === 'published')
+    .filter((post) => !isDraft(post))
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+}
+
+/** Posts to render on the site: published, plus drafts while in dev mode. */
+export function getVisiblePosts(posts: Post[]): Post[] {
+  return posts
+    .filter(isPostVisible)
     .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
 }
 
 export function getAllTags(posts: Post[]): { name: string; count: number }[] {
   const tagMap = new Map<string, number>()
   for (const post of posts) {
-    if (post.data.status !== 'published') continue
+    if (!isPostVisible(post)) continue
     for (const tag of post.data.tags) {
       tagMap.set(tag, (tagMap.get(tag) ?? 0) + 1)
     }

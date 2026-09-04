@@ -13,10 +13,11 @@ interface Props {
   locale?: string
   readingTime: number
   author?: Author
+  draft?: boolean
   class?: string
 }
 
-const { title, date, tags, cover, href, locale, class: className } = Astro.props
+const { title, date, tags, cover, href, locale, draft = false, class: className } = Astro.props
 ---
 
 <article class:list={['group h-full', className]}>
@@ -53,6 +54,11 @@ const { title, date, tags, cover, href, locale, class: className } = Astro.props
         {formatDate(date, locale)}
       </time>
       <h2 class="mt-1.5 text-[15px] font-semibold leading-snug text-foreground line-clamp-3">
+        {draft && (
+          <span class="mr-1.5 align-middle rounded-[2px] border border-amber-500/50 bg-amber-500/10 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+            Draft
+          </span>
+        )}
         {title}
       </h2>
     </div>

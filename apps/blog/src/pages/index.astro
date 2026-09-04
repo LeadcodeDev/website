@@ -3,14 +3,14 @@ import { getCollection } from 'astro:content'
 import Base from '../layouts/base.astro'
 import { TagFilter } from '../components/TagFilter'
 import PostCard from '../components/PostCard.astro'
-import { getPublishedPosts, getPostHref, getPostLocale, getLocales, getAllTags, getReadingTime } from '../lib/posts'
+import { getVisiblePosts, isDraft, getPostHref, getPostLocale, getLocales, getAllTags, getReadingTime } from '../lib/posts'
 import { getAuthor } from '../lib/authors'
 import { defaultLang, ui } from '../i18n/ui'
 import { useTranslations } from '../i18n/utils'
 
 const allPosts = await getCollection('posts')
 const locales = getLocales(allPosts)
-const posts = getPublishedPosts(allPosts)
+const posts = getVisiblePosts(allPosts)
 const tags = getAllTags(posts)
 const locale = defaultLang
 const t = useTranslations(locale)
@@ -44,6 +44,7 @@ const t = useTranslations(locale)
             locale={getPostLocale(post)}
             readingTime={getReadingTime(post.body ?? '')}
             author={post.data.author ? getAuthor(post.data.author) : undefined}
+            draft={isDraft(post)}
           />
         </div>
       ))}
