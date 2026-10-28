@@ -17,6 +17,10 @@ on:
         description: 'Deploy Website'
         type: boolean
         default: false
+      slides:
+        description: 'Deploy Slides'
+        type: boolean
+        default: false
 
 jobs:
   changes:
@@ -25,6 +29,7 @@ jobs:
       docs: ${{ steps.filter.outputs.docs }}
       blog: ${{ steps.filter.outputs.blog }}
       website: ${{ steps.filter.outputs.website }}
+      slides: ${{ steps.filter.outputs.slides }}
     steps:
       - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v4
@@ -42,6 +47,9 @@ jobs:
             website:
               - 'apps/website/**'
               - 'packages/**'
+              - 'pnpm-lock.yaml'
+            slides:
+              - 'apps/slides/**'
               - 'pnpm-lock.yaml'
 
   build-docs:
@@ -112,6 +120,24 @@ jobs:
           name: website-dist
           path: apps/website/dist/
 
+  build-slides:
+    needs: changes
+    if: (github.event_name == 'push' && needs.changes.outputs.slides == 'true') || (github.event_name == 'workflow_dispatch' && inputs.slides)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @explainer/slides build
+      - uses: actions/upload-artifact@v5
+        with:
+          name: slides-dist
+          path: apps/slides/dist/
+
   deploy-docs:
     needs: build-docs
     if: vars.DEPLOY_TARGET == 'cloudflare'
@@ -165,3 +191,21 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=baptistep-website
+
+  deploy-slides:
+    needs: build-slides
+    if: vars.DEPLOY_TARGET == 'cloudflare'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: slides-dist
+          path: dist
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=baptistep-slides
