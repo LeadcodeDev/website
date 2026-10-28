@@ -1,4 +1,15 @@
 {
-  "folders": [],
-  "assignments": {}
+  "folders": [
+    {
+      "id": "f-6807d817",
+      "name": "IAM",
+      "icon": {
+        "type": "color",
+        "value": "#e5484d"
+      }
+    }
+  ],
+  "assignments": {
+    "iam-ferriskey": "f-6807d817"
+  }
 }
