@@ -104,6 +104,14 @@ html.dark > .astro-code {
   padding-right: var(--padding-code, 1rem);
   display: inline-block;
   min-width: calc(100% + 2 * var(--padding-code, 1rem));
+  /* A blank line inside a diff range holds nothing but a newline. Without a
+     minimum height the inline-block collapses to zero: no band, and a `+`
+     painted on top of the neighbouring line's. Without `vertical-align` an
+     empty inline-block is baseline-aligned on its bottom edge, which leaves
+     a descender-sized gap under that line. */
+  min-height: 1.7em;
+  min-height: 1lh;
+  vertical-align: top;
 }
 
 .astro-code .diff.add {
@@ -116,6 +124,7 @@ html.dark > .astro-code {
 
 .astro-code .diff::before {
   position: absolute;
+  top: 0;
   left: 0.25rem;
 }
 
