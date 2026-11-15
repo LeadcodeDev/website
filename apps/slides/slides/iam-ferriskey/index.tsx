@@ -19,7 +19,7 @@ const muted        = '#57534e';
 const dim          = '#a8a29e';
 const border       = '#d6d3d1';
 const surface      = '#f5f5f4';
-const accentSoft   = '#FDEBD6';
+const accentSoft   = '#fff3e6';
 const mono         = '"JetBrains Mono", "Fira Code", ui-monospace, monospace';
 const dangerColor  = '#B91C1C';
 const warnColor    = '#B45309';
@@ -61,7 +61,7 @@ const GridBackdrop = () => (
   <div aria-hidden style={{
     position: 'absolute', inset: 0,
     backgroundImage: `linear-gradient(${border} 1px, transparent 1px), linear-gradient(90deg, ${border} 1px, transparent 1px)`,
-    backgroundSize: '80px 80px', opacity: 0.55,
+    backgroundSize: '80px 80px', opacity: 0.22,
     maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%)',
     WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%)',
   }} />
@@ -87,10 +87,10 @@ function Footer({ section }: { section: string }) {
 }
 
 function Tag({ text }: { text: string }) {
-  return <div style={{ fontFamily: mono, fontSize: 17, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--osd-accent)', marginBottom: 24 }}>{text}</div>;
+  return <div style={{ fontFamily: mono, fontSize: 22, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--osd-accent)', marginBottom: 24 }}>{text}</div>;
 }
-function H({ children, size = 56 }: { children: React.ReactNode; size?: number }) {
-  return <h2 style={{ fontFamily: 'var(--osd-font-display)', fontSize: size, fontWeight: 700, margin: 0, lineHeight: 1.1, color: 'var(--osd-text)', letterSpacing: '-0.01em' }}>{children}</h2>;
+function H({ children, size = 64 }: { children: React.ReactNode; size?: number }) {
+  return <h2 style={{ fontFamily: 'var(--osd-font-display)', fontSize: size, fontWeight: 800, margin: 0, lineHeight: 1.2, color: 'var(--osd-text)' }}>{children}</h2>;
 }
 function Lead({ children }: { children: React.ReactNode }) {
   return <p style={{ fontSize: 34, lineHeight: 1.6, color: muted, margin: '24px 0 28px', maxWidth: 1500, fontWeight: 400 }}>{children}</p>;
@@ -348,39 +348,107 @@ function KeyCard({ n, title, children }: { n: string; title: string; children: R
   );
 }
 
-// ─── Page 01: Cover ───────────────────────────────────────────────────────────
-const P01Cover: Page = () => {
-  const f0 = useFadeIn(0);
-  const f1 = useFadeIn(100);
-  const f2 = useFadeIn(230);
+// ─── Mosaic covers & dividers (same charter as the "Introduction à l'IA" deck) ─
+const BREAK_TINTS = ['#fbd9bd', '#f8c39a', '#f6b07a', '#fdecc8', '#fbe3d0'];
+const BREAK_PALE = '#fdecc8';
+const BREAK_CELL = 56;
+const BREAK_HERO = { x: 1568, y: 448, size: 224 };
+
+const seeded = (seed: string) => {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return () => {
+    h = (h + 0x6d2b79f5) | 0;
+    let t = Math.imul(h ^ (h >>> 15), 1 | h);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
+function BreakSquares({ n, seed }: { n: string; seed: string }) {
+  const rand = seeded(seed);
+  const cols = Math.ceil(1920 / BREAK_CELL);
+  const rows = Math.ceil(1080 / BREAK_CELL);
+  const heroCx = BREAK_HERO.x + BREAK_HERO.size / 2;
+  const heroCy = BREAK_HERO.y + BREAK_HERO.size / 2;
+  const free = (x: number, y: number) => {
+    const inHero =
+      x + BREAK_CELL > BREAK_HERO.x &&
+      x < BREAK_HERO.x + BREAK_HERO.size &&
+      y + BREAK_CELL > BREAK_HERO.y &&
+      y < BREAK_HERO.y + BREAK_HERO.size;
+    const inText = x < 1400 && y + BREAK_CELL > 270 && y < 780;
+    const inFooter = y > 940 && x > 1600;
+    return x >= 0 && y >= 0 && x + BREAK_CELL <= 1920 && y + BREAK_CELL <= 1080 && !inHero && !inText && !inFooter;
+  };
+  const taken = new Set<string>();
+  const cells: React.ReactNode[] = [];
+  const put = (x: number, y: number) => {
+    const key = `${x}-${y}`;
+    if (taken.has(key) || !free(x, y)) return false;
+    taken.add(key);
+    const pale = rand() < 0.2;
+    const tint = BREAK_TINTS[Math.floor(rand() * BREAK_TINTS.length)];
+    cells.push(
+      <div key={key} style={{ position: 'absolute', left: x, top: y, width: BREAK_CELL, height: BREAK_CELL, background: pale ? BREAK_PALE : tint }} />,
+    );
+    return true;
+  };
+  for (let col = 0; col < cols; col++) {
+    for (let row = 0; row < rows; row++) {
+      const x = col * BREAK_CELL;
+      const y = row * BREAK_CELL;
+      const dx = x + BREAK_CELL / 2 - heroCx;
+      const dy = y + BREAK_CELL / 2 - heroCy;
+      const gapX = Math.max(BREAK_HERO.x - (x + BREAK_CELL), x - (BREAK_HERO.x + BREAK_HERO.size), 0);
+      const gapY = Math.max(BREAK_HERO.y - (y + BREAK_CELL), y - (BREAK_HERO.y + BREAK_HERO.size), 0);
+      const gap = Math.max(gapX, gapY);
+      const falloff = 0.55 * Math.exp(-((dx * dx) / (620 * 620) + (dy * dy) / (300 * 300)));
+      const p = gap === 0 ? 0.9 : gap <= BREAK_CELL ? Math.max(falloff, 0.7) : falloff;
+      if (rand() < p && put(x, y) && rand() < 0.35) put(x + BREAK_CELL, y);
+    }
+  }
+  return (
+    <div aria-hidden style={{ position: 'absolute', left: -110, top: -90, width: 1920, height: 1080 }}>
+      {cells}
+      <div style={{ position: 'absolute', left: BREAK_HERO.x, top: BREAK_HERO.y, width: BREAK_HERO.size, height: BREAK_HERO.size, background: 'var(--osd-accent)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: mono, fontSize: n.length > 5 ? 44 : n.length > 2 ? 72 : 110, fontWeight: 800 }}>
+        {n}
+      </div>
+    </div>
+  );
+}
+
+function MosaicSlide({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ ...page, overflow: 'hidden' }}>
       <GridBackdrop />
-      <div style={{ padding: '0 110px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
-        <div style={f0}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 52 }}>
-            <span style={{ width: 12, height: 12, borderRadius: '50%', background: 'var(--osd-accent)', boxShadow: '0 0 18px rgba(239,120,9,0.35)', display: 'inline-block', flexShrink: 0 }} />
-            <span style={{ fontFamily: mono, fontSize: 17, color: 'var(--osd-accent)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>BTS SIO 2 · SLAM / SISR · Cybersécurité</span>
-          </div>
-        </div>
-        <div style={f1}>
-          <h1 style={{ fontFamily: 'var(--osd-font-display)', fontSize: 'var(--osd-size-hero)', fontWeight: 700, lineHeight: 1.07, letterSpacing: '-0.02em', margin: '0 0 44px', color: 'var(--osd-text)' }}>
-            IAM<br />&amp; FerrisKey
-          </h1>
-        </div>
-        <div style={f2}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 28, maxWidth: 1200 }}>
-            <div style={{ width: 4, background: 'var(--osd-accent)', opacity: 0.7, alignSelf: 'stretch', flexShrink: 0 }} />
-            <p style={{ fontSize: 36, color: muted, lineHeight: 1.5, margin: 0, fontWeight: 400 }}>
-              Identités, tokens et OAuth2 / OIDC : de la théorie à l'intégration dans un backend et une app Flutter
-            </p>
-          </div>
-        </div>
+      <div style={{ position: 'absolute', top: 90, left: 110, right: 110, bottom: 150, display: 'flex', flexDirection: 'column' }}>
+        {children}
       </div>
-      <Footer section="IAM & FerrisKey" />
+      <Footer section="" />
     </div>
   );
-};
+}
+
+// ─── Page 01: Cover ───────────────────────────────────────────────────────────
+const P01Cover: Page = () => (
+  <MosaicSlide>
+    <BreakSquares n="IAM" seed="cover-iam-ferriskey" />
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 28, maxWidth: 1300, position: 'relative' }}>
+      <div style={{ fontFamily: mono, fontSize: 28, letterSpacing: '0.2em', color: 'var(--osd-accent)' }}>BTS SIO 2 · CYBERSÉCURITÉ</div>
+      <h1 style={{ fontFamily: 'var(--osd-font-display)', fontSize: 130, fontWeight: 800, lineHeight: 1.05, margin: 0 }}>
+        IAM<br />&amp; <span style={{ color: 'var(--osd-accent)' }}>FerrisKey</span>
+      </h1>
+      <div style={{ width: 160, height: 8, background: 'var(--osd-accent)' }} />
+      <p style={{ fontSize: 40, lineHeight: 1.4, color: muted, margin: 0 }}>
+        Identités, tokens et OAuth2 / OIDC : de la théorie à l'intégration dans un backend et une app Flutter
+      </p>
+    </div>
+  </MosaicSlide>
+);
 
 // ─── Page 02: Sommaire ────────────────────────────────────────────────────────
 const P02Agenda: Page = () => {
@@ -406,31 +474,6 @@ const P02Agenda: Page = () => {
 };
 
 // ─── Prologue: l'histoire de John ─────────────────────────────────────────────
-function Bubble({ when, who, children }: { when: string; who: string; children: React.ReactNode }) {
-  return (
-    <div style={{ background: surface, border: `1px solid ${border}`, borderRadius: '4px 18px 18px 18px', padding: '14px 22px', marginBottom: 18 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: mono, fontSize: 15, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6 }}>
-        <span style={{ color: 'var(--osd-accent)' }}>{who}</span>
-        <span style={{ color: dim }}>{when}</span>
-      </div>
-      <div style={{ fontSize: 27, color: 'var(--osd-text)', lineHeight: 1.4 }}>{children}</div>
-    </div>
-  );
-}
-
-function TimeBar({ label, product, note }: { label: string; product: number; note?: string }) {
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr 330px', columnGap: 24, alignItems: 'center', marginBottom: 18 }}>
-      <div style={{ fontFamily: mono, fontSize: 18, color: muted, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{label}</div>
-      <div style={{ display: 'flex', height: 46, borderRadius: 'var(--osd-radius)', overflow: 'hidden', fontFamily: mono, fontSize: 17, color: '#ffffff' }}>
-        <div style={{ width: `${product}%`, background: successColor, display: 'flex', alignItems: 'center', paddingLeft: product > 8 ? 14 : 0 }}>{product > 8 ? `${product}%` : ''}</div>
-        <div style={{ flex: 1, background: 'var(--osd-accent)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 14 }}>{100 - product}%</div>
-      </div>
-      <div style={{ fontSize: 22, color: muted, fontStyle: 'italic' }}>{note}</div>
-    </div>
-  );
-}
-
 function AppBox({ name, children }: { name: string; children?: React.ReactNode }) {
   return (
     <div style={{ background: surface, border: `1px solid ${border}`, borderRadius: 'var(--osd-radius)', padding: '14px 18px', textAlign: 'center', flex: 1 }}>
@@ -484,30 +527,51 @@ const PStory1: Page = () => {
   );
 };
 
+const REQUESTS: { who: string; when: string; icon: string; feature: string; quote: string }[] = [
+  { who: 'Un élève', when: 'Semaine 2', icon: '😭', feature: 'Reset password', quote: "J'ai oublié mon mot de passe" },
+  { who: 'Tous les élèves', when: 'Mois 1', icon: '🔗', feature: 'Social login', quote: 'Tu peux mettre « Continuer avec Google » ?' },
+  { who: 'Le lycée', when: 'Mois 2', icon: '🏫', feature: 'SSO', quote: "Nos profs doivent se connecter avec l'ENT" },
+  { who: 'Le RSSI', when: 'Mois 3', icon: '🛡️', feature: 'MFA', quote: 'MFA obligatoire pour les comptes profs. Lundi.' },
+  { who: 'Un élève', when: 'Mois 4', icon: '🫆', feature: 'Passkeys', quote: "Pourquoi j'ai pas Face ID comme partout ?" },
+  { who: 'La DPO', when: 'Mois 5', icon: '📋', feature: 'RGPD', quote: 'Export et suppression des données, on en est où ?' },
+  { who: 'La proviseure', when: 'Mois 6', icon: '🎓', feature: 'RBAC', quote: 'Il faut des rôles : élève, prof, parent, admin…' },
+  { who: 'Un parent', when: 'Mois 6', icon: '👪', feature: 'ABAC', quote: 'Je ne dois voir QUE les fiches de ma fille.' },
+];
+const ESCALATION = ['#FDBA74', '#FB923C', '#F97316', '#EF7809', '#EA580C', '#DC2626', '#C2410C', '#B91C1C'];
+
+function RequestCard({ r, i }: { r: (typeof REQUESTS)[number]; i: number }) {
+  const c = ESCALATION[i];
+  return (
+    <div style={{ height: 232, boxSizing: 'border-box', background: surface, border: `1px solid ${border}`, borderTop: `6px solid ${c}`, borderRadius: 'var(--osd-radius)', padding: '16px 22px', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontSize: 52, lineHeight: 1 }}>{r.icon}</span>
+        <span style={{ fontFamily: mono, fontSize: 16, letterSpacing: '0.12em', textTransform: 'uppercase', color: dim }}>{r.when}</span>
+      </div>
+      <div style={{ fontFamily: mono, fontSize: 26, fontWeight: 800, color: c, margin: '10px 0 4px', letterSpacing: '0.02em' }}>+ {r.feature}</div>
+      <div style={{ fontSize: 23, lineHeight: 1.35, color: 'var(--osd-text)' }}>« {r.quote} »</div>
+      <div style={{ marginTop: 'auto', fontFamily: mono, fontSize: 15, letterSpacing: '0.1em', textTransform: 'uppercase', color: muted }}>{r.who}</div>
+    </div>
+  );
+}
+
 const PStory2: Page = () => {
   const f1 = useFadeIn(0); const f2 = useFadeIn(80); const f3 = useFadeIn(180);
   return (
     <div style={page}>
-      <div style={inner}>
+      <GridBackdrop />
+      <div style={{ ...inner, position: 'relative' }}>
         <div style={f1}><Tag text="Prologue · Six mois plus tard" /></div>
         <div style={f2}><H>« Juste une petite feature… »</H></div>
-        <div style={{ ...f3, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, marginTop: 40 }}>
-          <div>
-            <Steps>
-              <Step><Bubble who="Un élève" when="Semaine 2">J'ai oublié mon mot de passe 😭</Bubble></Step>
-              <Step><Bubble who="Tous les élèves" when="Mois 1">Tu peux mettre « Continuer avec Google » ?</Bubble></Step>
-              <Step><Bubble who="Le lycée" when="Mois 2">Nos profs doivent se connecter avec l'ENT (SSO)</Bubble></Step>
-              <Step><Bubble who="Le RSSI" when="Mois 3">MFA obligatoire pour les comptes profs. Lundi.</Bubble></Step>
-            </Steps>
-          </div>
-          <div>
-            <Steps>
-              <Step><Bubble who="Un élève" when="Mois 4">Pourquoi j'ai pas Face ID comme partout ? (passkeys)</Bubble></Step>
-              <Step><Bubble who="La DPO" when="Mois 5">RGPD : export et suppression des données, on en est où ?</Bubble></Step>
-              <Step><Bubble who="La proviseure" when="Mois 6">Il faut des rôles : élève, prof, parent, admin…</Bubble></Step>
-              <Step><Bubble who="Un parent" when="Mois 6">… et je ne dois voir QUE les fiches de ma fille.</Bubble></Step>
-            </Steps>
-          </div>
+        <div style={{ ...f3, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridAutoRows: 232, gap: 20, marginTop: 34 }}>
+          <Steps>
+            {REQUESTS.map((r, i) => (
+              <Step key={r.feature}><RequestCard r={r} i={i} /></Step>
+            ))}
+          </Steps>
+        </div>
+        <div style={{ ...f3, marginTop: 28, display: 'flex', alignItems: 'center', gap: 20 }}>
+          <div style={{ flex: 1, height: 10, borderRadius: 5, background: `linear-gradient(90deg, ${ESCALATION[0]}, ${ESCALATION[7]})` }} />
+          <div style={{ fontFamily: mono, fontSize: 22, color: dangerColor, letterSpacing: '0.04em' }}>8 demandes · 0 ligne de Révizz écrite</div>
         </div>
       </div>
       <Footer section="Prologue · L'histoire de John" />
@@ -515,25 +579,71 @@ const PStory2: Page = () => {
   );
 };
 
+const TIME_DATA = [
+  { label: 'Mois 1', product: 90, note: 'le login, c\'est fait' },
+  { label: 'Mois 2', product: 65, note: 'reset mdp + Google' },
+  { label: 'Mois 3', product: 40, note: 'SAML… c\'est quoi ?' },
+  { label: 'Mois 4', product: 25, note: 'MFA, TOTP, WebAuthn' },
+  { label: 'Mois 6', product: 10, note: 'rôles, RGPD, audit' },
+];
+
+function TimeChart() {
+  const W = 1180, H = 470, base = 350, full = 310, colW = 150, step = 230, x0 = 40;
+  const cx = (i: number) => x0 + i * step + colW / 2;
+  const top = (p: number) => base - (full * p) / 100;
+  return (
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ display: 'block', overflow: 'visible' }}>
+      {[0, 50, 100].map((g) => (
+        <g key={g}>
+          <line x1={0} x2={W} y1={top(g)} y2={top(g)} stroke={border} strokeWidth={1.5} strokeDasharray="6 6" />
+          <text x={W} y={top(g) - 8} textAnchor="end" style={{ fontFamily: mono, fontSize: 15, fill: dim }}>{g}%</text>
+        </g>
+      ))}
+      {TIME_DATA.map((d, i) => {
+        const x = x0 + i * step;
+        const hp = (full * d.product) / 100;
+        const ha = full - hp;
+        return (
+          <g key={d.label}>
+            <rect x={x} y={top(100)} width={colW} height={ha} fill="var(--osd-accent)" />
+            <rect x={x} y={top(d.product)} width={colW} height={hp} fill={successColor} />
+            <text x={cx(i)} y={top(100) + ha / 2 + 11} textAnchor="middle" style={{ fontFamily: mono, fontSize: 32, fontWeight: 800, fill: '#fff' }}>{100 - d.product}%</text>
+            {d.product >= 20 && (
+              <text x={cx(i)} y={top(d.product) + hp / 2 + 9} textAnchor="middle" style={{ fontFamily: mono, fontSize: 26, fontWeight: 700, fill: '#fff', opacity: 0.9 }}>{d.product}%</text>
+            )}
+            <text x={cx(i)} y={base + 36} textAnchor="middle" style={{ fontFamily: mono, fontSize: 20, fontWeight: 700, letterSpacing: '0.1em', fill: 'var(--osd-text)' }}>{d.label.toUpperCase()}</text>
+            <text x={cx(i)} y={base + 66} textAnchor="middle" style={{ fontSize: 21, fontStyle: 'italic', fill: muted }}>« {d.note} »</text>
+          </g>
+        );
+      })}
+      <polyline points={TIME_DATA.map((d, i) => `${cx(i)},${top(d.product)}`).join(' ')} fill="none" stroke="var(--osd-text)" strokeWidth={3} strokeDasharray="2 8" strokeLinecap="round" />
+      {TIME_DATA.map((d, i) => (
+        <circle key={d.label} cx={cx(i)} cy={top(d.product)} r={9} fill="#fff" stroke="var(--osd-text)" strokeWidth={3} />
+      ))}
+    </svg>
+  );
+}
+
 const PStory3: Page = () => {
   const f1 = useFadeIn(0); const f2 = useFadeIn(80); const f3 = useFadeIn(180); const f4 = useFadeIn(320);
   return (
     <div style={page}>
-      <div style={inner}>
+      <GridBackdrop />
+      <div style={{ ...inner, position: 'relative' }}>
         <div style={f1}><Tag text="Prologue · Le relevé de temps" /></div>
         <div style={f2}><H>Où passe le temps de John ?</H></div>
-        <div style={{ ...f3, marginTop: 44 }}>
-          <div style={{ display: 'flex', gap: 32, fontFamily: mono, fontSize: 17, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 24, marginLeft: 164 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 10, color: successColor }}><span style={{ width: 16, height: 16, background: successColor, borderRadius: 2 }} />Révizz (le produit)</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--osd-accent)' }}><span style={{ width: 16, height: 16, background: 'var(--osd-accent)', borderRadius: 2 }} />L'authentification</span>
+        <div style={{ ...f3, marginTop: 28, display: 'flex', gap: 56, alignItems: 'flex-start' }}>
+          <TimeChart />
+          <div style={{ flex: 1, paddingTop: 10 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontFamily: mono, fontSize: 18, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 36 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12, color: successColor }}><span style={{ width: 18, height: 18, background: successColor }} />Révizz (le produit)</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--osd-accent)' }}><span style={{ width: 18, height: 18, background: 'var(--osd-accent)' }} />L'authentification</span>
+            </div>
+            <div style={{ fontFamily: mono, fontSize: 120, fontWeight: 800, lineHeight: 1, color: 'var(--osd-accent)' }}>90%</div>
+            <div style={{ fontSize: 28, color: muted, lineHeight: 1.4, marginTop: 10 }}>du temps sur l'auth au mois 6, pour 10% sur le produit</div>
           </div>
-          <TimeBar label="Mois 1" product={90} note="« le login, c'est fait »" />
-          <TimeBar label="Mois 2" product={65} note="reset de mdp + Google" />
-          <TimeBar label="Mois 3" product={40} note="SAML… c'est quoi SAML ?" />
-          <TimeBar label="Mois 4" product={25} note="MFA, TOTP, WebAuthn" />
-          <TimeBar label="Mois 6" product={10} note="rôles, RGPD, audit" />
         </div>
-        <div style={{ ...f4, marginTop: 36 }}>
+        <div style={{ ...f4, marginTop: 20 }}>
           <Callout>Révizz est devenue une excellente solution d'authentification… qui propose aussi des fiches de révision.</Callout>
         </div>
       </div>
@@ -542,25 +652,49 @@ const PStory3: Page = () => {
   );
 };
 
+const FLAWS = [
+  { flaw: 'Mots de passe en MD5, sans sel', effect: 'Craqués en quelques minutes une fois la base volée', note: '« temporairement », depuis le jour 1' },
+  { flaw: 'Aucune limite de tentatives sur /login', effect: 'Essais automatisés de mots de passe, sans être bloqué' },
+  { flaw: 'Lien de réinitialisation sans expiration', effect: 'Un vieux mail suffit pour reprendre un compte' },
+];
+
 const PStory4: Page = () => {
-  const f1 = useFadeIn(0); const f2 = useFadeIn(150); const f3 = useFadeIn(400);
+  const f1 = useFadeIn(0); const f2 = useFadeIn(80); const f3 = useFadeIn(220); const f4 = useFadeIn(420);
   return (
     <div style={page}>
-      <div style={{ ...inner, paddingTop: 150 }}>
+      <GridBackdrop />
+      <div style={{ ...inner, position: 'relative' }}>
         <div style={f1}><Tag text="Prologue · Le rebondissement" /></div>
-        <div style={f2}>
-          <h2 style={{ fontFamily: 'var(--osd-font-display)', fontSize: 96, fontWeight: 700, margin: 0, lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--osd-text)' }}>Vendredi, 17h58.</h2>
-          <p style={{ fontSize: 38, color: muted, lineHeight: 1.5, margin: '32px 0 48px', maxWidth: 1400 }}>
-            Un mail : « Bonjour John, les 12 000 comptes Révizz sont en vente sur une plateforme. »
-          </p>
-        </div>
-        <div style={f3}>
-          <ColH color={dangerColor}>L'enquête du week-end</ColH>
-          <ul style={{ margin: 0, padding: 0 }}>
-            <BW>Mots de passe en MD5 sans sel, « temporairement », depuis le jour 1</BW>
-            <BW>Aucune limite de tentatives sur /login</BW>
-            <BW>Le lien de réinitialisation n'expirait jamais</BW>
-          </ul>
+        <div style={f2}><H>Vendredi, 17h58 : les comptes sont en vente</H></div>
+        <div style={{ display: 'grid', gridTemplateColumns: '700px 1fr', gap: 56, marginTop: 40, alignItems: 'start' }}>
+          <div style={f3}>
+            <div style={{ background: '#ffffff', border: `1px solid ${border}`, borderRadius: 'var(--osd-radius)', boxShadow: '0 8px 30px rgba(28,25,23,0.10)', overflow: 'hidden' }}>
+              <div style={{ background: surface, borderBottom: `1px solid ${border}`, padding: '14px 24px', fontFamily: mono, fontSize: 17, color: muted, lineHeight: 1.7 }}>
+                <div><span style={{ color: dim }}>De : </span>inconnu@mail-anonyme.example</div>
+                <div><span style={{ color: dim }}>À : </span>john@revizz.fr</div>
+                <div><span style={{ color: dim }}>Objet : </span><strong style={{ color: dangerColor }}>URGENT · Vos utilisateurs</strong></div>
+              </div>
+              <div style={{ padding: '28px 28px 32px', fontSize: 30, lineHeight: 1.5, color: 'var(--osd-text)' }}>
+                Bonjour John,<br />
+                les <strong style={{ color: dangerColor }}>12 000 comptes Révizz</strong> sont en vente sur une plateforme.
+                <div style={{ marginTop: 22, display: 'inline-block', fontFamily: mono, fontSize: 20, color: dangerColor, background: '#FEE2E2', padding: '6px 14px', borderRadius: 3 }}>Vendredi · 17h58</div>
+              </div>
+            </div>
+          </div>
+          <div style={f4}>
+            <ColH color={dangerColor}>L'enquête du week-end : 3 failles</ColH>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {FLAWS.map((f, i) => (
+                <div key={f.flaw} style={{ display: 'grid', gridTemplateColumns: '56px 1fr', columnGap: 20, alignItems: 'start', background: surface, border: `1px solid ${border}`, borderLeft: `5px solid ${dangerColor}`, borderRadius: 'var(--osd-radius)', padding: '16px 24px' }}>
+                  <div style={{ fontFamily: mono, fontSize: 34, fontWeight: 800, color: dangerColor, lineHeight: 1 }}>{String(i + 1).padStart(2, '0')}</div>
+                  <div>
+                    <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--osd-text)', lineHeight: 1.3 }}>{f.flaw}{f.note && <span style={{ fontWeight: 400, color: dim, fontSize: 22 }}> · {f.note}</span>}</div>
+                    <div style={{ fontSize: 24, color: muted, marginTop: 6, lineHeight: 1.4 }}><span style={{ color: dangerColor }}>→ </span>{f.effect}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       <Footer section="Prologue · L'histoire de John" />
@@ -617,7 +751,7 @@ const PStoryBridge: Page = () => {
         <div style={f2}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 28, maxWidth: 1200 }}>
             <div style={{ width: 4, background: 'var(--osd-accent)', opacity: 0.7, alignSelf: 'stretch', flexShrink: 0 }} />
-            <p style={{ fontSize: 36, color: muted, lineHeight: 1.5, margin: 0 }}>L'IAM est votre meilleur ami.</p>
+            <p style={{ fontSize: 36, color: muted, lineHeight: 1.5, margin: 0 }}>Un IAM prend en charge les comptes, les mots de passe, le MFA et les accès, pour que vos applications se concentrent sur leur métier.</p>
           </div>
         </div>
       </div>
@@ -684,6 +818,162 @@ const PStory6: Page = () => {
         </div>
         <div style={{ ...f4, marginTop: 44 }}>
           <Callout>Un <strong>IAM</strong>, c'est confier l'identité à un service spécialisé… pour que John retourne coder des fiches de révision.</Callout>
+        </div>
+      </div>
+      <Footer section="Prologue · L'histoire de John" />
+    </div>
+  );
+};
+
+// ─── Prologue: l'IAM face à une attaque ──────────────────────────────────────
+type DataTone = 'leak' | 'safe' | 'secret';
+
+function DataRow({ text, tone }: { text: string; tone: DataTone }) {
+  const t = {
+    leak: { bg: '#FEE2E2', fg: dangerColor, bd: '#FCA5A5' },
+    secret: { bg: dangerColor, fg: '#ffffff', bd: dangerColor },
+    safe: { bg: '#D1FAE5', fg: successColor, bd: '#6EE7B7' },
+  }[tone];
+  return <div style={{ fontFamily: mono, fontSize: 21, padding: '8px 14px', background: t.bg, color: t.fg, border: `1px solid ${t.bd}`, borderRadius: 3 }}>{text}</div>;
+}
+
+function DbBox({ title, rows, color, dashed = false, w = '100%' }: { title: string; rows: { text: string; tone: DataTone }[]; color: string; dashed?: boolean; w?: number | string }) {
+  return (
+    <div style={{ width: w, boxSizing: 'border-box', background: '#ffffff', border: `3px ${dashed ? 'dashed' : 'solid'} ${color}`, borderRadius: 'var(--osd-radius)', padding: '14px 18px' }}>
+      <div style={{ fontFamily: mono, fontSize: 18, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color, marginBottom: 12 }}>{title}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {rows.map((r) => <DataRow key={r.text} text={r.text} tone={r.tone} />)}
+      </div>
+    </div>
+  );
+}
+
+function Attack({ label = 'Attaque', blocked = false }: { label?: string; blocked?: boolean }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flexShrink: 0, width: 110 }}>
+      <span style={{ fontSize: 54, lineHeight: 1 }}>{blocked ? '🚫' : '💀'}</span>
+      <span style={{ fontFamily: mono, fontSize: 15, letterSpacing: '0.1em', textTransform: 'uppercase', color: dangerColor }}>{label}</span>
+      <span style={{ color: dangerColor, fontSize: 30 }}>→</span>
+    </div>
+  );
+}
+
+const PHack1: Page = () => {
+  const f1 = useFadeIn(0); const f2 = useFadeIn(80); const f3 = useFadeIn(180); const f4 = useFadeIn(320);
+  return (
+    <div style={page}>
+      <GridBackdrop />
+      <div style={{ ...inner, position: 'relative' }}>
+        <div style={f1}><Tag text="Prologue · Rejouons le vendredi 17h58" /></div>
+        <div style={f2}><H>L'IAL réduit l'impact</H></div>
+        <div style={{ ...f3, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, marginTop: 32 }}>
+          <div>
+            <ColH color={dangerColor}>Sans IAM · une seule base</ColH>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, height: 260 }}>
+              <Attack />
+              <DbBox title="BDD Révizz" color={dangerColor} rows={[
+                { text: 'fiches · quiz', tone: 'leak' },
+                { text: 'emails · données élèves', tone: 'leak' },
+                { text: 'mots de passe · secrets MFA', tone: 'secret' },
+              ]} />
+            </div>
+          </div>
+          <div>
+            <ColH color={successColor}>Avec IAM · deux périmètres</ColH>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, height: 260 }}>
+              <Attack />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1 }}>
+                <DbBox title="BDD métier (Révizz)" color={dangerColor} rows={[
+                  { text: 'fiches · quiz', tone: 'leak' },
+                  { text: 'user_id opaque (sub)', tone: 'leak' },
+                ]} />
+                <DbBox title="🔒 IAM · hors de portée" color={successColor} dashed rows={[
+                  { text: 'mots de passe · MFA · passkeys', tone: 'safe' },
+                ]} />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{ ...f4, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, marginTop: 28 }}>
+          <Callout color={dangerColor}><strong>Tout est volé.</strong> Chaque élève doit changer son mot de passe, partout où il le réutilise.</Callout>
+          <Callout color={successColor}><strong>Seules les fiches fuient.</strong> Aucun identifiant exploitable : pas de mot de passe à réinitialiser.</Callout>
+        </div>
+        <div style={{ ...f4, marginTop: 24 }}>
+          <div style={{ fontFamily: mono, fontSize: 17, letterSpacing: '0.14em', textTransform: 'uppercase', color: dim, marginBottom: 10 }}>Ce que risque John en cas de fuite de données personnelles</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 20 }}>
+            {[
+              { ref: 'RGPD · art. 32, 33 et 34', big: '72 h', text: 'pour notifier la CNIL, et informer les personnes concernées si le risque est élevé' },
+              { ref: 'RGPD · art. 83', big: '10 M€', text: 'ou 2 % du CA mondial pour défaut de sécurité (20 M€ ou 4 % pour les manquements aux principes)' },
+              { ref: 'Code pénal · art. 226-17', big: '300 000 €', text: "et 5 ans d'emprisonnement pour ne pas avoir protégé les données" },
+            ].map((c) => (
+              <div key={c.ref} style={{ background: surface, border: `1px solid ${border}`, borderTop: `3px solid ${dangerColor}`, borderRadius: 'var(--osd-radius)', padding: '14px 22px' }}>
+                <div style={{ fontFamily: mono, fontSize: 15, letterSpacing: '0.12em', textTransform: 'uppercase', color: dangerColor }}>{c.ref}</div>
+                <div style={{ fontFamily: mono, fontSize: 46, fontWeight: 800, color: 'var(--osd-text)', lineHeight: 1.15, margin: '4px 0' }}>{c.big}</div>
+                <div style={{ fontSize: 20, color: muted, lineHeight: 1.35 }}>{c.text}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Footer section="Prologue · L'histoire de John" />
+    </div>
+  );
+};
+
+function Pod({ w, auth }: { w: number; auth: boolean }) {
+  return (
+    <div style={{ width: w, height: 92, display: 'flex', flexDirection: 'column', border: `2px solid var(--osd-text)`, borderRadius: 3, overflow: 'hidden', flexShrink: 0 }}>
+      {auth && <div style={{ flex: 1, background: 'var(--osd-accent)', fontFamily: mono, fontSize: 14, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>auth</div>}
+      <div style={{ flex: auth ? 1 : 2, background: successColor, fontFamily: mono, fontSize: 14, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>métier</div>
+    </div>
+  );
+}
+
+const PHack2: Page = () => {
+  const f1 = useFadeIn(0); const f2 = useFadeIn(80); const f3 = useFadeIn(180); const f4 = useFadeIn(320);
+  return (
+    <div style={page}>
+      <GridBackdrop />
+      <div style={{ ...inner, position: 'relative' }}>
+        <div style={f1}><Tag text="Prologue · Les autres bénéfices" /></div>
+        <div style={f2}><H>Plus léger, plus simple à tenir</H></div>
+        <div style={{ ...f3, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, marginTop: 32 }}>
+          <div>
+            <ColH accent>Scaler uniquement le métier</ColH>
+            <div style={{ fontFamily: mono, fontSize: 16, letterSpacing: '0.1em', textTransform: 'uppercase', color: dim, margin: '4px 0 8px' }}>Sans IAM · chaque instance porte l'auth</div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              {[0, 1, 2].map((i) => <Pod key={i} w={150} auth />)}
+            </div>
+            <div style={{ fontFamily: mono, fontSize: 16, letterSpacing: '0.1em', textTransform: 'uppercase', color: successColor, margin: '24px 0 8px' }}>Avec IAM · le métier seul, vérif. du JWT en local</div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              {[0, 1, 2, 3, 4, 5].map((i) => <Pod key={i} w={66} auth={false} />)}
+            </div>
+            <ul style={{ margin: '28px 0 0', padding: 0 }}>
+              <BG size={26}>Instances plus légères : plus de hash de mots de passe ni de sessions</BG>
+              <BG size={26}>Chaque requête est validée localement (signature du token)</BG>
+              <BG size={26}>L'IAM se dimensionne à part, selon le nombre de connexions</BG>
+            </ul>
+          </div>
+          <div>
+            <ColH accent>Déléguer une brique critique</ColH>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {[
+                ['Patchs de sécurité du login', 'IAM'],
+                ['MFA, passkeys, anti brute-force', 'IAM'],
+                ['Évolution des standards (OIDC, SAML)', 'IAM'],
+                ['Audit et journal des connexions', 'IAM'],
+              ].map(([t, who]) => (
+                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 18px', background: surface, border: `1px solid ${border}`, borderRadius: 'var(--osd-radius)' }}>
+                  <span style={{ fontSize: 26, flex: 1, color: muted, textDecoration: 'line-through', textDecorationColor: dim }}>{t}</span>
+                  <span style={{ fontFamily: mono, fontSize: 16, letterSpacing: '0.1em', color: dim }}>→</span>
+                  <span style={{ fontFamily: mono, fontSize: 18, fontWeight: 700, color: '#fff', background: successColor, padding: '4px 12px', borderRadius: 3 }}>{who}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 28 }}>
+              <Callout>Une équipe dédiée corrige les failles du login. John ne maintient plus que <strong>son produit</strong>.</Callout>
+            </div>
+          </div>
         </div>
       </div>
       <Footer section="Prologue · L'histoire de John" />
@@ -882,7 +1172,8 @@ const P05cJwtAnatomy: Page = () => {
                 <div style={{ fontFamily: mono, fontSize: 18, color: muted, marginBottom: 10 }}>RS256( header.payload , clé privée )</div>
                 <SigKeyRow icon="🔒" name="Clé privée" desc="Reste dans l'IAM, sert à signer" />
                 <SigKeyRow icon="🔓" name="Clé publique" desc="Publiée via JWKS, sert à vérifier" />
-                <SigKeyRow icon="🏷" name="kid" desc="Désigne la clé → rotation possible" />
+                <SigKeyRow icon="🏷" name="kid (Key ID)" desc="Identifiant de la clé : indique laquelle du JWKS vérifie ce token" />
+                <SigKeyRow icon="🔄" name="Rotation" desc="L'IAM publie k2 à côté de k1 : les anciens tokens restent valides jusqu'à leur expiration" />
               </div>
             </div>
             <div>
@@ -1996,33 +2287,23 @@ const P16Conclusion: Page = () => {
 };
 
 // ─── Section dividers (same layout as the "Déléguez…" bridge) ───────────────
-function SectionBreak({ n, title, subtitle, size = 110 }: { n: string; title: React.ReactNode; subtitle: string; size?: number }) {
-  const f0 = useFadeIn(0); const f1 = useFadeIn(120); const f2 = useFadeIn(320);
+function SectionBreak({ n, title, subtitle, size = 100 }: { n: string; title: React.ReactNode; subtitle: string; size?: number }) {
   return (
-    <div style={{ ...page, overflow: 'hidden' }}>
-      <GridBackdrop />
-      <div style={{ padding: '0 110px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
-        <div style={f0}><Tag text={`Section ${n} / 07`} /></div>
-        <div style={f1}>
-          <h2 style={{ fontFamily: 'var(--osd-font-display)', fontSize: size, fontWeight: 700, lineHeight: 1.08, letterSpacing: '-0.02em', margin: '0 0 44px', color: 'var(--osd-text)' }}>{title}</h2>
-        </div>
-        <div style={f2}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 28, maxWidth: 1200 }}>
-            <div style={{ width: 4, background: 'var(--osd-accent)', opacity: 0.7, alignSelf: 'stretch', flexShrink: 0 }} />
-            <p style={{ fontSize: 36, color: muted, lineHeight: 1.5, margin: 0 }}>{subtitle}</p>
-          </div>
-        </div>
+    <MosaicSlide>
+      <BreakSquares n={n} seed={`${n}-iam-ferriskey`} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 24, maxWidth: 1250, position: 'relative' }}>
+        <div style={{ fontFamily: mono, fontSize: 28, letterSpacing: '0.2em', color: 'var(--osd-accent)' }}>PARTIE {n}</div>
+        <h1 style={{ fontFamily: 'var(--osd-font-display)', fontSize: size, fontWeight: 800, lineHeight: 1.1, margin: 0 }}>{title}</h1>
+        <p style={{ fontSize: 40, lineHeight: 1.5, color: muted, margin: 0 }}>{subtitle}</p>
       </div>
-      <div aria-hidden style={{ position: 'absolute', right: 110, top: '50%', transform: 'translateY(-50%)', fontFamily: 'var(--osd-font-display)', fontSize: 320, fontWeight: 700, color: 'var(--osd-accent)', opacity: 0.08, lineHeight: 1, userSelect: 'none' }}>{n}</div>
-      <Footer section={`Section ${n}`} />
-    </div>
+    </MosaicSlide>
   );
 }
 
 const S01: Page = () => <SectionBreak n="01" title={<>Fondamentaux<br />IAM</>} subtitle="L'histoire de John, puis ce qu'est vraiment un IAM." />;
 const S02: Page = () => <SectionBreak n="02" title={<>Les <span style={{ color: 'var(--osd-accent)' }}>tokens</span></>} subtitle="Ce que l'IAM remet à vos applications, et comment les vérifier." />;
 const S03: Page = () => <SectionBreak n="03" title={<>Fédération<br />d'identité</>} subtitle="Se connecter avec un compte que l'on possède déjà." />;
-const S04: Page = () => <SectionBreak n="04" size={92} title={<>Pourquoi John aurait dû<br />utiliser <span style={{ color: 'var(--osd-accent)' }}>FerrisKey</span> ?</>} subtitle="Un IAM open source écrit en Rust, face à Keycloak et aux autres." />
+const S04: Page = () => <SectionBreak n="04" size={72} title={<>Pourquoi John aurait dû<br />utiliser <span style={{ color: 'var(--osd-accent)' }}>FerrisKey</span> ?</>} subtitle="Un IAM open source écrit en Rust, face à Keycloak et aux autres." />
 const S05: Page = () => <SectionBreak n="05" title={<>Server-to-<br />Server</>} subtitle="Quand un service parle à un autre service, sans humain." />;
 const S06: Page = () => <SectionBreak n="06" title={<>Client-to-<br />FerrisKey</>} subtitle="Connecter un utilisateur depuis une app mobile." />;
 const S07: Page = () => <SectionBreak n="07" title={<>Synthèse</>} subtitle="Ce qu'il faut retenir." />;
@@ -2035,7 +2316,7 @@ export const meta: SlideMeta = {
 
 export default [
   P01Cover, P02Agenda,
-  S01, PStory1, PStory2, PStory3, PStory4, PStory5, PStoryBridge, PIamOverview, PStory6,
+  S01, PStory1, PStory2, PStory3, PStory4, PStory5, PStoryBridge, PIamOverview, PStory6, PHack1, PHack2,
   P04ClassicAuth, S02, P05aWhyTokens, P05bOpaque, P05cJwtAnatomy, P05dClaims, P05eValidate, P05fStateful,
   S03, P06aFederation, P06bProtocols, P06IdP, P06cBroker, P06dLinking, S04, PFkIntro, PFkVsKeycloak, PFkBench, PFkAlternatives, P07Why,
   S05, PUseCaseS2S, P08S2S, P09S2SSeq, P10TP1, P11TP1Solution, P10dTP3, P10eTP3Solution, PTP3, PTP3Solution,
