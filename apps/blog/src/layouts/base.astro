@@ -2,7 +2,7 @@
 import '../styles/globals.css'
 import { ClientRouter } from 'astro:transitions'
 import { BlogNavbar } from '../components/blog-navbar'
-import { Footer } from '@explainer/ui'
+import { BackgroundAnimation, Footer } from '@explainer/ui'
 import { formatTitle } from '@explainer/config'
 import { siteConfig } from '../config'
 import { useTranslations } from '../i18n/utils'
@@ -14,9 +14,11 @@ interface Props {
   locale?: string
   locales?: string[]
   localeSwitchUrls?: Record<string, string>
+  /** Fond animé fixe (ne défile pas avec la page), utile sur les articles longs */
+  fixedBackground?: boolean
 }
 
-const { title, description = siteConfig.description, thumbnail, locale = 'en', locales = ['en'], localeSwitchUrls = {} } = Astro.props
+const { title, description = siteConfig.description, thumbnail, locale = 'en', locales = ['en'], localeSwitchUrls = {}, fixedBackground = false } = Astro.props
 const t = useTranslations(locale)
 const thumbnailUrl = thumbnail ?? `${Astro.url.pathname.replace(/\/$/, '')}/thumbnail.png`
 
@@ -28,7 +30,7 @@ const appUrlOverrides = {
 ---
 
 <!doctype html>
-<html lang={locale}>
+<html lang={locale} class="swiss">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -43,6 +45,12 @@ const appUrlOverrides = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={thumbnailUrl} />
     <title>{formatTitle(siteConfig, title)}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&family=Silkscreen&display=swap"
+      rel="stylesheet"
+    />
     <ClientRouter />
     <script is:inline>
       (function () {
@@ -63,11 +71,23 @@ const appUrlOverrides = {
   </head>
   <body class="min-h-screen antialiased">
     <BlogNavbar activePath={Astro.url.pathname} appUrlOverrides={appUrlOverrides} locale={locale} locales={locales} localeSwitchUrls={localeSwitchUrls} client:load transition:persist />
-    <main class="mx-auto max-w-6xl px-6 py-10">
-      <slot />
-    </main>
-    <div class="mx-auto max-w-6xl px-6">
-      <Footer config={siteConfig} locale={locale} appUrlOverrides={appUrlOverrides} client:load />
+    <div class="relative overflow-x-clip">
+      <!-- Marges gauche et droite (hors du cadre central) : petits carrés colorés animés -->
+      <div class:list={['pointer-events-none inset-y-0 left-0 hidden w-[calc((100%-1080px)/2)] min-[1200px]:block', fixedBackground ? 'fixed -z-10' : 'absolute']} aria-hidden="true">
+        <BackgroundAnimation client:only="react" grid={36} density={0.05} colors={['bg-primary/10', 'bg-primary/6', 'bg-primary/14', 'bg-primary/4', 'bg-sky-400/10', 'bg-indigo-500/7']} />
+      </div>
+      <div class:list={['pointer-events-none inset-y-0 right-0 hidden w-[calc((100%-1080px)/2)] min-[1200px]:block', fixedBackground ? 'fixed -z-10' : 'absolute']} aria-hidden="true">
+        <BackgroundAnimation client:only="react" grid={36} density={0.05} colors={['bg-primary/10', 'bg-primary/6', 'bg-primary/14', 'bg-primary/4', 'bg-sky-400/10', 'bg-indigo-500/7']} />
+      </div>
+
+      <main>
+        <slot />
+      </main>
+      <div class="sw-sec">
+        <div class="sw-frame">
+          <Footer config={siteConfig} locale={locale} appUrlOverrides={appUrlOverrides} variant="cells" client:load />
+        </div>
+      </div>
     </div>
   </body>
 </html>

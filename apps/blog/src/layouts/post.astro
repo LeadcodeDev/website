@@ -32,59 +32,82 @@ const { title, description, date, tags, cover, thumbnail, readingTime, headings,
 const t = useTranslations(locale)
 ---
 
-<Base title={title} description={description} thumbnail={thumbnail} locale={locale} locales={locales} localeSwitchUrls={localeSwitchUrls}>
-  <div class="mb-8">
-    <a href="/" class="text-sm font-medium text-primary hover:underline transition-colors">
-      &larr; {t('post.back')}
-    </a>
-  </div>
-
-  <div class="flex gap-8 relative">
-    <!-- Left column: Share buttons (sticky) -->
-    <aside class="hidden lg:block w-12 shrink-0">
-      <ShareButtons url={url} title={title} locale={locale} client:load />
-    </aside>
-
-    <!-- Center column: Article -->
-    <article class="min-w-0 flex-1 max-w-3xl">
-      <header class="mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-4">{title}</h1>
-        <p class="text-lg text-muted-foreground mb-4">{description}</p>
-        <p class="text-sm text-muted-foreground">
-          {t('post.published')} {formatDate(date, locale)}
-        </p>
-      </header>
-      {tags.length > 0 && (
-        <div class="flex flex-wrap gap-2 mb-10">
-          {tags.map((tag) => (
-            <a
-              href={`/?tags=${encodeURIComponent(tag)}`}
-              class="rounded-[3px] border border-border px-2.5 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
-            >
-              {getTagLabel(tag, locale)}
-            </a>
-          ))}
+<Base title={title} description={description} thumbnail={thumbnail} locale={locale} locales={locales} localeSwitchUrls={localeSwitchUrls} fixedBackground>
+  <!-- En-tête de l'article : titre à gauche, fiche de l'article à droite (même largeur que le sommaire) -->
+  <section class="sw-sec">
+    <div class="sw-frame">
+      <div class="grid lg:grid-cols-[1fr_16rem]">
+        <div class="sw-cell sm:p-10">
+          <a href="/" class="sw-label text-primary transition-opacity hover:opacity-70">
+            &larr; {t('post.back')}
+          </a>
+          <h1 class="mt-8 font-bold leading-[0.95] tracking-[-0.045em]" style="font-size: clamp(2.25rem, 5vw, 3.75rem);">{title}</h1>
+          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{description}</p>
         </div>
-      )}
-      {cover && (
-        <img
-          src={cover}
-          alt={title}
-          class="w-full aspect-2/1 object-cover rounded-xl mb-10"
-        />
-      )}
-      <div class="prose prose-neutral dark:prose-invert max-w-none">
-        <slot />
-      </div>
-      <!-- Share buttons mobile (bottom of article) -->
-      <div class="lg:hidden mt-10">
-        <ShareButtons url={url} title={title} locale={locale} horizontal client:load />
-      </div>
-    </article>
 
-    <!-- Right column: Table of Contents (sticky) -->
-    <aside class="hidden xl:block w-56 shrink-0">
-      <TableOfContents headings={headings} locale={locale} author={author} client:load />
-    </aside>
-  </div>
+        <dl class="flex flex-col divide-y divide-border border-t border-border lg:border-l lg:border-t-0">
+          <div class="p-6">
+            <dt class="sw-label text-muted-foreground">{t('post.published')}</dt>
+            <dd class="mt-2 text-lg font-bold tracking-tight">{formatDate(date, locale)}</dd>
+          </div>
+          <div class="p-6">
+            <dt class="sw-label text-muted-foreground">{t('post.readingTime')}</dt>
+            <dd class="mt-2 text-lg font-bold tracking-tight">{readingTime} {t('hero.minRead')}</dd>
+          </div>
+          {tags.length > 0 && (
+            <div class="p-6">
+              <dt class="sw-label text-muted-foreground">{t('post.topics')}</dt>
+              <dd class="mt-3 flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <a
+                    href={`/?tags=${encodeURIComponent(tag)}`}
+                    class="rounded-[2px] border border-border px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                  >
+                    {getTagLabel(tag, locale)}
+                  </a>
+                ))}
+              </dd>
+            </div>
+          )}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  {cover && (
+    <section class="sw-sec">
+      <div class="sw-frame">
+        <img src={cover} alt={title} class="aspect-2/1 w-full object-cover" />
+      </div>
+    </section>
+  )}
+
+  <!-- Corps de l'article : colonne de partage | article | sommaire, séparées par des filets -->
+  <section class="sw-sec">
+    <div class="sw-frame relative">
+      <div class="flex">
+        <!-- Liens de partage (collants) : dans la marge gauche, contre le filet du cadre, quand il y a la place ;
+             sinon dans le cadre, à gauche de l'article -->
+        <aside class="hidden w-16 shrink-0 border-r border-border bg-background lg:block min-[1210px]:absolute min-[1210px]:right-full min-[1210px]:top-0 min-[1210px]:h-full min-[1210px]:border-l">
+          <ShareButtons url={url} title={title} locale={locale} client:load />
+        </aside>
+
+        <!-- Article -->
+        <article class="sw-cell min-w-0 flex-1">
+          <div class="prose prose-neutral dark:prose-invert max-w-none">
+            <slot />
+          </div>
+          <!-- Partage mobile -->
+          <div class="mt-10 lg:hidden">
+            <ShareButtons url={url} title={title} locale={locale} horizontal client:load />
+          </div>
+        </article>
+
+        <!-- Colonne droite : sommaire (collant) -->
+        <aside class="hidden w-64 shrink-0 border-l border-border py-6 pr-6 xl:block">
+          <TableOfContents headings={headings} locale={locale} author={author} client:load />
+        </aside>
+      </div>
+    </div>
+  </section>
 </Base>

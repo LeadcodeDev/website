@@ -42,6 +42,7 @@ export default defineConfig({
     }),
     thumbnailIntegration({
       appName: 'Blog',
+      primaryColor: '#0e78f1',
       content: { type: 'collection', dir: './src/content/posts' },
     }),
   ],

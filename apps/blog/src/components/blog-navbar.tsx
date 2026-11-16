@@ -55,7 +55,8 @@ export function BlogNavbar({ activePath, appUrlOverrides, locale: initialLocale,
       appUrlOverrides={appUrlOverrides}
       brandHref={appUrlOverrides?.website ?? '/'}
       brandBadge
-      variant="segmented"
+      variant="cells"
+      maxWidth="max-w-[1080px]"
       links={blogLinks}
       activePath={activePath}
       leftSlot={

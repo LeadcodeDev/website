@@ -103,7 +103,7 @@ export function TagFilter({ tags, initialTags = [], locale: initialLocale = 'en'
 
   return (
     <>
-      <div className="mb-10 space-y-5">
+      <div className="space-y-5">
         <div className="relative max-w-md">
           <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <input
@@ -111,7 +111,7 @@ export function TagFilter({ tags, initialTags = [], locale: initialLocale = 'en'
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('tagFilter.placeholder')}
-            className="w-full rounded-[3px] border border-border bg-background pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-primary/50 focus:ring-2 focus:ring-primary/15"
+            className="w-full rounded-[2px] border border-border bg-background pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-primary/50 focus:ring-2 focus:ring-primary/15"
           />
         </div>
 
@@ -119,9 +119,9 @@ export function TagFilter({ tags, initialTags = [], locale: initialLocale = 'en'
           <button
             type="button"
             onClick={() => setSelectedTags([])}
-            className={`cursor-pointer rounded-[3px] border px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] transition-colors ${
+            className={`cursor-pointer rounded-[2px] border px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] transition-colors ${
               selectedTags.length === 0
-                ? 'border-primary bg-primary text-white'
+                ? 'border-primary bg-primary text-primary-foreground'
                 : 'border-border text-muted-foreground hover:border-primary/35 hover:bg-primary/5 hover:text-foreground'
             }`}
           >
@@ -134,9 +134,9 @@ export function TagFilter({ tags, initialTags = [], locale: initialLocale = 'en'
                 key={tag.name}
                 type="button"
                 onClick={() => toggleTag(tag.name)}
-                className={`cursor-pointer rounded-[3px] border px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] transition-colors ${
+                className={`cursor-pointer rounded-[2px] border px-3 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] transition-colors ${
                   active
-                    ? 'border-primary bg-primary text-white'
+                    ? 'border-primary bg-primary text-primary-foreground'
                     : 'border-border text-muted-foreground hover:border-primary/35 hover:bg-primary/5 hover:text-foreground'
                 }`}
               >
@@ -148,7 +148,7 @@ export function TagFilter({ tags, initialTags = [], locale: initialLocale = 'en'
       </div>
 
       {hasActiveFilter && visibleCount === 0 && (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-[4px] border border-dashed border-border py-20">
+        <div className="flex flex-col items-center justify-center gap-4 mt-6 border border-dashed border-border py-20">
           <svg className="size-10 text-muted-foreground/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.3-4.3" />
