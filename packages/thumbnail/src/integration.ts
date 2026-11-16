@@ -12,7 +12,7 @@ export interface ThumbnailConfig {
     | { type: 'collection'; dir: string }
     | {
         type: 'static'
-        pages: Array<{ path: string; title: string; description?: string }>
+        pages: Array<{ path: string; title: string; description?: string; headline?: string }>
       }
 }
 
@@ -168,6 +168,7 @@ export function thumbnailIntegration(config: ThumbnailConfig): AstroIntegration 
           for (const page of config.content.pages) {
             try {
               const base = {
+                headline: page.headline,
                 title: page.title,
                 description: page.description,
                 primaryColor: config.primaryColor,
