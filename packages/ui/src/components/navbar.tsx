@@ -26,8 +26,8 @@ export interface NavbarProps {
   maxWidth?: string
   /** Wrap the brand icon in a rounded badge (ferriskey-style) */
   brandBadge?: boolean
-  /** Visual style of the cross-app links: 'default' inline, 'segmented' pill group */
-  variant?: 'default' | 'segmented'
+  /** Visual style of the cross-app links: 'default' inline, 'segmented' pill group, 'cells' bordered cells flush with the container */
+  variant?: 'default' | 'segmented' | 'cells'
   /** Breakpoint at which desktop nav links are shown ('md' | 'lg'), default 'md' */
   breakpoint?: 'md' | 'lg'
   /** Extra controls rendered to the left of the brand (e.g. mobile menu) */
@@ -58,6 +58,8 @@ export function Navbar({
   const appLinks = getAppLinks(currentApp, appUrlOverrides)
   // Raised "button" treatment for the right-side controls — opt-in with the segmented variant.
   const elevated = variant === 'segmented'
+  // Ferriskey-style: every item is a cell separated by vertical hairlines, flush with the container edges.
+  const cells = variant === 'cells'
 
   return (
     <header
@@ -67,15 +69,30 @@ export function Navbar({
         className,
       )}
     >
-      <div className={cn('mx-auto flex h-14 items-center justify-between px-4 sm:px-6', maxWidth)}>
+      <div
+        className={cn(
+          'mx-auto flex h-14 justify-between',
+          cells ? 'items-stretch border-x' : 'items-center px-4 sm:px-6',
+          maxWidth,
+        )}
+      >
         {/* Left: mobile menu slot + brand + app links (permanent) */}
-        <div className="flex items-center gap-3">
-          {leftSlot}
-          <a href={brandHref} className="flex items-center gap-2.5 font-semibold text-lg">
+        <div className={cn("flex", cells ? "items-stretch" : "items-center gap-3")}>
+          {leftSlot && cells ? (
+            <div className={cn('flex items-center px-3', breakpoint === 'lg' ? 'lg:hidden' : 'md:hidden')}>
+              {leftSlot}
+            </div>
+          ) : (
+            leftSlot
+          )}
+          <a
+            href={brandHref}
+            className={cn("flex items-center gap-2.5 font-semibold text-lg", cells && "px-4")}
+          >
             {brandIcon &&
               (brandBadge ? (
                 <span className="flex size-8 items-center justify-center rounded-[4px] bg-primary/10 ring-1 ring-primary/15">
-                  <img src={brandIcon} alt="" className="size-5" />
+                  <img src={brandIcon} alt="" className="size-[26px]" />
                 </span>
               ) : (
                 <img src={brandIcon} alt="" className="size-5" />
@@ -83,7 +100,24 @@ export function Navbar({
             {brand}
           </a>
           {appLinks.length > 0 &&
-            (variant === 'segmented' ? (
+            (cells ? (
+              <nav className={cn('hidden items-stretch', breakpoint === 'lg' ? 'lg:flex' : 'md:flex')}>
+                {appLinks.map((link) => (
+                  <a
+                    key={link.id}
+                    href={link.href}
+                    className={cn(
+                      'flex items-center px-4 text-sm font-medium transition-colors',
+                      link.current
+                        ? 'bg-muted text-foreground'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                    )}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+            ) : variant === 'segmented' ? (
               <nav
                 className={cn(
                   'hidden h-9 items-center gap-0.5 rounded-[4px] border bg-secondary/40 p-1',
@@ -127,11 +161,12 @@ export function Navbar({
         </div>
 
         {/* Right: in-app links (variable) + extra controls + theme toggle */}
-        <div className="flex items-center gap-2">
+        <div className={cn("flex", cells ? "items-stretch" : "items-center gap-2")}>
           {links.length > 0 && (
             <nav
               className={cn(
-                'hidden items-center',
+                'hidden',
+                cells ? 'items-stretch' : 'items-center',
                 breakpoint === 'lg' ? 'lg:flex' : 'md:flex',
                 elevated ? 'h-9 gap-0.5 rounded-[4px] border border-border bg-secondary/40 p-1' : 'gap-1',
               )}
@@ -143,8 +178,13 @@ export function Navbar({
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      'flex items-center gap-1.5 px-3 text-sm font-medium transition-colors',
-                      elevated
+                      'flex items-center gap-1.5 text-sm font-medium transition-colors',
+                      cells ? 'px-4' : 'px-3',
+                      cells
+                        ? isActive
+                          ? 'bg-muted text-foreground'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        : elevated
                         ? cn(
                             'h-full rounded-[3px]',
                             isActive
@@ -167,10 +207,21 @@ export function Navbar({
               })}
             </nav>
           )}
-          {rightSlot}
-          <ThemeToggle
-            className={cn(elevated && 'size-9 rounded-[3px] border border-border bg-background shadow-sm')}
-          />
+          {cells ? (
+            <>
+              <div className="flex items-center gap-2 px-3">
+                {rightSlot}
+                <ThemeToggle />
+              </div>
+            </>
+          ) : (
+            <>
+              {rightSlot}
+              <ThemeToggle
+                className={cn(elevated && 'size-9 rounded-[3px] border border-border bg-background shadow-sm')}
+              />
+            </>
+          )}
         </div>
       </div>
     </header>
