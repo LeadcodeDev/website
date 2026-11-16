@@ -3,12 +3,13 @@ import Base from '../layouts/base.astro'
 import { WebsiteNavbar } from '../components/website-navbar'
 import HeroSection from '../components/hero-section.astro'
 import FerrisKeySpotlightSection from '../components/ferriskey-spotlight-section.astro'
-import PrinciplesSection from '../components/principles-section.astro'
-import IamSection from '../components/iam-section.astro'
+import SpecialtiesSection from '../components/specialties-section.astro'
+import MestierSpotlightSection from '../components/mestier-spotlight-section.astro'
+import RustmotionSpotlightSection from '../components/rustmotion-spotlight-section.astro'
 import ProjectsSection from '../components/projects-section.astro'
 import LatestArticlesSection from '../components/latest-articles-section.astro'
 import ContactSection from '../components/contact-section.astro'
-import { Footer } from '@explainer/ui'
+import { BackgroundAnimation, Footer } from '@explainer/ui'
 import { siteConfig } from '../config'
 import { ui } from '../i18n/ui'
 
@@ -22,19 +23,32 @@ const translations = ui.fr
 const thumbnails = { en: '/thumbnail.png', fr: '/thumbnails/fr/thumbnail.png' }
 ---
 
-<Base title="Baptiste Parmantier" description="Software Engineer specialized in designing robust, scalable products through thoughtful software architecture tailored to your product." thumbnail="/thumbnail.png">
+<Base title="Baptiste Parmantier" description="Software Engineer specialized in designing robust, scalable products through thoughtful software architecture tailored to your product." thumbnail="/thumbnail.png" theme="swiss">
   <WebsiteNavbar appUrlOverrides={appUrlOverrides} client:load transition:persist />
 
-  <HeroSection />
-  <PrinciplesSection />
-  <IamSection />
-  <FerrisKeySpotlightSection />
-  <ProjectsSection />
-  <LatestArticlesSection />
-  <ContactSection />
+  <div class="relative overflow-x-clip">
+    <!-- Marges gauche et droite (hors du cadre central) : petits carrés colorés animés -->
+    <div class="pointer-events-none absolute inset-y-0 left-0 hidden w-[calc((100%-1080px)/2)] min-[1200px]:block" aria-hidden="true">
+      <BackgroundAnimation client:only="react" grid={36} density={0.05} colors={['bg-primary/10', 'bg-primary/6', 'bg-primary/14', 'bg-primary/4', 'bg-sky-400/10', 'bg-indigo-500/7']} />
+    </div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 hidden w-[calc((100%-1080px)/2)] min-[1200px]:block" aria-hidden="true">
+      <BackgroundAnimation client:only="react" grid={36} density={0.05} colors={['bg-primary/10', 'bg-primary/6', 'bg-primary/14', 'bg-primary/4', 'bg-sky-400/10', 'bg-indigo-500/7']} />
+    </div>
 
-  <div class="mx-auto max-w-6xl px-6">
-    <Footer config={siteConfig} appUrlOverrides={appUrlOverrides} client:load />
+    <HeroSection />
+    <SpecialtiesSection />
+    <div id="projects">
+      <FerrisKeySpotlightSection />
+      <MestierSpotlightSection />
+      <RustmotionSpotlightSection />
+      <ProjectsSection />
+    </div>
+    <LatestArticlesSection />
+    <ContactSection />
+
+    <div class="sw-frame">
+      <Footer config={siteConfig} appUrlOverrides={appUrlOverrides} variant="cells" client:load />
+    </div>
   </div>
 </Base>
 

@@ -1,0 +1,70 @@
+---
+const proofs = [
+  { n: '01', titleKey: 'mestier.proof1.title', descKey: 'mestier.proof1.description', title: 'Quote to payment', description: 'One flow from the quote to the invoice and the payment, with automations along the way.' },
+  { n: '02', titleKey: 'mestier.proof2.title', descKey: 'mestier.proof2.description', title: 'Sovereign', description: 'Hosted in France, GDPR-ready and self-hostable. No proprietary lock-in.' },
+  { n: '03', titleKey: 'mestier.proof3.title', descKey: 'mestier.proof3.description', title: 'Modular', description: 'Modules you switch on as you need them, for startups, agencies, SMEs and craftspeople.' },
+]
+---
+
+<!-- Même structure que FerrisKey, inversée : les preuves à gauche, le bloc coloré à droite -->
+<section id="mestier" class="sw-sec mestier">
+  <div class="sw-frame">
+    <div class="grid lg:grid-cols-2">
+      <!-- Preuves : cellules empilées -->
+      <div class="order-2 grid gap-px border-t border-border bg-border lg:order-1 lg:border-r lg:border-t-0" data-reveal="fade-up">
+        {proofs.map((p) => (
+          <div class="sw-hover bg-background sw-cell">
+            <p class="sw-label text-primary">{p.n}</p>
+            <h3 class="mt-3 text-2xl font-bold tracking-tight" data-t={p.titleKey}>{p.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground" data-t={p.descKey}>{p.description}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Cellule colorée -->
+      <div class="sw-cell relative isolate order-1 flex flex-col justify-between gap-12 overflow-hidden bg-[#0f3d36] text-white sm:p-10 lg:order-2" data-reveal="fade-up" data-reveal-delay="80">
+        <!-- Logo Mestier en filigrane (silhouette masquée, opacité très réduite) -->
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute -bottom-28 -right-24 -z-10 h-[560px] w-[560px] bg-white opacity-[0.08]"
+          style="-webkit-mask: url(/mestier-logo.svg) center / contain no-repeat; mask: url(/mestier-logo.svg) center / contain no-repeat;"
+        ></div>
+        <p class="sw-label"><span data-t="mestier.label">Open-source product</span></p>
+        <div>
+          <h2
+            class="font-bold leading-[0.85] tracking-[-0.06em]"
+            style="font-size: clamp(3.25rem, 9vw, 6.5rem);"
+            data-t="mestier.title"
+          >Mestier</h2>
+          <p class="mt-5 max-w-md text-xl font-medium leading-snug" data-t="mestier.subtitle">
+            Open-source business suite for small companies, built in Rust
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a
+              href="https://mestier.fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 bg-white px-5 py-3 text-sm font-semibold text-[#0f3d36] transition-opacity hover:opacity-85"
+            >
+              <span data-t="mestier.cta">Visit mestier.fr</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mestier {
+    --color-primary: #0f3d36;
+    --color-primary-foreground: #ffffff;
+    --sw-tint: color-mix(in oklch, #0f3d36 7%, var(--color-background));
+  }
+  :global(html.dark) .mestier {
+    --color-primary: #3fbf9f;
+    --color-primary-foreground: #04211a;
+    --sw-tint: color-mix(in oklch, #3fbf9f 8%, var(--color-background));
+  }
+</style>

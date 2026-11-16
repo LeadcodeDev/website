@@ -1,0 +1,63 @@
+---
+const specialties = [
+  {
+    n: '01',
+    titleKey: 'swiss.exp.1.title',
+    descKey: 'swiss.exp.1.desc',
+    title: 'IAM',
+    description: 'Identity is a product of its own: OIDC, OAuth2, tokens, multi-tenant realms. Co-founder of FerrisKey, an open-source IAM written in Rust.',
+    tags: ['OIDC', 'OAuth2', 'RBAC', 'FerrisKey'],
+  },
+  {
+    n: '02',
+    titleKey: 'swiss.exp.2.title',
+    descKey: 'swiss.exp.2.desc',
+    title: 'Robust systems',
+    description: 'Systems that tolerate failure: hexagonal architecture, explicit contracts, observability and SLOs. Designed for the bad day, not only the happy path.',
+    tags: ['Hexagonal', 'Observability', 'SLO'],
+  },
+  {
+    n: '03',
+    titleKey: 'swiss.exp.3.title',
+    descKey: 'swiss.exp.3.desc',
+    title: 'Scalability',
+    description: 'Horizontal scaling of the business layer only: stateless services, Kubernetes, events. Identity is delegated to the IAM, so the product scales on its own.',
+    tags: ['Kubernetes', 'Stateless', 'Event-driven'],
+  },
+  {
+    n: '04',
+    titleKey: 'swiss.exp.4.title',
+    descKey: 'swiss.exp.4.desc',
+    title: 'Sobriety',
+    description: 'Eco-responsible by design: fewer resources per request, lean Rust binaries, no over-provisioning. Measure what you consume, then reduce it.',
+    tags: ['Rust', 'Green IT', 'Measure'],
+  },
+]
+---
+
+<section id="expertise" class="sw-sec">
+  <div class="sw-frame">
+    <div class="sw-cell" data-reveal="fade-up">
+      <p class="sw-label text-primary"><span>01 / </span><span data-t="expertise.label">Expertise</span></p>
+      <h2 class="sw-h2 mt-5 max-w-2xl" data-t="swiss.exp.title">My four specialties.</h2>
+      <p class="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground" data-t="expertise.description">
+        I focus on the parts of a system where product design, security constraints and operational reality meet.
+      </p>
+    </div>
+
+    <div class="grid gap-px border-t border-border bg-border md:grid-cols-2" data-reveal="fade-up" data-reveal-delay="80">
+      {specialties.map((s) => (
+        <div class="sw-hover bg-background sw-cell">
+          <span class="font-mono text-4xl font-bold leading-none text-primary">{s.n}</span>
+          <h3 class="mt-8 text-3xl font-bold leading-none tracking-tight" data-t={s.titleKey}>{s.title}</h3>
+          <p class="mt-4 text-base leading-relaxed text-muted-foreground" data-t={s.descKey}>{s.description}</p>
+          <div class="mt-5 flex flex-wrap gap-2">
+            {s.tags.map((tag) => (
+              <span class="rounded-[2px] border border-border px-2 py-1 font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{tag}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

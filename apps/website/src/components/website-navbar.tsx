@@ -28,7 +28,7 @@ export function WebsiteNavbar({ appUrlOverrides }: WebsiteNavbarProps) {
 
   // Scroll-spy: highlight the nav link of the section currently in view.
   useEffect(() => {
-    const ids = ['experience', 'projects', 'articles', 'contact']
+    const ids = ['expertise', 'projects', 'articles', 'contact']
     const sections = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null)
@@ -51,7 +51,7 @@ export function WebsiteNavbar({ appUrlOverrides }: WebsiteNavbarProps) {
   }, [])
 
   const websiteLinks: NavbarLink[] = [
-    { label: t('nav.experience'), href: '#experience' },
+    { label: t('nav.expertise'), href: '#expertise' },
     { label: t('nav.projects'), href: '#projects' },
     { label: t('nav.articles'), href: '#articles' },
     { label: t('nav.contact'), href: '#contact' },
@@ -60,9 +60,10 @@ export function WebsiteNavbar({ appUrlOverrides }: WebsiteNavbarProps) {
   return (
     <Navbar
       currentApp="website"
+      maxWidth="max-w-[1080px]"
       appUrlOverrides={appUrlOverrides}
       brandBadge
-      variant="segmented"
+      variant="cells"
       activePath={activeSection}
       links={websiteLinks}
       leftSlot={
