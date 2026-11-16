@@ -129,3 +129,88 @@ html.dark > .astro-code {
   color: rgb(244, 63, 94);
   opacity: 0.7;
 }
+
+/* ── Swiss landing theme (light / dark / system, bleu, couleur de la mascotte) ── */
+html.swiss {
+  scroll-padding-top: 56px;
+  --color-background: #fcfcfa;
+  --color-foreground: #151513;
+  --color-card: #ffffff;
+  --color-card-foreground: #151513;
+  --color-primary: #0e78f1;
+  --color-primary-foreground: #ffffff;
+  --color-muted: #f4f3ee;
+  --color-muted-foreground: #6b6a63;
+  --color-accent: #f4f3ee;
+  --color-accent-foreground: #151513;
+  --color-border: #e4e2da;
+  --sw-tint: #f1f6fd;
+  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-pixel: 'Silkscreen', ui-monospace, monospace;
+}
+
+html.swiss.dark {
+  --color-background: #0f0f0e;
+  --color-foreground: #f4f4f0;
+  --color-card: #161615;
+  --color-card-foreground: #f4f4f0;
+  --color-primary: #4a9dff;
+  --color-primary-foreground: #0b1220;
+  --color-muted: #1a1a19;
+  --color-muted-foreground: #a3a39e;
+  --color-accent: #1a1a19;
+  --color-accent-foreground: #f4f4f0;
+  --color-border: #2b2b29;
+  --sw-tint: #0f1622;
+}
+
+html.swiss body {
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+}
+
+/* Cadre central : filets verticaux continus d'une section à l'autre */
+.sw-frame {
+  max-width: 1080px;
+  margin-inline: auto;
+  border-inline: 1px solid var(--color-border);
+}
+/* Section : filet horizontal pleine largeur, qui déborde du cadre */
+.sw-sec {
+  border-bottom: 1px solid var(--color-border);
+}
+@layer components {
+  .sw-cell {
+    padding: 1.5rem;
+  }
+  @media (min-width: 640px) {
+    .sw-cell { padding: 2rem; }
+  }
+}
+.sw-tint {
+  background: var(--sw-tint);
+}
+
+.sw-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sw-h2 {
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+/* Cellule qui s'éclaire au survol */
+.sw-hover {
+  transition: background-color 0.2s ease;
+}
+.sw-hover:hover {
+  background-color: var(--sw-tint);
+}

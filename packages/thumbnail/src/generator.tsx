@@ -12,6 +12,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const interRegular = readFileSync(resolve(__dirname, 'assets/Inter-Regular.woff'))
 const interSemiBold = readFileSync(resolve(__dirname, 'assets/Inter-SemiBold.woff'))
 const interBold = readFileSync(resolve(__dirname, 'assets/Inter-Bold.woff'))
+const monoRegular = readFileSync(resolve(__dirname, 'assets/JetBrainsMono-Regular.ttf'))
+const monoBold = readFileSync(resolve(__dirname, 'assets/JetBrainsMono-Bold.ttf'))
 
 export interface ThumbnailOptions {
   headline?: string
@@ -26,6 +28,8 @@ const fonts = [
   { name: 'Inter', data: interRegular, weight: 400 as const },
   { name: 'Inter', data: interSemiBold, weight: 600 as const },
   { name: 'Inter', data: interBold, weight: 700 as const },
+  { name: 'JetBrains Mono', data: monoRegular, weight: 400 as const },
+  { name: 'JetBrains Mono', data: monoBold, weight: 700 as const },
 ]
 
 function TextContent({
@@ -76,14 +80,18 @@ function TextContent({
   )
 }
 
-const GRID = 60
+// Style « Swiss » du site : cadre central à filets verticaux, filets horizontaux pleine largeur,
+// carrés colorés discrets dans les marges, titre serré, libellés en mono.
+const FRAME_LEFT = 120
+const FRAME_RIGHT = 840
+const HEAD_H = 72
+const FOOT_TOP = 476
+const CELL = 40
 
-// [col, row, widthCells, heightCells, tintIndex]
-const SQUARE_CELLS: [number, number, number, number, number][] = [
-  [4, 0, 1, 1, 0], [7, 0, 1, 1, 3], [12, 0, 1, 2, 1], [2, 1, 1, 1, 5], [9, 1, 1, 1, 2], [14, 0, 2, 1, 3],
-  [0, 2, 1, 2, 0], [5, 3, 1, 1, 3], [11, 2, 1, 1, 4], [15, 3, 1, 1, 0], [2, 4, 1, 1, 2], [13, 4, 1, 1, 5],
-  [8, 4, 1, 1, 1], [3, 6, 1, 1, 3], [10, 6, 1, 2, 0], [6, 7, 1, 1, 4], [14, 6, 1, 1, 2], [1, 7, 1, 1, 3],
-  [12, 7, 2, 1, 1], [7, 5, 1, 1, 5],
+// [col, ligne, teinte] dans les marges gauche (cols 0-2) et droite (cols 21-23), grille de 40 px
+const GUTTER_SQUARES: [number, number, number][] = [
+  [0, 1, 1], [2, 2, 3], [1, 4, 0], [0, 6, 2], [2, 7, 1], [1, 9, 3], [0, 11, 0], [2, 12, 2],
+  [21, 0, 2], [23, 1, 0], [22, 3, 3], [21, 5, 1], [23, 7, 2], [22, 9, 0], [21, 10, 3], [23, 12, 1],
 ]
 
 function toRgba(hex: string, alpha: number): string {
@@ -102,68 +110,105 @@ function DefaultTheme({
   scheme,
 }: Required<Pick<ThumbnailOptions, 'primaryColor'>> & Omit<ThumbnailOptions, 'primaryColor' | 'theme'> & { scheme: 'light' | 'dark' }) {
   const isDark = scheme === 'dark'
-  const bg = isDark ? '#0d1117' : '#FBF9F6'
-  const titleColor = isDark ? '#F4F4F5' : '#18181b'
-  const descColor = isDark ? '#9CA3AF' : '#6b7280'
-  const a = isDark ? [0.5, 0.34, 0.22, 0.13] : [0.42, 0.28, 0.18, 0.1]
-  const tints = [
-    toRgba(primaryColor, a[0]),
-    toRgba(primaryColor, a[1]),
-    toRgba(primaryColor, a[2]),
-    toRgba(primaryColor, a[3]),
-    isDark ? 'rgba(160, 170, 190, 0.1)' : 'rgba(120, 130, 150, 0.14)',
-    isDark ? 'rgba(200, 180, 155, 0.09)' : 'rgba(205, 180, 150, 0.2)',
-  ]
+  const bg = isDark ? '#0f0f0e' : '#fcfcfa'
+  const fg = isDark ? '#f4f4f0' : '#151513'
+  const muted = isDark ? '#a3a39e' : '#6b6a63'
+  const line = isDark ? '#2b2b29' : '#e4e2da'
+  const alphas = isDark ? [0.22, 0.14, 0.09, 0.05] : [0.18, 0.11, 0.07, 0.04]
+  const tints = alphas.map((a) => toRgba(primaryColor, a))
+
+  const hairV = (left: number) => (
+    <div style={{ position: 'absolute', left, top: 0, width: 1, height: 540, backgroundColor: line }} />
+  )
+  const hairH = (top: number) => (
+    <div style={{ position: 'absolute', left: 0, top, width: 960, height: 1, backgroundColor: line }} />
+  )
 
   return (
-    <div tw="w-full h-full flex flex-col justify-center" style={{ backgroundColor: bg, position: 'relative' }}>
-      {SQUARE_CELLS.map(([c, r, w, h, ci], i) => (
+    <div style={{ display: 'flex', position: 'relative', width: 960, height: 540, backgroundColor: bg }}>
+      {GUTTER_SQUARES.map(([c, r, t], i) => (
         <div
           key={i}
-          style={{
-            position: 'absolute',
-            left: c * GRID,
-            top: r * GRID,
-            width: w * GRID,
-            height: h * GRID,
-            backgroundColor: tints[ci],
-          }}
+          style={{ position: 'absolute', left: c * CELL, top: r * CELL, width: CELL, height: CELL, backgroundColor: tints[t] }}
         />
       ))}
 
-      <div tw="flex flex-col pl-[96px]" style={{ position: 'relative', width: 820 }}>
+      {hairV(FRAME_LEFT)}
+      {hairV(FRAME_RIGHT)}
+      {hairH(HEAD_H)}
+      {hairH(FOOT_TOP)}
+
+      {/* Ligne d'en-tête */}
+      <div
+        style={{
+          position: 'absolute',
+          left: FRAME_LEFT + 1,
+          top: 0,
+          width: FRAME_RIGHT - FRAME_LEFT - 1,
+          height: HEAD_H,
+          display: 'flex',
+          alignItems: 'center',
+          paddingLeft: 40,
+        }}
+      >
+        <div style={{ width: 14, height: 14, backgroundColor: primaryColor, marginRight: 16 }} />
         {headline && (
-          <p tw="uppercase text-[24px] mb-[20px]" style={{ color: primaryColor, fontWeight: 700, letterSpacing: 3 }}>
+          <div
+            style={{
+              display: 'flex',
+              fontFamily: 'JetBrains Mono',
+              fontWeight: 700,
+              fontSize: 16,
+              letterSpacing: 3,
+              textTransform: 'uppercase',
+              color: fg,
+            }}
+          >
             {headline}
-          </p>
+          </div>
         )}
+      </div>
+
+      {/* Titre et description */}
+      <div
+        style={{
+          position: 'absolute',
+          left: FRAME_LEFT + 1,
+          top: HEAD_H + 1,
+          width: FRAME_RIGHT - FRAME_LEFT - 1,
+          height: FOOT_TOP - HEAD_H - 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          paddingLeft: 40,
+          paddingRight: 40,
+        }}
+      >
         <h1
-          tw="m-0 text-[66px]"
           style={{
             display: 'block',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            color: titleColor,
+            margin: 0,
+            fontSize: 62,
             fontWeight: 700,
-            letterSpacing: -1.5,
-            lineHeight: 1.05,
-            maxWidth: 760,
+            letterSpacing: -2.5,
+            lineHeight: 1.02,
+            color: fg,
+            lineClamp: 3,
           }}
         >
           {title}
         </h1>
         {description && (
           <p
-            tw="text-[27px] mt-[26px]"
             style={{
               display: 'block',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              color: descColor,
+              margin: 0,
+              marginTop: 24,
+              fontSize: 24,
               lineHeight: 1.3,
-              maxWidth: 640,
+              color: muted,
+              maxWidth: 600,
+              lineClamp: 2,
             }}
           >
             {description}
@@ -171,12 +216,24 @@ function DefaultTheme({
         )}
       </div>
 
-      <svg style={{ position: 'absolute', left: 70, bottom: 96 }} width="34" height="34">
-        <circle cx="17" cy="17" r="15" fill="none" stroke={primaryColor} strokeWidth="2" strokeDasharray="4 4" opacity="0.6" />
-      </svg>
-      <svg style={{ position: 'absolute', left: 64, bottom: 44 }} width="40" height="34">
-        <path d="M20 4 L37 30 L3 30 Z" fill="none" stroke={primaryColor} strokeWidth="2" opacity="0.55" />
-      </svg>
+      {/* Pied : barre de couleur + flèche */}
+      <div
+        style={{
+          position: 'absolute',
+          left: FRAME_LEFT + 1,
+          top: FOOT_TOP + 1,
+          width: FRAME_RIGHT - FRAME_LEFT - 1,
+          height: 540 - FOOT_TOP - 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingLeft: 40,
+          paddingRight: 40,
+        }}
+      >
+        <div style={{ width: 120, height: 8, backgroundColor: primaryColor }} />
+        <div style={{ display: 'flex', fontFamily: 'JetBrains Mono', fontWeight: 700, fontSize: 22, color: primaryColor }}>→</div>
+      </div>
     </div>
   )
 }

@@ -1,0 +1,251 @@
+---
+// La mascotte se déplace horizontalement sur des caisses de hauteurs différentes ; chaque caisse
+// est un paradigme d'architecture logicielle. Elle s'arrête sur chacune (qui s'allume), puis saute
+// à la suivante, de gauche à droite puis retour. Boucle de 18 s.
+const T = 18
+const f = (n: number) => n.toFixed(4)
+
+const GROUND = 540
+const CRATE_W = 88
+const GAP = 8
+const X0 = 16
+const PIXEL = 5
+const CAT_W = 16 * PIXEL
+
+const crates = [
+  { label: 'HEXAGONAL', h: 70 },
+  { label: 'DDD', h: 110 },
+  { label: 'TDD', h: 70 },
+  { label: 'EVENT-DRIVEN', h: 150 },
+  { label: 'ZERO TRUST', h: 90 },
+  { label: 'GITOPS', h: 70 },
+].map((c, i) => ({ ...c, x: X0 + i * (CRATE_W + GAP), top: GROUND - c.h }))
+
+// Position du chat (coin haut-gauche du sprite) quand il se tient sur une caisse
+const stand = (i: number) => ({ x: crates[i].x + CRATE_W / 2 - CAT_W / 2, y: crates[i].top - CAT_W })
+
+// Parcours : 0 → 5 puis retour à 0
+const route = [0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0]
+const STAND = 1.1
+const JUMP = 0.7
+const ARC = 70
+
+type Key = { t: number; x: number; y: number }
+const keys: Key[] = []
+const visits: { crate: number; from: number; to: number }[] = []
+const stops: { t0: number; t1: number; dir: number }[] = []
+let t = 0
+route.forEach((c, n) => {
+  const p = stand(c)
+  keys.push({ t, ...p })
+  const end = n === route.length - 1 ? T : t + STAND
+  keys.push({ t: end, ...p })
+  if (end > t) visits.push({ crate: c, from: t, to: end })
+  const next = route[n + 1]
+  stops.push({ t0: t, t1: end, dir: next === undefined ? 0 : Math.sign(stand(next).x - p.x) })
+  t = end
+  if (n < route.length - 1) {
+    const q = stand(route[n + 1])
+    for (const u of [0.25, 0.5, 0.75, 1]) {
+      keys.push({
+        t: t + JUMP * u,
+        x: p.x + (q.x - p.x) * u,
+        y: p.y + (q.y - p.y) * u - ARC * 4 * u * (1 - u),
+      })
+    }
+    t += JUMP
+  }
+})
+// Les temps identiques sont écartés pour garder des keyTimes croissants
+const catKeys = keys.filter((k, j) => j === 0 || k.t > keys[j - 1].t)
+
+// Écrasement / étirement du sprite (échelle autour des pieds) et regard orienté vers la caisse visée
+type Squash = { t: number; sx: number; sy: number }
+const squashRaw: Squash[] = [{ t: 0, sx: 1, sy: 1 }]
+const lookRaw: { t: number; dx: number }[] = [{ t: 0, dx: 0 }]
+stops.forEach((st, n) => {
+  const last = n === stops.length - 1
+  if (n > 0) squashRaw.push({ t: st.t0, sx: 1.12, sy: 0.82 }, { t: st.t0 + 0.2, sx: 1, sy: 1 })
+  if (!last) {
+    squashRaw.push(
+      { t: st.t1 - 0.2, sx: 1, sy: 1 },
+      { t: st.t1, sx: 1.1, sy: 0.85 },
+      { t: st.t1 + 0.12, sx: 0.9, sy: 1.15 },
+      { t: st.t1 + JUMP - 0.1, sx: 0.92, sy: 1.1 },
+    )
+    lookRaw.push(
+      { t: st.t1 - 0.1, dx: 0 },
+      { t: st.t1, dx: st.dir },
+      { t: st.t1 + JUMP, dx: st.dir },
+      { t: st.t1 + JUMP + 0.15, dx: 0 },
+    )
+  }
+})
+squashRaw.push({ t: T, sx: 1, sy: 1 })
+lookRaw.push({ t: T, dx: 0 })
+const mono = <K extends { t: number }>(arr: K[]) => arr.filter((k, j) => j === 0 || k.t > arr[j - 1].t)
+const squashKeys = mono(squashRaw)
+const lookKeys = mono(lookRaw)
+
+// Mascotte : sprite 16×16 (même carte que public/logo.svg)
+const SPRITE = [
+  "................",
+  "..DD........DD..",
+  "..DBD......DBD..",
+  "..DBLD....DLBD..",
+  "..DBBBDDDDBBBD..",
+  ".DBBBBBBBBBBBBD.",
+  ".DBBKWBBBBKWBBD.",
+  ".DBBKKBBBBKKBBD.",
+  ".DLLBBBBBBBBLLD.",
+  ".DBBBBBKKBBBBBD.",
+  "..DBBBBBBBBBBD..",
+  "...DDOOOOOODD...",
+  "..DBBBBOOBBBBD..",
+  "..DBBBLLLLBBBDD.",
+  "..DBBBBBBBBBBDBD",
+  "..DDBBDDDDBBDDD.",
+]
+const PALETTE: Record<string, string> = { D: '#0847a6', B: '#0e78f1', L: '#6db3ff', K: '#101828', W: '#ffffff', O: '#f2670f' }
+const cells = SPRITE.flatMap((row, y) =>
+  [...row].map((c, x) => ({ x, y, c })).filter((p) => p.c !== '.'),
+)
+const eyes = cells.filter((p) => (p.c === 'K' || p.c === 'W') && p.y < 8)
+const tail = cells.filter((p) => p.x >= 14 && p.y >= 13)
+const earR = cells.filter((p) => p.x >= 10 && p.y <= 3)
+const body = cells.filter((p) => !eyes.includes(p) && !tail.includes(p) && !earR.includes(p))
+// Queue relevée (2e image de la queue qui remue)
+const tailUp = [
+  { x: 14, y: 13, c: 'D' }, { x: 14, y: 12, c: 'B' }, { x: 15, y: 12, c: 'D' },
+  { x: 14, y: 11, c: 'D' }, { x: 15, y: 11, c: 'D' },
+]
+
+// Fenêtres d'allumage d'une caisse : une par passage du chat
+const litKeys = (i: number) => {
+  const own = visits.filter((v) => v.crate === i)
+  const times = [0]
+  const values = [0]
+  own.forEach((v) => {
+    if (v.from > times[times.length - 1]) {
+      times.push(v.from)
+      values.push(1)
+    } else {
+      values[values.length - 1] = 1
+    }
+    times.push(Math.min(v.to, T - 0.01))
+    values.push(0)
+  })
+  return { keyTimes: times.map((x) => f(x / T)).join(';'), values: values.join(';') }
+}
+---
+
+<svg
+  id="hero-fig"
+  viewBox="0 0 600 600"
+  preserveAspectRatio="xMidYMax meet"
+  role="img"
+  aria-label="Un chat saute de caisse en caisse : hexagonal, DDD, TDD, event-driven, zero trust, GitOps"
+  class="block h-full w-full overflow-visible text-foreground"
+>
+  <!-- Sol -->
+  <line x1="-600" y1={GROUND} x2="1200" y2={GROUND} stroke="currentColor" stroke-width="3" />
+
+  <!-- Caisses : un paradigme par caisse -->
+  {crates.map((c, i) => {
+    const lit = litKeys(i)
+    return (
+      <g shape-rendering="crispEdges">
+        <rect x={c.x} y={c.top} width={CRATE_W} height={c.h} style="fill: var(--color-primary)" />
+        <rect x={c.x} y={c.top} width={CRATE_W} height="5" fill="#fff" fill-opacity="0.28" />
+        <rect x={c.x} y={GROUND - 6} width={CRATE_W} height="6" fill="#000" fill-opacity="0.25" />
+        <rect x={c.x + CRATE_W - 5} y={c.top} width="5" height={c.h} fill="#000" fill-opacity="0.16" />
+        <line x1={c.x + 8} y1={c.top + 44} x2={c.x + CRATE_W - 8} y2={c.top + 44} stroke="#000" stroke-opacity="0.18" stroke-width="2" />
+        <text
+          x={c.x + CRATE_W / 2}
+          y={c.top + 29}
+          text-anchor="middle"
+          style="font: 700 11px var(--font-mono); letter-spacing: .06em; fill: var(--color-primary-foreground)"
+        >{c.label}</text>
+        <!-- Contour quand le chat est dessus -->
+        <rect x={c.x - 3} y={c.top - 3} width={CRATE_W + 6} height={c.h + 3} fill="none" stroke="currentColor" stroke-width="3" opacity="0">
+          <animate attributeName="opacity" calcMode="discrete" values={lit.values} keyTimes={lit.keyTimes} dur={`${T}s`} repeatCount="indefinite" />
+        </rect>
+      </g>
+    )
+  })}
+
+  <!-- Mascotte (sprite 16×16 du logo) : saute de caisse en caisse -->
+  <g>
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      values={catKeys.map((k) => `${f(k.x)} ${f(k.y)}`).join(';')}
+      keyTimes={catKeys.map((k) => f(k.t / T)).join(';')}
+      dur={`${T}s`}
+      repeatCount="indefinite"
+    />
+    <!-- Écrasement / étirement autour des pieds -->
+    <g transform={`translate(${CAT_W / 2} ${CAT_W})`}>
+      <g>
+        <animateTransform
+          attributeName="transform"
+          type="scale"
+          values={squashKeys.map((k) => `${k.sx} ${k.sy}`).join(';')}
+          keyTimes={squashKeys.map((k) => f(k.t / T)).join(';')}
+          dur={`${T}s`}
+          repeatCount="indefinite"
+        />
+        <g transform={`translate(${-CAT_W / 2} ${-CAT_W})`}>
+          <!-- Respiration -->
+          <g>
+            <animateTransform attributeName="transform" type="translate" values="0 0;0 -2;0 0" keyTimes="0;0.5;1" dur="1.2s" repeatCount="indefinite" />
+            <g transform={`scale(${PIXEL})`} shape-rendering="crispEdges">
+              {body.map((p) => <rect x={p.x} y={p.y} width="1" height="1" fill={PALETTE[p.c]} />)}
+
+              <!-- Queue qui remue (2 images) -->
+              <g>
+                {tail.map((p) => <rect x={p.x} y={p.y} width="1" height="1" fill={PALETTE[p.c]} />)}
+                <animate attributeName="opacity" calcMode="discrete" values="1;0" keyTimes="0;0.5" dur="0.9s" repeatCount="indefinite" />
+              </g>
+              <g opacity="0">
+                {tailUp.map((p) => <rect x={p.x} y={p.y} width="1" height="1" fill={PALETTE[p.c]} />)}
+                <animate attributeName="opacity" calcMode="discrete" values="0;1" keyTimes="0;0.5" dur="0.9s" repeatCount="indefinite" />
+              </g>
+
+              <!-- Oreille droite qui tressaute de temps en temps -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" calcMode="discrete" values="0 0;1 0;0 0;1 0;0 0" keyTimes="0;0.86;0.9;0.94;0.98" dur="5s" repeatCount="indefinite" />
+                {earR.map((p) => <rect x={p.x} y={p.y} width="1" height="1" fill={PALETTE[p.c]} />)}
+              </g>
+
+              <!-- Yeux : regard vers la caisse visée, et clignement -->
+              {eyes.map((p) => <rect x={p.x} y={p.y} width="1" height="1" fill={PALETTE.B} />)}
+              <g>
+                <animateTransform
+                  attributeName="transform"
+                  type="translate"
+                  values={lookKeys.map((k) => `${k.dx} 0`).join(';')}
+                  keyTimes={lookKeys.map((k) => f(k.t / T)).join(';')}
+                  dur={`${T}s`}
+                  repeatCount="indefinite"
+                />
+                <g>
+                  {eyes.map((p) => <rect x={p.x} y={p.y} width="1" height="1" fill={PALETTE[p.c]} />)}
+                  <animate attributeName="opacity" calcMode="discrete" values="1;0;1" keyTimes="0;0.94;0.97" dur="4s" repeatCount="indefinite" />
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
+
+<script>
+  const fig = document.getElementById('hero-fig') as SVGSVGElement | null
+  if (fig && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    fig.setCurrentTime(8.5)
+    fig.pauseAnimations()
+  }
+</script>

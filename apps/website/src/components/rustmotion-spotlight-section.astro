@@ -1,0 +1,65 @@
+---
+const proofs = [
+  { n: '01', titleKey: 'rustmotion.proof1.title', descKey: 'rustmotion.proof1.description', title: 'AI-driven', description: 'Scenes are plain JSON, so an AI can write and edit them for you.' },
+  { n: '02', titleKey: 'rustmotion.proof2.title', descKey: 'rustmotion.proof2.description', title: 'No browser (Skia)', description: 'Rendering goes through Skia: no browser and no runtime, just a single Rust binary.' },
+  { n: '03', titleKey: 'rustmotion.proof3.title', descKey: 'rustmotion.proof3.description', title: 'Fast iteration', description: 'Change the JSON, render again: short loops from idea to video.' },
+  { n: '04', titleKey: 'rustmotion.proof4.title', descKey: 'rustmotion.proof4.description', title: 'Built-in studio or CLI', description: 'Work in the built-in studio, or drive everything from the command line.' },
+]
+---
+
+<!-- Même disposition que FerrisKey : bloc coloré à gauche, preuves à droite -->
+<section id="rustmotion" class="sw-sec rustmotion">
+  <div class="sw-frame">
+    <div class="grid lg:grid-cols-2">
+      <!-- Cellule colorée -->
+      <div class="sw-cell flex flex-col justify-between gap-12 bg-[#7c4a2d] text-white sm:p-10" data-reveal="fade-up">
+        <p class="sw-label"><span data-t="rustmotion.label">Open-source engine</span></p>
+        <div>
+          <h2
+            class="font-bold leading-[0.85] tracking-[-0.06em]"
+            style="font-size: clamp(3.25rem, 9vw, 6.5rem);"
+            data-t="rustmotion.title"
+          >Rustmotion</h2>
+          <p class="mt-5 max-w-md text-xl font-medium leading-snug" data-t="rustmotion.subtitle">
+            Motion design videos compiled from JSON, in a single Rust binary
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a
+              href="https://github.com/LeadcodeDev/rustmotion"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 bg-white px-5 py-3 text-sm font-semibold text-[#7c4a2d] transition-opacity hover:opacity-85"
+            >
+              <span data-t="rustmotion.cta">View on GitHub</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preuves : cellules empilées -->
+      <div class="grid gap-px border-t border-border bg-border sm:grid-cols-2 lg:border-l lg:border-t-0" data-reveal="fade-up" data-reveal-delay="80">
+        {proofs.map((p) => (
+          <div class="sw-hover bg-background sw-cell">
+            <p class="sw-label text-primary">{p.n}</p>
+            <h3 class="mt-3 text-2xl font-bold tracking-tight" data-t={p.titleKey}>{p.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground" data-t={p.descKey}>{p.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rustmotion {
+    --color-primary: #7c4a2d;
+    --color-primary-foreground: #ffffff;
+    --sw-tint: color-mix(in oklch, #7c4a2d 6%, var(--color-background));
+  }
+  :global(html.dark) .rustmotion {
+    --color-primary: #e0a97c;
+    --color-primary-foreground: #2a1508;
+    --sw-tint: color-mix(in oklch, #e0a97c 8%, var(--color-background));
+  }
+</style>

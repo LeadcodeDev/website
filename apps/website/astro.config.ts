@@ -9,17 +9,20 @@ export default defineConfig({
     react(),
     thumbnailIntegration({
       appName: 'Baptiste Parmantier',
+      primaryColor: '#0e78f1',
       content: {
         type: 'static',
         pages: [
           {
             path: '/',
             title: 'Baptiste Parmantier',
+            headline: 'Software architect',
             description: 'Software Engineer specialized in designing robust, scalable products through thoughtful software architecture tailored to your product.',
           },
           {
             path: '/thumbnails/fr',
             title: 'Baptiste Parmantier',
+            headline: 'Architecte logiciel',
             description: 'Software Engineer spécialisé dans la conception de produits robustes et scalables grâce à une architecture logicielle réfléchie et adaptée à votre produit.',
           },
         ],

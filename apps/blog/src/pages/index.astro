@@ -17,46 +17,60 @@ const t = useTranslations(locale)
 ---
 
 <Base title={t('index.title')} locale={locale} locales={locales}>
-  <!-- Page header -->
-  <section class="mb-8">
-    <p class="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-primary">// Journal</p>
-    <h1 class="text-4xl md:text-5xl font-bold tracking-tight">
-      <span data-i18n="index.heading.prefix">{t('index.heading.prefix')}</span>{' '}
-      <span class="text-primary" data-i18n="index.heading.highlight">{t('index.heading.highlight')}</span>
-    </h1>
+  <!-- En-tête -->
+  <section class="sw-sec">
+    <div class="sw-frame">
+      <div class="sw-cell sm:p-10">
+        <p class="sw-label text-primary">Journal</p>
+        <h1 class="mt-5 font-bold leading-[0.9] tracking-[-0.05em]" style="font-size: clamp(2.75rem, 7vw, 5.25rem);">
+          <span data-i18n="index.heading.prefix">{t('index.heading.prefix')}</span>{' '}
+          <span class="text-primary" data-i18n="index.heading.highlight">{t('index.heading.highlight')}</span>
+        </h1>
+      </div>
+    </div>
   </section>
 
-  <!-- Tag filter -->
-  <TagFilter tags={tags} locale={locale} client:load />
+  <!-- Filtres -->
+  <section class="sw-sec">
+    <div class="sw-frame">
+      <div class="sw-cell">
+        <TagFilter tags={tags} locale={locale} client:load />
+      </div>
+    </div>
+  </section>
 
-  <!-- Articles grid -->
-  {posts.length > 0 && (
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {posts.map((post) => (
-        <div class="h-full" data-tags={JSON.stringify(post.data.tags)} data-title={post.data.title} data-description={post.data.description ?? ''} data-locale={getPostLocale(post)}>
-          <PostCard
-            title={post.data.title}
-            description={post.data.description}
-            date={post.data.date}
-            tags={post.data.tags}
-            cover={post.data.cover}
-            href={getPostHref(post)}
-            locale={getPostLocale(post)}
-            readingTime={getReadingTime(post.body ?? '')}
-            author={post.data.author ? getAuthor(post.data.author) : undefined}
-            draft={isDraft(post)}
-          />
+  <!-- Articles : cellules séparées par des filets -->
+  <section class="sw-sec">
+    <div class="sw-frame">
+      {posts.length > 0 && (
+        <div class="grid overflow-hidden md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <div class="-ml-px -mt-px h-full border-l border-t border-border" data-tags={JSON.stringify(post.data.tags)} data-title={post.data.title} data-description={post.data.description ?? ''} data-locale={getPostLocale(post)}>
+              <PostCard
+                title={post.data.title}
+                description={post.data.description}
+                date={post.data.date}
+                tags={post.data.tags}
+                cover={post.data.cover}
+                href={getPostHref(post)}
+                locale={getPostLocale(post)}
+                readingTime={getReadingTime(post.body ?? '')}
+                author={post.data.author ? getAuthor(post.data.author) : undefined}
+                draft={isDraft(post)}
+              />
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  )}
+      )}
 
-  <!-- Empty state (no posts at all) -->
-  {posts.length === 0 && (
-    <div class="text-center py-20">
-      <p class="text-muted-foreground text-lg">{t('index.empty')}</p>
+      <!-- Aucun article -->
+      {posts.length === 0 && (
+        <div class="sw-cell py-20 text-center">
+          <p class="text-lg text-muted-foreground">{t('index.empty')}</p>
+        </div>
+      )}
     </div>
-  )}
+  </section>
 </Base>
 
 <script define:vars={{ supportedLocales: locales, fallbackLocale: locale, translations: ui }}>

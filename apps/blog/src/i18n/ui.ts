@@ -19,6 +19,8 @@ export const ui = {
     // Post layout
     'post.back': 'Back to writing',
     'post.published': 'Published',
+    'post.readingTime': 'Reading time',
+    'post.topics': 'Topics',
 
     // Hero section
     'hero.minRead': 'min read',
@@ -65,6 +67,8 @@ export const ui = {
     // Post layout
     'post.back': "Retour aux articles",
     'post.published': 'Publié le',
+    'post.readingTime': 'Temps de lecture',
+    'post.topics': 'Sujets',
 
     // Hero section
     'hero.minRead': 'min de lecture',

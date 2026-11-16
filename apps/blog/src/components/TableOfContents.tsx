@@ -54,15 +54,16 @@ export function TableOfContents({ headings, locale = 'en', author }: TableOfCont
 
   return (
     <nav className="sticky top-24 h-fit">
-      <p className="text-sm font-medium mb-3">{t('toc.title')}</p>
-      <ul className="border-l border-border space-y-0.5">
+      <p className="mb-3 pl-6 text-sm font-medium">{t('toc.title')}</p>
+      {/* Le rail est le filet vertical du layout ; le repère actif vient le recouvrir (-ml-px) */}
+      <ul className="space-y-0.5">
         {filtered.map((heading) => (
           <li key={heading.slug}>
             <a
               href={`#${heading.slug}`}
               className={cn(
                 'block -ml-px border-l-2 py-1 text-sm transition-colors focus-visible:outline-none focus-visible:text-foreground',
-                heading.depth === 3 ? 'pl-6' : 'pl-3',
+                heading.depth === 3 ? 'pl-9' : 'pl-6',
                 activeId === heading.slug
                   ? 'border-primary text-primary font-medium'
                   : 'border-transparent text-muted-foreground hover:text-foreground',
@@ -73,8 +74,10 @@ export function TableOfContents({ headings, locale = 'en', author }: TableOfCont
           </li>
         ))}
       </ul>
-      {author && <AuthorCard author={author} label={t('author.label')} />}
-      <SponsorCards sponsors={defaultSponsors} title={t('sponsors.title')} />
+      <div className="pl-6">
+        {author && <AuthorCard author={author} label={t('author.label')} />}
+        <SponsorCards sponsors={defaultSponsors} title={t('sponsors.title')} />
+      </div>
     </nav>
   )
 }

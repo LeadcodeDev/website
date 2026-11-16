@@ -6,6 +6,8 @@ export interface FooterProps {
   config?: SiteConfig
   locale?: string
   appUrlOverrides?: Partial<Record<string, string>>
+  /** 'cells': full-bleed rows and a centre divider, meant to sit inside a framed page grid */
+  variant?: 'default' | 'cells'
 }
 
 function detectLocale(config: SiteConfig): string {
@@ -20,7 +22,8 @@ function detectLocale(config: SiteConfig): string {
   return config.defaultLocale
 }
 
-export function Footer({ config = defaultConfig, locale: localeProp, appUrlOverrides }: FooterProps) {
+export function Footer({ config = defaultConfig, locale: localeProp, appUrlOverrides, variant = 'default' }: FooterProps) {
+  const cells = variant === 'cells'
   const [locale, setLocale] = React.useState(localeProp ?? config.defaultLocale)
 
   React.useEffect(() => {
@@ -36,10 +39,10 @@ export function Footer({ config = defaultConfig, locale: localeProp, appUrlOverr
   const builtWithParts = t(locale, footer.builtWith).split('{icon}')
 
   return (
-    <footer className="mt-12 border-t pt-12 pb-8">
-      <div className="grid grid-cols-1 gap-10 sm:grid-cols-[1.6fr_1fr]">
+    <footer className={cells ? '' : 'mt-12 border-t pt-12 pb-8'}>
+      <div className={cells ? 'grid grid-cols-1 sm:grid-cols-2' : 'grid grid-cols-1 gap-10 sm:grid-cols-[1.6fr_1fr]'}>
         {/* Brand */}
-        <div>
+        <div className={cells ? 'border-b p-6 sm:border-b-0 sm:p-8' : undefined}>
           <div className="flex items-center gap-2.5">
             <span className="flex size-9 items-center justify-center rounded-[4px] border border-primary/20 bg-primary/10 text-primary">
               <Icon icon="lucide:book-open" className="size-5" />
@@ -52,7 +55,7 @@ export function Footer({ config = defaultConfig, locale: localeProp, appUrlOverr
         </div>
 
         {/* Resources */}
-        <div>
+        <div className={cells ? 'p-6 sm:border-l sm:p-8' : undefined}>
           <h4 className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
             {t(locale, footer.columns.resources)}
           </h4>
@@ -77,7 +80,9 @@ export function Footer({ config = defaultConfig, locale: localeProp, appUrlOverr
       </div>
 
       {/* Bottom bar */}
-      <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t pt-6 font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground sm:flex-row">
+      <div
+        className={`flex flex-col items-center justify-between gap-2 border-t font-mono text-[11px] uppercase tracking-[0.04em] text-muted-foreground sm:flex-row ${cells ? 'px-6 py-4 sm:px-8' : 'mt-10 pt-6'}`}
+      >
         <p>{copyrightText}</p>
         <p className="flex items-center gap-1.5">
           {builtWithParts[0]} ❤️ {builtWithParts[1]}

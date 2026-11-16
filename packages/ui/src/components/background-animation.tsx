@@ -6,9 +6,8 @@ interface Square {
   colorClass: string
 }
 
-const GRID = 75
-const SIZE = GRID
-const COUNT = 10
+const DEFAULT_GRID = 75
+const DEFAULT_COUNT = 10
 const COLORS = [
   'bg-primary/30',
   'bg-primary/20',
@@ -30,34 +29,58 @@ function randomCell(cols: number, rows: number) {
   }
 }
 
-function makeSquares(cols: number, rows: number): Square[] {
-  return Array.from({ length: COUNT }, (_, i) => ({
+function makeSquares(cols: number, rows: number, count: number, colors: string[]): Square[] {
+  return Array.from({ length: count }, (_, i) => ({
     ...randomCell(cols, rows),
-    colorClass: COLORS[i % COLORS.length],
+    colorClass: colors[i % colors.length],
   }))
 }
 
-export function BackgroundAnimation() {
+export interface BackgroundAnimationProps {
+  /** Cell and square size in px */
+  grid?: number
+  /** Fixed number of squares (ignored when `density` is set) */
+  count?: number
+  /** Squares per grid cell: scales the count with the container area (tall gutters) */
+  density?: number
+  colors?: string[]
+}
+
+export function BackgroundAnimation({
+  grid = DEFAULT_GRID,
+  count = DEFAULT_COUNT,
+  density,
+  colors = COLORS,
+}: BackgroundAnimationProps = {}) {
+  const GRID = grid
+  const SIZE = grid
   const containerRef = useRef<HTMLDivElement>(null)
   const [dims, setDims] = useState({ cols: 8, rows: 5 })
-  const [squares, setSquares] = useState<Square[]>(() => makeSquares(8, 5))
+  const [squares, setSquares] = useState<Square[]>(() => makeSquares(8, 5, density ? 6 : count, colors))
   const [ready, setReady] = useState(false)
   const hasMeasured = useRef(false)
+  const lastDims = useRef({ cols: 0, rows: 0 })
 
   useLayoutEffect(() => {
     function measure() {
       const el = containerRef.current
       if (!el) return
-      const cols = Math.max(4, Math.ceil(el.offsetWidth / GRID))
+      const cols = Math.max(1, Math.ceil(el.offsetWidth / GRID))
       const rows = Math.max(4, Math.ceil(el.offsetHeight / GRID))
+      if (hasMeasured.current && cols === lastDims.current.cols && rows === lastDims.current.rows) return
+      lastDims.current = { cols, rows }
       setDims({ cols, rows })
-      setSquares(makeSquares(cols, rows))
+      setSquares(makeSquares(cols, rows, density ? Math.max(6, Math.round(cols * rows * density)) : count, colors))
       hasMeasured.current = true
     }
     measure()
-    window.addEventListener('resize', measure)
-    return () => window.removeEventListener('resize', measure)
-  }, [])
+    // The container height changes once content has loaded, so observe it rather than only the window.
+    const el = containerRef.current
+    const observer = el ? new ResizeObserver(measure) : null
+    if (el && observer) observer.observe(el)
+    return () => observer?.disconnect()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [GRID, count, density])
 
   useEffect(() => {
     if (!hasMeasured.current) return
