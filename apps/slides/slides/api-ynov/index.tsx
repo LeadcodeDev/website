@@ -1438,6 +1438,55 @@ const StatusFlow: Page = () => {
   );
 };
 
+const RichardsonLevels: Page = () => {
+  const Level = ({
+    n,
+    title,
+    sub,
+    ex,
+    h,
+    tone = 'neutral',
+  }: {
+    n: number;
+    title: string;
+    sub: string;
+    ex: string[];
+    h: number;
+    tone?: 'neutral' | 'accent';
+  }) => (
+    <Card title={`Niveau ${n} · ${title}`} tone={tone} w={400} h={h}>
+      <div>{sub}</div>
+      <div style={{ fontFamily: mono, fontSize: 22, lineHeight: 1.5, color: 'var(--osd-text)', marginTop: 14 }}>
+        {ex.map((l) => (
+          <div key={l} style={{ whiteSpace: 'pre' }}>
+            {l}
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+  return (
+    <Slide section={S1}>
+      <Tag text="REST" />
+      <Title>Les 4 niveaux de maturité de Richardson</Title>
+      <div style={{ display: 'flex', gap: 33, alignItems: 'flex-end', height: 470 }}>
+        <Level n={0} title="POX" h={310} sub="Un seul endpoint, tout en POST." ex={['POST /api', '{"action": "getArtist"}']} />
+        <Level n={1} title="URLs" h={360} sub="Une URL par ressource, mais toujours POST." ex={['POST /artists/42']} />
+        <Level
+          n={2}
+          title="Verbes"
+          h={410}
+          tone="accent"
+          sub="Méthodes HTTP et status codes."
+          ex={['GET /artists/42', '→ 200 ou 404']}
+        />
+        <Level n={3} title="HATEOAS" h={470} sub="La réponse contient les liens des actions suivantes." ex={['"links": {', '  "delete": "/artists/42"', '}']} />
+      </div>
+      <Cap>Ce module vise le niveau 2. Le niveau 3 est rare en pratique.</Cap>
+    </Slide>
+  );
+};
+
 const RoutingPage: Page = () => (
   <Slide section={S1}>
     <Tag text="Routing" />
@@ -3848,6 +3897,14 @@ Piège classique : confondre 401, pas identifié, et 403, identifié mais interd
     page: StatusFlow,
     note: `Dans quel ordre tester ? Du plus fondamental au plus fin : JSON lisible, identifié, autorisé, ressource existante, données valides, pas de bug. Le succès arrive en dernier.
 La requête descend la liste. Dès qu'une réponse est "non", on s'arrête avec le code à droite.`,
+  },
+  {
+    page: RichardsonLevels,
+    note: `Tous les services qui parlent HTTP ne sont pas REST au même degré. Richardson a défini quatre niveaux de maturité, de 0 à 3.
+Niveau 0 : un seul endpoint, tout passe en POST, l'action est décrite dans le corps. C'est du RPC sur HTTP.
+Niveau 1 : on a des ressources, une URL par ressource, mais on utilise encore POST partout.
+Niveau 2 : on utilise les méthodes HTTP pour leur sens, et les status codes pour le résultat. C'est ce qu'on fait dans ce module : GET /artists/42, 404 si absent.
+Niveau 3 : HATEOAS. La réponse embarque des liens vers les actions possibles, le client les suit au lieu de construire les URL. C'est rare, la plupart des API "REST" s'arrêtent au niveau 2.`,
   },
   {
     page: ErrorFormat,
