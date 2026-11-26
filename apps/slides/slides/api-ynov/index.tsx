@@ -2,6 +2,7 @@ import { Children, isValidElement, useId } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
 import { Step, Steps, useSlidePageNumber } from '@open-slide/core';
+import xTimeline from './assets/x-timeline.png';
 
 // ─── Design ───────────────────────────────────────────────────────────────────
 export const design: DesignSystem = {
@@ -1823,7 +1824,7 @@ func RequestID(next http.Handler) http.Handler {
   </Slide>
 );
 const CorsPage: Page = () => (
-  <Slide section={S2}>
+  <Slide section={S3}>
     <Tag text="CORS" />
     <Title>Middleware CORS</Title>
     <Svg h={460}>
@@ -3028,7 +3029,7 @@ const RoutePolicy: Page = () => (
 );
 
 const CorsCode: Page = () => (
-  <Slide section={S2}>
+  <Slide section={S3}>
     <Tag text="CORS en Go" />
     <Title>Middleware CORS en Go</Title>
     <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start' }}>
@@ -3210,34 +3211,397 @@ const Grille1: Page = () => (
   />
 );
 
-// ─── Matinée 2 ────────────────────────────────────────────────────────────────
-const FrontBreak: Page = () => (
-  <Break n="2" title="Consommer l’API avec React" sub="Un front qui appelle votre API : fetch, états, erreurs et CORS." />
+// ─── Synchronisation UI et serveur ────────────────────────────────────────────
+type SyncRing = 'ok' | 'warn' | 'accent';
+type SyncPhase = {
+  s: number;
+  e: number;
+  ui: string[];
+  srv: string[];
+  copy?: string[];
+  hit?: number;
+  uiRing?: SyncRing;
+  srvRing?: SyncRing;
+  copyRing?: SyncRing;
+  say: [string, string];
+};
+type SyncPacket = { path: string; label: string; s: number; e: number; tone: 'dark' | 'ok' | 'warn' };
+
+const Show = ({ s, e, D, children }: { s: number; e: number; D: number; children: ReactNode }) => (
+  <g opacity={0}>
+    {win(s, e, D)}
+    {children}
+  </g>
 );
 
-const FrontGoal: Page = () => (
+const SyncRows = ({ x, items, hit }: { x: number; items: string[]; hit?: number }) => (
+  <>
+    {items.map((name, i) => (
+      <g key={name}>
+        <rect
+          x={x + 16}
+          y={70 + i * 66}
+          width={608}
+          height={54}
+          rx={4}
+          fill={surface}
+          stroke={hit === i ? '#EF7809' : border}
+          strokeWidth={hit === i ? 4 : 2}
+        />
+        <T x={x + 40} y={97 + i * 66} size={28} weight={700} anchor="start" color="#1c1917" mono={false}>
+          {name}
+        </T>
+        {hit === i ? (
+          <T x={x + 600} y={97 + i * 66} size={22} weight={700} anchor="end" color={warn}>
+            ✕ Supprimer
+          </T>
+        ) : null}
+      </g>
+    ))}
+  </>
+);
+
+const SyncDiagram = ({
+  D,
+  phases,
+  packets,
+  withCopy,
+}: {
+  D: number;
+  phases: SyncPhase[];
+  packets: SyncPacket[];
+  withCopy?: boolean;
+}) => (
+  <Svg h={440}>
+    <rect x={0} y={0} width={640} height={300} rx={4} fill="#fff" stroke={dim} strokeWidth={3} />
+    <rect x={1.5} y={1.5} width={637} height={44} fill={surface} />
+    <T x={20} y={24} size={22} weight={700} anchor="start" color={muted}>INTERFACE · ce que voit l’utilisateur</T>
+    <rect x={1060} y={0} width={640} height={300} rx={4} fill="#fff" stroke={dim} strokeWidth={3} />
+    <rect x={1061.5} y={1.5} width={637} height={44} fill={surface} />
+    <T x={1080} y={24} size={22} weight={700} anchor="start" color={muted}>SERVEUR · base de données</T>
+    {withCopy ? (
+      <rect x={0} y={330} width={640} height={96} rx={4} fill="#fff" stroke={dim} strokeWidth={3} strokeDasharray="8 6" />
+    ) : null}
+    {withCopy ? (
+      <T x={20} y={354} size={20} weight={700} anchor="start" color={muted}>COPIE DE L’ÉTAT</T>
+    ) : null}
+    <Ln d="M 645 120 H 1055" />
+    <Ln d="M 1055 220 H 645" tone="accent" />
+    <T x={850} y={90} size={20} color={dim}>requête HTTP</T>
+    <T x={850} y={252} size={20} color={dim}>réponse HTTP</T>
+    {phases.map((p, i) => (
+      <Show key={`rows-${i}`} s={p.s} e={p.e} D={D}>
+        <SyncRows x={0} items={p.ui} hit={p.hit} />
+        <SyncRows x={1060} items={p.srv} />
+        {withCopy ? (
+          <T x={20} y={396} size={26} weight={700} anchor="start" color={p.copy?.length ? '#1c1917' : dim} mono={false}>
+            {p.copy?.length ? p.copy.join(' · ') : 'aucune copie'}
+          </T>
+        ) : null}
+      </Show>
+    ))}
+    {phases.map((p, i) => (
+      <Say key={`say-${i}`} x={1380} y={352} s={p.s} e={p.e} D={D} color={p.say[1]} size={24}>
+        {p.say[0]}
+      </Say>
+    ))}
+    {phases.flatMap((p, i) => [
+      p.uiRing ? <Hot key={`u-${i}`} x={0} y={0} w={640} h={300} s={p.s} e={p.e} D={D} tone={p.uiRing} /> : null,
+      p.srvRing ? <Hot key={`r-${i}`} x={1060} y={0} w={640} h={300} s={p.s} e={p.e} D={D} tone={p.srvRing} /> : null,
+      p.copyRing ? <Hot key={`c-${i}`} x={0} y={330} w={640} h={96} s={p.s} e={p.e} D={D} tone={p.copyRing} /> : null,
+    ])}
+    {packets.map((k, i) => (
+      <Pkt key={`pk-${i}`} path={k.path} label={k.label} s={k.s} e={k.e} D={D} tone={k.tone} />
+    ))}
+  </Svg>
+);
+
+const SYNC_ALL = ['Daft Punk', 'Justice', 'Air'];
+const SYNC_LESS = ['Daft Punk', 'Air'];
+const SYNC_REQ = 'M 640 120 H 1060';
+const SYNC_RES = 'M 1060 220 H 640';
+
+const SyncCards = ({ good, bad }: { good: [string, string]; bad: [string, string] }) => (
+  <div style={{ display: 'flex', gap: 40, marginTop: 24 }}>
+    <Card title={good[0]} tone="ok" w={830}>
+      {good[1]}
+    </Card>
+    <Card title={bad[0]} tone="warn" w={830}>
+      {bad[1]}
+    </Card>
+  </div>
+);
+
+const OptimisticPage: Page = () => (
   <Slide section={S2}>
-    <Tag text="Étape 3" />
-    <Title>Étape 3 : un front React pour votre API</Title>
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 40 }}>
-      <Card title="Objectif" tone="accent" w={830} h={250}>
-        Lister les artistes de votre API dans une page React.
-      </Card>
-      <Card title="Votre API" w={830} h={250}>
-        Celle de la matinée 1, lancée sur le port 8080. Vous ne la réécrivez pas.
-      </Card>
-      <Card title="Le front ne sait rien d’elle" w={830} h={250}>
-        Il n’a que le contrat : routes, JSON, status codes, en-têtes.
-      </Card>
-      <Card title="Un autre dépôt" w={830} h={250}>
-        Le front est un projet à part, avec son propre serveur de développement.
-      </Card>
-    </div>
+    <Tag text="Approche 1 sur 3" />
+    <Title>Optimiste : l’UI change tout de suite</Title>
+    <SyncDiagram
+      D={18}
+      phases={[
+        { s: 0.001, e: 0.08, ui: SYNC_ALL, srv: SYNC_ALL, hit: 1, say: ['Cas 1 · clic sur Supprimer', '#1c1917'] },
+        { s: 0.08, e: 0.28, ui: SYNC_LESS, srv: SYNC_ALL, say: ['1 · L’UI change sans attendre', '#EF7809'] },
+        { s: 0.28, e: 0.48, ui: SYNC_LESS, srv: SYNC_LESS, uiRing: 'ok', srvRing: 'ok', say: ['2 · 204 : tout est synchronisé', ok] },
+        { s: 0.5, e: 0.58, ui: SYNC_ALL, srv: SYNC_ALL, hit: 1, say: ['Cas 2 · clic sur Supprimer', '#1c1917'] },
+        { s: 0.58, e: 0.76, ui: SYNC_LESS, srv: SYNC_ALL, say: ['1 · L’UI change sans attendre', '#EF7809'] },
+        { s: 0.76, e: 0.995, ui: SYNC_LESS, srv: SYNC_ALL, uiRing: 'warn', srvRing: 'warn', say: ['2 · 500 : l’UI ≠ le serveur', warn] },
+      ]}
+      packets={[
+        { path: SYNC_REQ, label: 'DELETE', s: 0.1, e: 0.26, tone: 'dark' },
+        { path: SYNC_RES, label: '204', s: 0.3, e: 0.44, tone: 'ok' },
+        { path: SYNC_REQ, label: 'DELETE', s: 0.6, e: 0.74, tone: 'dark' },
+        { path: SYNC_RES, label: '500', s: 0.78, e: 0.92, tone: 'warn' },
+      ]}
+    />
+    <SyncCards
+      good={['Si ça marche', 'L’utilisateur voit le résultat immédiatement.']}
+      bad={['Si ça échoue', 'L’UI a changé mais pas le serveur : les données sont désynchronisées.']}
+    />
+  </Slide>
+);
+
+const PessimisticPage: Page = () => (
+  <Slide section={S2}>
+    <Tag text="Approche 2 sur 3" />
+    <Title>Pessimiste : l’UI attend la réponse</Title>
+    <SyncDiagram
+      D={14}
+      phases={[
+        { s: 0.001, e: 0.16, ui: SYNC_ALL, srv: SYNC_ALL, hit: 1, say: ['1 · Clic sur Supprimer', '#1c1917'] },
+        { s: 0.16, e: 0.38, ui: SYNC_ALL, srv: SYNC_ALL, say: ['2 · L’UI attend, rien ne bouge', '#EF7809'] },
+        { s: 0.38, e: 0.58, ui: SYNC_ALL, srv: SYNC_LESS, srvRing: 'ok', say: ['3 · Le serveur supprime : 204', ok] },
+        { s: 0.58, e: 0.995, ui: SYNC_LESS, srv: SYNC_LESS, uiRing: 'ok', say: ['4 · Seulement maintenant, l’UI change', ok] },
+      ]}
+      packets={[
+        { path: SYNC_REQ, label: 'DELETE', s: 0.18, e: 0.36, tone: 'dark' },
+        { path: SYNC_RES, label: '204', s: 0.42, e: 0.56, tone: 'ok' },
+      ]}
+    />
+    <SyncCards
+      good={['Toujours cohérent', 'L’UI ne change qu’après un succès HTTP : rien à défaire en cas d’erreur.']}
+      bad={['Plus lent à l’écran', 'Tant que la réponse n’est pas arrivée, l’utilisateur ne voit aucun changement.']}
+    />
+  </Slide>
+);
+
+const HybridPage: Page = () => (
+  <Slide section={S2}>
+    <Tag text="Approche 3 sur 3" />
+    <Title>Hybride : copier, modifier, restaurer</Title>
+    <SyncDiagram
+      D={20}
+      withCopy
+      phases={[
+        { s: 0.001, e: 0.1, ui: SYNC_ALL, srv: SYNC_ALL, copy: [], hit: 1, say: ['Clic sur Supprimer', '#1c1917'] },
+        { s: 0.1, e: 0.22, ui: SYNC_ALL, srv: SYNC_ALL, copy: SYNC_ALL, copyRing: 'accent', say: ['1 · On copie l’état', '#EF7809'] },
+        { s: 0.22, e: 0.4, ui: SYNC_LESS, srv: SYNC_ALL, copy: SYNC_ALL, say: ['2 · On modifie l’UI et on envoie', '#EF7809'] },
+        { s: 0.4, e: 0.56, ui: SYNC_LESS, srv: SYNC_ALL, copy: SYNC_ALL, uiRing: 'warn', say: ['3 · Le serveur répond 500', warn] },
+        { s: 0.56, e: 0.995, ui: SYNC_ALL, srv: SYNC_ALL, copy: SYNC_ALL, uiRing: 'ok', copyRing: 'ok', say: ['4 · On restaure la copie', ok] },
+      ]}
+      packets={[
+        { path: SYNC_REQ, label: 'DELETE', s: 0.24, e: 0.38, tone: 'dark' },
+        { path: SYNC_RES, label: '500', s: 0.42, e: 0.54, tone: 'warn' },
+      ]}
+    />
+    <SyncCards
+      good={['Rapide et cohérent', 'L’UI réagit tout de suite, et la copie permet de revenir en arrière si ça échoue.']}
+      bad={['Plus de code', 'Il faut copier l’état avant chaque requête et gérer le retour arrière.']}
+    />
+  </Slide>
+);
+
+// ─── Matinée 2 ────────────────────────────────────────────────────────────────
+const FrontBreak: Page = () => (
+  <Break n="2" title="Consommer une API avec React" sub="Un front qui appelle votre API : fetch, états, erreurs et CORS." />
+);
+
+const WhyReact: Page = () => (
+  <Slide section={S2}>
+    <Tag text="Pourquoi React" />
+    <Title>D’où vient la page ?</Title>
+    <Svg h={520}>
+      <Nd x={0} y={0} w={800} h={64} label="Rendu classique" size={30} />
+      <Nd x={900} y={0} w={800} h={64} label="React" size={30} tone="accent" />
+
+      <Nd x={0} y={170} w={200} h={130} label="Navigateur" sub="affiche la page" />
+      <rect x={300} y={120} width={250} height={230} rx={4} fill="#fff" stroke={dim} strokeWidth={3} strokeDasharray="8 6" />
+      <T x={425} y={146} size={24} weight={700} color="#1c1917">Serveur</T>
+      <Nd x={320} y={170} w={210} h={70} label="Structure" sub="gabarit HTML" tone="accent" size={26} />
+      <Nd x={320} y={260} w={210} h={70} label="Données" sub="lues en base" size={26} />
+      <Nd x={680} y={170} w={120} h={130} label="BDD" />
+      <Ln d="M 203 210 H 297" />
+      <Ln d="M 297 275 H 203" tone="accent" />
+      <Ln d="M 553 210 H 677" />
+      <Ln d="M 677 275 H 553" tone="accent" />
+      <Pkt path="M 200 210 H 300" label="GET" s={0.04} e={0.14} D={12} tone="dark" />
+      <Pkt path="M 550 210 H 680" label="SQL" s={0.14} e={0.24} D={12} tone="dark" />
+      <Pkt path="M 680 275 H 550" label="data" s={0.26} e={0.36} D={12} />
+      <Hot x={320} y={170} w={210} h={160} s={0.38} e={0.5} D={12} />
+      <Say x={425} y={390} s={0.38} e={0.5} D={12}>Le serveur assemble la page</Say>
+      <Pkt path="M 300 275 H 200" label="HTML" s={0.52} e={0.62} D={12} />
+      <Hot x={0} y={170} w={200} h={130} s={0.62} e={0.8} D={12} />
+      <Say x={100} y={390} s={0.62} e={0.8} D={12}>Il affiche</Say>
+
+      <rect x={900} y={120} width={300} height={230} rx={4} fill="#fff" stroke={dim} strokeWidth={3} strokeDasharray="8 6" />
+      <T x={1050} y={146} size={24} weight={700} color="#1c1917">Navigateur</T>
+      <Nd x={920} y={170} w={260} h={70} label="Structure" sub="app React, ses composants" tone="accent" size={26} />
+      <Nd x={920} y={260} w={260} h={70} label="Données" sub="reçues de l’API" size={26} />
+      <Nd x={1300} y={170} w={180} h={130} label="API" sub="JSON" />
+      <Nd x={1580} y={170} w={120} h={130} label="BDD" />
+      <Ln d="M 1203 210 H 1297" />
+      <Ln d="M 1297 275 H 1203" tone="accent" />
+      <Ln d="M 1483 210 H 1577" />
+      <Ln d="M 1577 275 H 1483" tone="accent" />
+      <Pkt path="M 1200 210 H 1300" label="GET" s={0.04} e={0.14} D={12} tone="dark" />
+      <Pkt path="M 1480 210 H 1580" label="SQL" s={0.14} e={0.24} D={12} tone="dark" />
+      <Pkt path="M 1580 275 H 1480" label="data" s={0.26} e={0.36} D={12} />
+      <Pkt path="M 1300 275 H 1200" label="JSON" s={0.52} e={0.62} D={12} tone="ok" />
+      <Hot x={920} y={260} w={260} h={70} s={0.62} e={0.8} D={12} tone="ok" />
+      <Hot x={920} y={170} w={260} h={70} s={0.7} e={0.9} D={12} tone="ok" />
+      <Say x={1050} y={390} s={0.7} e={0.9} D={12} color={ok}>React construit la page</Say>
+
+      <Nd x={0} y={430} w={800} h={90} label="Le serveur fabrique la page" sub="il reçoit une page HTML toute prête" />
+      <Nd x={900} y={430} w={800} h={90} label="Le front a sa propre structure" sub="le serveur ne fournit que des données" tone="accent" />
+    </Svg>
+    <Cap>Mêmes données en base, deux façons de construire la page : côté serveur, ou côté navigateur.</Cap>
+  </Slide>
+);
+
+const ComponentSplit: Page = () => (
+  <Slide section={S2}>
+    <Tag text="Composants" />
+    <Title>Découper une page en composants</Title>
+    <Svg h={480}>
+      <rect x={0} y={0} width={800} height={480} rx={4} fill="#fff" stroke={dim} strokeWidth={3} strokeDasharray="8 6" />
+      <T x={20} y={28} size={24} weight={700} anchor="start" color={muted}>App</T>
+      <Nd x={24} y={56} w={752} h={70} label="Header" size={26} />
+      <rect x={24} y={146} width={752} height={200} rx={4} fill={accentSoft} stroke="#EF7809" strokeWidth={3} />
+      <T x={44} y={172} size={22} weight={700} anchor="start" color="#1c1917">ArtistList</T>
+      <Nd x={44} y={196} w={224} h={130} label="ArtistCard" sub="Daft Punk" size={24} />
+      <Nd x={288} y={196} w={224} h={130} label="ArtistCard" sub="Justice" size={24} />
+      <Nd x={532} y={196} w={224} h={130} label="ArtistCard" sub="Air" size={24} />
+      <Nd x={24} y={366} w={752} h={90} label="Message" sub="chargement ou erreur" tone="ok" size={26} />
+      <Hot x={44} y={196} w={224} h={130} s={0.1} e={0.6} D={8} />
+      <Hot x={288} y={196} w={224} h={130} s={0.1} e={0.6} D={8} />
+      <Hot x={532} y={196} w={224} h={130} s={0.1} e={0.6} D={8} />
+
+      <T x={900} y={14} size={22} anchor="start">ARBRE DES COMPOSANTS</T>
+      <Nd x={900} y={201} w={200} h={90} label="App" tone="muted" />
+      <Nd x={1180} y={56} w={200} h={70} label="Header" size={26} />
+      <Nd x={1180} y={201} w={200} h={90} label="ArtistList" tone="accent" size={26} />
+      <Nd x={1180} y={366} w={200} h={90} label="Message" tone="ok" size={26} />
+      <Nd x={1440} y={201} w={260} h={90} label="ArtistCard" sub="un par artiste" size={26} />
+      <Ln d="M 1103 246 H 1140 V 91 H 1176" />
+      <Ln d="M 1103 246 H 1176" />
+      <Ln d="M 1103 246 H 1140 V 411 H 1176" />
+      <Ln d="M 1383 246 H 1436" />
+      <Hot x={1440} y={201} w={260} h={90} s={0.1} e={0.6} D={8} />
+      <Say x={1570} y={160} s={0.1} e={0.6} D={8}>Écrit une fois</Say>
+      <Say x={1570} y={330} s={0.1} e={0.6} D={8}>Utilisé 3 fois</Say>
+    </Svg>
+    <Cap>Un composant : une fonction qui reçoit des données et renvoie un morceau d’écran.</Cap>
+    <Cap>Où couper ? Un bloc qui se répète, ou qui a sa propre responsabilité.</Cap>
+  </Slide>
+);
+
+// Capture 2000 x 1426 affichée à 640 px de haut.
+const XS = 640 / 1426;
+type XBox = [number, number, number, number];
+
+const XComp = ({ box, label, inner, right }: { box: XBox; label?: string; inner?: boolean; right?: boolean }) => {
+  const [x1, y1, x2, y2] = box.map((v) => v * XS);
+  const c = inner ? ok : '#EF7809';
+  const w = (label?.length ?? 0) * 13 + 18;
+  const px = right ? x2 - w - 8 : x1 + 8;
+  return (
+    <g>
+      <rect
+        x={x1}
+        y={y1}
+        width={x2 - x1}
+        height={y2 - y1}
+        rx={4}
+        fill={inner ? 'rgba(21,128,61,0.10)' : 'rgba(239,120,9,0.10)'}
+        stroke={c}
+        strokeWidth={3}
+      />
+      {label ? (
+        <>
+          <rect x={px} y={y1 - 14} width={w} height={28} rx={4} fill={c} />
+          <T x={px + w / 2} y={y1} size={18} weight={700} color="#fff">
+            {label}
+          </T>
+        </>
+      ) : null}
+    </g>
+  );
+};
+
+const LegendRow = ({ y, name, sub, inner }: { y: number; name: string; sub: string; inner?: boolean }) => (
+  <g>
+    <rect x={inner ? 1010 : 980} y={y - 11} width={22} height={22} rx={4} fill={inner ? ok : '#EF7809'} />
+    <T x={(inner ? 1010 : 980) + 38} y={y} size={26} weight={700} anchor="start" color="#1c1917">
+      {name}
+    </T>
+    <T x={(inner ? 1010 : 980) + 38} y={y + 28} size={21} anchor="start" mono={false}>
+      {sub}
+    </T>
+  </g>
+);
+
+const XRaw: Page = () => (
+  <Slide section={S2}>
+    <Tag text="Composants" />
+    <Title>Exemple : le fil d’actualité de X</Title>
+    <Svg h={640}>
+      <image href={xTimeline} x={0} y={0} width={2000 * XS} height={640} />
+      <rect x={0} y={0} width={2000 * XS} height={640} fill="none" stroke={border} strokeWidth={3} />
+      <T x={980} y={40} size={30} weight={700} anchor="start" color="#1c1917">Comment découper cette page ?</T>
+      <T x={980} y={110} size={26} anchor="start">Quels blocs se répètent ?</T>
+      <T x={980} y={160} size={26} anchor="start">Quels blocs ont leur propre rôle ?</T>
+      <T x={980} y={210} size={26} anchor="start">Quels blocs en contiennent d’autres ?</T>
+    </Svg>
+    <Cap>Une page, un écran : combien de composants y voyez-vous ?</Cap>
+  </Slide>
+);
+
+const XExample: Page = () => (
+  <Slide section={S2}>
+    <Tag text="Composants" />
+    <Title>Exemple : le fil d’actualité de X</Title>
+    <Svg h={640}>
+      <image href={xTimeline} x={0} y={0} width={2000 * XS} height={640} />
+      <rect x={0} y={0} width={2000 * XS} height={640} fill="none" stroke={border} strokeWidth={3} />
+      <XComp box={[4, 4, 264, 1422]} label="Sidebar" />
+      <XComp box={[272, 2, 1240, 80]} label="Tabs" right />
+      <XComp box={[272, 88, 1240, 275]} label="Composer" />
+      <XComp box={[274, 284, 1238, 1002]} label="Post" right />
+      <XComp box={[274, 1008, 1238, 1424]} label="Post" right />
+      <XComp inner box={[293, 296, 362, 364]} />
+      <XComp inner box={[372, 296, 1216, 334]} />
+      <XComp inner box={[372, 336, 1216, 366]} />
+      <XComp inner box={[372, 384, 1214, 932]} />
+      <XComp inner box={[372, 946, 1214, 990]} />
+      <XComp box={[1290, 5, 1857, 75]} label="SearchBar" right />
+      <XComp box={[1290, 99, 1857, 462]} label="PromoCard" />
+      <XComp box={[1290, 490, 1857, 1055]} label="Trends" right />
+      <XComp box={[1290, 1083, 1857, 1424]} label="Suggestions" right />
+
+      <LegendRow y={20} name="Sidebar · Tabs · Composer" sub="la navigation et la zone d’écriture" />
+      <LegendRow y={100} name="Post" sub="le même composant pour chaque tweet" />
+      <LegendRow inner y={180} name="Avatar · PostHeader · PostText" sub="dans Post : la photo, l’auteur, le texte" />
+      <LegendRow inner y={260} name="PostMedia · PostActions" sub="dans Post : l’image, puis les boutons" />
+      <LegendRow y={340} name="SearchBar · PromoCard" sub="en haut de la colonne de droite" />
+      <LegendRow y={420} name="Trends · Suggestions" sub="deux listes, chacune avec ses éléments" />
+      <T x={980} y={540} size={22} anchor="start" color="#EF7809" weight={700}>Orange : un composant de la page</T>
+      <T x={980} y={576} size={22} anchor="start" color={ok} weight={700}>Vert : un composant dans un composant</T>
+    </Svg>
+    <Cap>Chaque bloc de la page est un composant, et un composant peut en contenir d’autres.</Cap>
   </Slide>
 );
 
 const FrontBack: Page = () => (
-  <Slide section={S2}>
+  <Slide section={S3}>
     <Tag text="Vue d’ensemble" />
     <Title>Du navigateur à l’API</Title>
     <Svg h={380}>
@@ -3402,23 +3766,72 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   </Slide>
 );
 
+const StateScreen = ({
+  x,
+  y,
+  w,
+  h,
+  state,
+  tone,
+  children,
+}: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  state: string;
+  tone: 'muted' | 'ok' | 'warn';
+  children: ReactNode;
+}) => {
+  const c = { muted: { line: dim, bg: surface, ink: muted }, ok: { line: ok, bg: okSoft, ink: ok }, warn: { line: warn, bg: warnSoft, ink: warn } }[tone];
+  return (
+    <g>
+      <rect x={x} y={y} width={w} height={h} rx={4} fill="#fff" stroke={c.line} strokeWidth={3} />
+      <rect x={x + 1.5} y={y + 1.5} width={w - 3} height={44} fill={c.bg} />
+      <T x={x + 20} y={y + 24} size={22} weight={700} anchor="start" color={c.ink}>
+        {state}
+      </T>
+      {children}
+    </g>
+  );
+};
+
 const RequestStates: Page = () => (
   <Slide section={S2}>
     <Tag text="États" />
     <Title>Trois états à afficher pour chaque appel</Title>
-    <Svg h={400}>
-      <Nd x={0} y={140} w={420} h={120} label="Chargement" sub="requête en cours" tone="muted" />
-      <Nd x={1280} y={10} w={420} h={120} label="Succès" sub="afficher la liste" tone="ok" />
-      <Nd x={1280} y={270} w={420} h={120} label="Erreur" sub="afficher le message" tone="warn" />
-      <Ln d="M 425 175 L 1275 80" />
-      <Ln d="M 425 225 L 1275 320" />
-      <Pkt path="M 420 175 L 1280 80" label="200" s={0.05} e={0.35} D={12} tone="ok" />
-      <Hot x={1280} y={10} w={420} h={120} s={0.35} e={0.46} D={12} tone="ok" />
-      <Hot x={0} y={140} w={420} h={120} s={0.5} e={0.58} D={12} />
-      <Pkt path="M 420 225 L 1280 320" label="400, 500…" s={0.58} e={0.88} D={12} tone="warn" />
-      <Hot x={1280} y={270} w={420} h={120} s={0.88} e={0.98} D={12} tone="warn" />
+    <Svg h={450}>
+      <StateScreen x={0} y={115} w={480} h={220} state="loading = true" tone="muted">
+        <circle cx={240} cy={215} r={26} fill="none" stroke={border} strokeWidth={8} />
+        <path d="M 240 189 A 26 26 0 0 1 266 215" fill="none" stroke="#EF7809" strokeWidth={8} strokeLinecap="round">
+          <animateTransform attributeName="transform" type="rotate" from="0 240 215" to="360 240 215" dur="1.2s" repeatCount="indefinite" />
+        </path>
+        <T x={240} y={285} size={28} weight={700} color="#1c1917">Chargement…</T>
+      </StateScreen>
+      <StateScreen x={1220} y={0} w={480} h={200} state="artists = [ … ]" tone="ok">
+        <T x={1244} y={78} size={28} weight={700} anchor="start" color="#1c1917" mono={false}>• Daft Punk</T>
+        <T x={1244} y={126} size={28} weight={700} anchor="start" color="#1c1917" mono={false}>• Justice</T>
+        <T x={1244} y={174} size={28} weight={700} anchor="start" color="#1c1917" mono={false}>• Air</T>
+      </StateScreen>
+      <StateScreen x={1220} y={250} w={480} h={200} state="error = 'message'" tone="warn">
+        <rect x={1244} y={318} width={432} height={90} rx={4} fill={warnSoft} stroke={warn} strokeWidth={3} />
+        <T x={1460} y={348} size={26} weight={700} color={warn} mono={false}>Impossible de charger</T>
+        <T x={1460} y={382} size={24} color={warn} mono={false}>Le serveur est indisponible</T>
+      </StateScreen>
+      <Ln d="M 485 225 H 850 V 100 H 1215" />
+      <Ln d="M 485 225 H 850 V 350 H 1215" />
+      <T x={1032} y={66} size={24} weight={700} color={ok}>réponse 200</T>
+      <T x={1032} y={392} size={24} weight={700} color={warn}>400, 500 ou réseau KO</T>
+      <Hot x={0} y={115} w={480} h={220} s={0.02} e={0.12} D={12} tone="dark" />
+      <Pkt path="M 485 225 H 850 V 100 H 1215" label="200" s={0.12} e={0.4} D={12} tone="ok" />
+      <Hot x={1220} y={0} w={480} h={200} s={0.4} e={0.56} D={12} tone="ok" />
+      <Hot x={0} y={115} w={480} h={220} s={0.58} e={0.66} D={12} tone="dark" />
+      <Pkt path="M 485 225 H 850 V 350 H 1215" label="500" s={0.66} e={0.9} D={12} tone="warn" />
+      <Hot x={1220} y={250} w={480} h={200} s={0.9} e={0.99} D={12} tone="warn" />
+      <Say x={850} y={16} s={0.02} e={0.56} D={12} color={ok}>Appel 1 : tout va bien</Say>
+      <Say x={850} y={16} s={0.58} e={0.99} D={12} color={warn}>Appel 2 : ça échoue</Say>
     </Svg>
-    <Cap>Sans état de chargement, l’écran reste vide. Sans état d’erreur, il reste vide sans explication.</Cap>
+    <Cap>On affiche toujours quelque chose : d’abord le chargement, puis la liste ou l’erreur.</Cap>
   </Slide>
 );
 
@@ -3555,7 +3968,7 @@ request<Artist[]>('/artists', {
 );
 
 const CorsDebug: Page = () => (
-  <Slide section={S2}>
+  <Slide section={S3}>
     <Tag text="CORS" />
     <Title>Quand CORS bloque : lire l’onglet Réseau</Title>
     <Tbl
@@ -4006,14 +4419,28 @@ const part2: Entry[] = [
 Plan : l'objectif, le trajet d'une requête, le projet Vite, fetch et ses pièges, les états, lister, le CORS, les erreurs, le rangement. Ensuite, le TP noté.`,
   },
   {
-    page: FrontGoal,
-    note: `Étape 3. Un front : lister les artistes de votre API. Votre API de la matinée 1 tourne sur le port 8080, vous la modifiez seulement pour le CORS.
-Idée clé : le front n'a aucun accès au code de l'API. Il n'a que le contrat : routes, JSON, status codes, en-têtes. Si le contrat est clair, le front se code facilement. Créer, supprimer et le token viendront à la matinée 3.`,
+    page: WhyReact,
+    note: `La question : d'où vient la page ? À gauche, le rendu classique. Le navigateur demande une URL. Le serveur lit les données en base, les insère dans un gabarit HTML, et renvoie une page toute prête. Le serveur possède la structure et les données ; le navigateur affiche seulement.
+À droite, React. La structure de la page, les composants, vit dans le navigateur, dans l'application React. Le navigateur appelle l'API, qui lit la base et ne renvoie que des données en JSON. React les range dans sa propre structure.
+Conséquence : le serveur n'a plus à connaître l'écran, et le front peut changer sans toucher à l'API. C'est exactement le contrat de la matinée 1.`,
   },
   {
-    page: FrontBack,
-    note: `Le trajet d'une requête. Le navigateur est sur le port 5173, l'API sur le 8080 : deux origines différentes. Avant d'accepter la réponse, le navigateur vérifie que l'API autorise l'origine : c'est CORS, qu'on configure dans cette matinée.
-Suivez le paquet : GET /artists part, passe CORS, arrive à l'API, la réponse 200 avec du JSON revient, React l'affiche.`,
+    page: ComponentSplit,
+    note: `Une page React se découpe en composants, comme des briques. À gauche la page : un Header, une ArtistList qui contient des ArtistCard, et un Message pour le chargement ou l'erreur. À droite, le même découpage sous forme d'arbre.
+Regardez ArtistCard : on l'écrit une fois, on l'utilise autant de fois qu'il y a d'artistes. Un composant est une fonction qui reçoit des données et renvoie un morceau d'écran.
+Où couper ? Un bloc qui se répète, ou qui a sa propre responsabilité. C'est le même principe que les trois couches de l'API : chacun son rôle. Dans le TP, la liste et le message d'erreur seront chacun un composant.`,
+  },
+  {
+    page: XRaw,
+    note: `La même page de X, sans aucune annotation. Laissez la salle chercher quelques minutes : où coupe-t-on ? Quels blocs se répètent, lesquels ont un rôle propre, lesquels en contiennent d'autres ?
+Notez les propositions au tableau, puis passez à la slide suivante pour comparer avec un découpage possible. Il n'y a pas un seul bon découpage : l'important est de pouvoir le justifier.`,
+  },
+  {
+    page: XExample,
+    note: `Un exemple réel : le fil d'actualité de X. Demandez à la salle de deviner où couper avant de montrer les cadres.
+En orange, les composants de la page : la barre latérale, les onglets, la zone « Quoi de neuf ? », les posts, puis dans la colonne de droite la recherche, la promotion, les tendances et les suggestions.
+Regardez les deux posts : c'est le même composant Post, avec des données différentes. Et en vert, un Post contient lui-même des composants : l'avatar, l'en-tête, le texte, l'image et les boutons d'action.
+Idée à retenir : on découpe jusqu'à ce que chaque morceau ait un rôle clair et, si possible, serve plusieurs fois.`,
   },
   {
     page: ReactSetup,
@@ -4037,28 +4464,31 @@ Cas particulier : un 204, comme sur DELETE, n'a pas de corps, donc pas de JSON �
   },
   {
     page: RequestStates,
-    note: `Un appel réseau n'est pas instantané. Trois états : chargement, succès, erreur. Suivez le paquet : il part en chargement, arrive en succès avec un 200, puis un deuxième appel arrive en erreur avec un 400 ou un 500.
+    note: `Un appel réseau n'est pas instantané, donc l'écran passe par plusieurs états. Chaque cadre montre ce que l'utilisateur voit, et la variable React qui correspond : loading, artists, error. On retrouvera ces trois variables dans le code de la slide suivante.
+Suivez le paquet. Appel 1 : la page affiche « Chargement… », la réponse 200 arrive, la liste s'affiche. Appel 2 : même début, mais la réponse est un 400, un 500 ou le réseau est coupé : l'écran affiche un message d'erreur.
 Une interface qui n'affiche pas l'état de chargement semble cassée. Une qui n'affiche pas l'erreur échoue sans explication.`,
+  },
+  {
+    page: OptimisticPage,
+    note: `Trois façons de mettre l'interface à jour quand l'utilisateur supprime un artiste. Première : l'approche optimiste. On suppose que la requête va réussir, donc on change l'écran tout de suite, puis on envoie DELETE.
+Cas 1 : le serveur répond 204, tout est synchronisé et l'utilisateur n'a rien attendu. Cas 2 : le serveur répond 500. L'écran affiche deux artistes, le serveur en a toujours trois. Les données sont désynchronisées, et personne ne le sait si on ne fait rien.
+Optimiste veut dire : rapide quand ça marche, dangereux quand ça échoue.`,
+  },
+  {
+    page: PessimisticPage,
+    note: `Deuxième approche : pessimiste. On ne touche pas à l'interface tant qu'on n'a pas une réponse HTTP de succès. Clic sur Supprimer, la requête part, l'écran ne bouge pas. Le serveur supprime et répond 204 : seulement alors on retire l'artiste de la liste.
+Avantage : l'écran et le serveur sont toujours d'accord, et en cas d'erreur il n'y a rien à défaire, il suffit d'afficher le message. Limite : l'utilisateur attend, parfois sans retour visuel. On peut afficher un chargement, comme vu avec les trois états.`,
+  },
+  {
+    page: HybridPage,
+    note: `Troisième approche : hybride. On garde la rapidité de l'optimiste et la sécurité du pessimiste. Étape 1 : on copie l'état avant la requête. Étape 2 : on modifie l'interface tout de suite et on envoie. Étape 3 : si le serveur répond une erreur, étape 4 : on restaure la copie, l'écran revient comme avant, et on affiche le message.
+En cas de succès, on jette simplement la copie. Prix à payer : plus de code, la copie et le retour arrière à écrire pour chaque action.
+Demandez à la salle quelle approche ils choisiraient pour supprimer un artiste, et pour un simple « j'aime ».`,
   },
   {
     page: LoadList,
     note: `Le chargement de la liste. Trois états React : la liste, le chargement, l'erreur. useEffect lance la requête une fois, quand le composant apparaît, grâce au tableau de dépendances vide.
 Les lignes en couleur : succès dans then, erreur dans catch, fin du chargement dans finally. Puis trois return selon l'état.`,
-  },
-  {
-    page: CorsPage,
-    note: `CORS : maintenant il compte, parce que votre front tourne sur le port 5173 et votre API sur le 8080. Le navigateur envoie d'abord un OPTIONS pour demander la permission. L'API répond avec des en-têtes qui autorisent.
-Seul le navigateur fait ça. Avec Postman rien ne se passe, ce qui explique pourquoi "ça marche dans Postman mais pas dans le navigateur".`,
-  },
-  {
-    page: CorsCode,
-    note: `Le middleware CORS, à ajouter à votre API ce matin. Trois en-têtes : origine autorisée, méthodes, en-têtes. Ici l'origine est celle de Vite, localhost:5173, et Content-Type est le seul en-tête déclaré pour l'instant.
-Pour OPTIONS on répond 204 tout de suite. Plus tard, avec FerrisKey, il faudra ajouter Authorization, et le préflight ne devra jamais passer par Auth. Listez les origines précises plutôt qu'une étoile. Chi, Gin et Echo ont des middlewares CORS tout faits : à vous de choisir.`,
-  },
-  {
-    page: CorsDebug,
-    note: `CORS vu du côté front. Ouvrez l'onglet Réseau des outils de développement. Avant un POST, un DELETE ou une requête avec un en-tête particulier, le navigateur envoie un OPTIONS, le préflight.
-Lisez le tableau : origine non autorisée, OPTIONS qui n'est pas traité par le middleware, en-tête absent d'Allow-Headers. Dernière ligne : "ça marche dans Postman" ne prouve rien, Postman n'applique pas CORS. Les corrections se font dans l'API.`,
   },
   {
     page: FrontErrors,
@@ -4096,6 +4526,26 @@ const part3: Entry[] = [
     page: SecBreak,
     note: `Matinée 3. L'API marche, le front l'appelle. Aujourd'hui on la sécurise en deux temps : d'abord les données, puis l'accès.
 Premier temps : que se passe-t-il quand une requête est envoyée deux fois, ou mille fois ? L'idempotence, la clé d'idempotence, le rate limiting et le seau de jetons, les timeouts. Deuxième temps : l'authentification avec FerrisKey, les rôles. Un seul TP noté à la fin : FerrisKey. L'idempotence et le rate limiting sont en bonus, non notés.`,
+  },
+  {
+    page: FrontBack,
+    note: `Le trajet d'une requête. Le navigateur est sur le port 5173, l'API sur le 8080 : deux origines différentes. Avant d'accepter la réponse, le navigateur vérifie que l'API autorise l'origine : c'est CORS, qu'on configure maintenant dans l'API.
+Suivez le paquet : GET /artists part, passe CORS, arrive à l'API, la réponse 200 avec du JSON revient, React l'affiche.`,
+  },
+  {
+    page: CorsPage,
+    note: `CORS : maintenant il compte, parce que votre front tourne sur le port 5173 et votre API sur le 8080. Le navigateur envoie d'abord un OPTIONS pour demander la permission. L'API répond avec des en-têtes qui autorisent.
+Seul le navigateur fait ça. Avec Postman rien ne se passe, ce qui explique pourquoi "ça marche dans Postman mais pas dans le navigateur".`,
+  },
+  {
+    page: CorsCode,
+    note: `Le middleware CORS, à ajouter à votre API maintenant. Trois en-têtes : origine autorisée, méthodes, en-têtes. Ici l'origine est celle de Vite, localhost:5173, et Content-Type est le seul en-tête déclaré pour l'instant.
+Pour OPTIONS on répond 204 tout de suite. Plus tard, avec FerrisKey, il faudra ajouter Authorization, et le préflight ne devra jamais passer par Auth. Listez les origines précises plutôt qu'une étoile. Chi, Gin et Echo ont des middlewares CORS tout faits : à vous de choisir.`,
+  },
+  {
+    page: CorsDebug,
+    note: `CORS vu du côté front. Ouvrez l'onglet Réseau des outils de développement. Avant un POST, un DELETE ou une requête avec un en-tête particulier, le navigateur envoie un OPTIONS, le préflight.
+Lisez le tableau : origine non autorisée, OPTIONS qui n'est pas traité par le middleware, en-tête absent d'Allow-Headers. Dernière ligne : "ça marche dans Postman" ne prouve rien, Postman n'applique pas CORS. Les corrections se font dans l'API.`,
   },
   {
     page: DataRisks,
@@ -4240,7 +4690,7 @@ Demandez à la salle quel code on obtient quand on appelle POST /artists avec un
   },
   {
     page: ChainOrder3,
-    note: `La chaîne complète. CORS vient de la matinée 2 : il doit passer avant Auth, sinon le préflight, qui n'a pas de token, recevrait un 401 et le navigateur bloquerait tout.
+    note: `La chaîne complète. CORS vient de l'étape précédente : il doit passer avant Auth, sinon le préflight, qui n'a pas de token, recevrait un 401 et le navigateur bloquerait tout.
 Pour que le front fonctionne avec la sécurité, ajoutez Authorization et Idempotency-Key dans Access-Control-Allow-Headers, et Retry-After dans Expose-Headers. Idempotency vient après Auth : elle voit l'identité. C'est l'aboutissement de la matinée.`,
   },
   {
